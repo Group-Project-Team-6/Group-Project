@@ -14,8 +14,8 @@ public class CullObstacle : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {
+    void Update()
+    {   
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
         Vector3 dist = (player.transform.position - transform.position);
@@ -39,16 +39,16 @@ public class CullObstacle : MonoBehaviour
         for (int i = 0; i < hideList.Count; i++)
         {
             Color c = hideList[i].GetComponent<Renderer>().material.color;
-            Vector3 v = player.transform.position;
-            hideList[i].GetComponent<Renderer>().material.SetVector("_PlayerPos", new Vector4(v.x,v.y,v.z,0));// = true;
+            //Vector3 v = player.transform.position;
+            hideList[i].GetComponent<Renderer>().material.SetFloat("_IsCasted",1);// = true;
             hideList[i].layer = 0;
             Debug.Log(hideList[i].layer);
         }
         for(int j = 0; j < lastFrame.Count; j++)
         {
             Color c = lastFrame[j].GetComponent<Renderer>().material.color;
-            Vector3 v = player.transform.position;
-            lastFrame[j].GetComponent<Renderer>().material.SetVector("_PlayerPos", new Vector4(v.x, v.y, v.z, 0)); ;
+            //Vector3 v = player.transform.position;
+            lastFrame[j].GetComponent<Renderer>().material.SetFloat("_IsCasted",0); ;
             //lastFrame[j].GetComponent<Renderer>().forceRenderingOff = false;
             lastFrame[j].layer = 0;
         }

@@ -1,3 +1,6 @@
+//Project: CSC8507 Group Project Unity Prototype
+//Author: Chris Hui
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

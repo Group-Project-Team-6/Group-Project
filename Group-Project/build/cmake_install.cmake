@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project
+# Install script for directory: C:/Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project/Group-Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project/Group-Project/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

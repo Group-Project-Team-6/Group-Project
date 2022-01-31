@@ -5,15 +5,13 @@ include_directories(
 	src
 )
 
-if(MSVC)
-    include_directories(
-	Group-Project/src/Bullet/include
-	)
-	link_directories(
+ include_directories(
+	src/Bullet/include/bullet
+)
+link_directories(
 	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/lib
 	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/debug/lib
-	)
-endif()
+)
 
 add_executable(Game
 	src/game/main.cpp

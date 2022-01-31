@@ -1,3 +1,6 @@
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+
 #include <iostream>
 
 int main() {

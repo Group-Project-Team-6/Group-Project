@@ -7,7 +7,7 @@ set(CMAKE_C_COMPILER   i586-mingw32msvc-gcc)
 set(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
 endif()
 
-set(CMAKE_FIND_ROOT_PATH  .../Group-Project)
+set(CMAKE_FIND_ROOT_PATH  Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project/Group-Project)
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 

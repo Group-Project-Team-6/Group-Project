@@ -1,20 +1,20 @@
 cmake_minimum_required(VERSION 3.22)
 project(Group-Game-Project)
 
-if (MSVC)
-set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_C_COMPILER   i586-mingw32msvc-gcc)
-set(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
+include_directories(
+	src
+)
+
+if(MSVC)
+    include_directories(
+	Group-Project/src/Bullet/include
+	)
+	link_directories(
+	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/lib
+	)
 endif()
 
-set(CMAKE_FIND_ROOT_PATH  Users/Night/OneDrive/Documentos/GitHub/Group-Project/Group-Project/Group-Project)
-
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-set(-S src -B build)
+add_definitions(-DSDL_MAIN_HANDLED)
 
 add_executable(Game
 	src/game/main.cpp

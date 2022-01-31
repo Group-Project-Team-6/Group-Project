@@ -11,10 +11,9 @@ if(MSVC)
 	)
 	link_directories(
 	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/lib
+	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/debug/lib
 	)
 endif()
-
-add_definitions(-DSDL_MAIN_HANDLED)
 
 add_executable(Game
 	src/game/main.cpp

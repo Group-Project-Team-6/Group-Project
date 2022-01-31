@@ -1,0 +1,25 @@
+﻿  Socket Programming.cpp
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(9,5): error C2373:  'WSAStartup': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2351): message :  see declaration of 'WSAStartup'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(21,25): error C2011:  'addrinfo': 'struct' type redefinition
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\ws2def.h(902): message :  see declaration of 'addrinfo'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(32,8): error C2373:  'socket': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2172): message :  see declaration of 'socket'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(38,5): error C2373:  'bind': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(1647): message :  see declaration of 'bind'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(44,5): error C2373:  'connect': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(1685): message :  see declaration of 'connect'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(50,5): error C2373:  'listen': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(1949): message :  see declaration of 'listen'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(55,8): error C2373:  'accept': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(1625): message :  see declaration of 'accept'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(61,5): error C2373:  'send': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2077): message :  see declaration of 'send'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(68,5): error C2373:  'recv': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2002): message :  see declaration of 'recv'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(75,5): error C2373:  'closesocket': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(1668): message :  see declaration of 'closesocket'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(79,5): error C2373:  'WSAGetLastError': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2405): message :  see declaration of 'WSAGetLastError'
+C:\Users\c1033252\source\repos\Socket Programming\Socket Programming.cpp(81,5): error C2373:  'WSACleanup': redefinition; different type modifiers
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(2371): message :  see declaration of 'WSACleanup'

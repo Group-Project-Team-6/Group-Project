@@ -15,7 +15,6 @@ public class ModuleMap : MonoBehaviour
     {
         moduleMapList = new List<char>();
         moduleMap = new Dictionary<char, int>();
-        LoadModuleMap();
     }
 
     // Update is called once per frame
@@ -28,12 +27,12 @@ public class ModuleMap : MonoBehaviour
         }
     }
 
-    private void LoadModuleMap()
+    public void LoadModuleMap()
     {
-        string path = Path.Combine(Application.persistentDataPath, "moduleMap.txt");
+        moduleMapList = new List<char>();
+        moduleMap = new Dictionary<char, int>();
+        string path = Path.Combine(Application.dataPath, "moduleMap.txt");
         StreamReader sr = new StreamReader(path);
-        moduleMapList.Clear();
-        moduleMap.Clear();
         string strLine = sr.ReadLine();
         int index = 0;
         while (strLine != null)
@@ -52,7 +51,7 @@ public class ModuleMap : MonoBehaviour
 
     private void WriteModuleMap()
     {
-        string path = Path.Combine(Application.persistentDataPath, "moduleMap.txt");
+        string path = Path.Combine(Application.dataPath, "moduleMap.txt");
         StreamWriter sw = new StreamWriter(path);
         for(int i = 0; i < moduleMapList.Count; i++)
         {

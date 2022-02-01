@@ -13,7 +13,8 @@ public class MapGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     { 
-        mazeGen = new MazeGenerator(); ;
+        mazeGen = new MazeGenerator();
+        mMap.LoadModuleMap();
         Generate();
     }
 

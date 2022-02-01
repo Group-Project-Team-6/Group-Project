@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
     MazeGenerator mazeGen;
-    public Dictionary<char,GameObject> moduleMap;
+    public Dictionary<char,int> moduleMap;
     public List<GameObject> bank;
     public int unitLength = 10;
     public int width;
@@ -52,8 +53,8 @@ public class MapGenerator : MonoBehaviour
 
     private void AddChild(char symbol, int level, int l, int w)
     {
-        if (symbol == 'S') return;
-        GameObject g = Instantiate(moduleMap[symbol], new Vector3(l * unitLength, level * unitLength, w * unitLength), new Quaternion(), transform);
+        if (symbol == 'S' || !moduleMap.ContainsKey(symbol)) return;
+        GameObject g = Instantiate(bank[moduleMap[symbol]], new Vector3(l * unitLength, level * unitLength, w * unitLength), new Quaternion(), transform);
         g.transform.localScale = new Vector3(unitLength, unitLength,unitLength);
     }
 
@@ -65,4 +66,17 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    private void LoadModuleMap()
+    {
+        string path = Path.Combine(Application.persistentDataPath,"moduleMap.txt");
+        StreamReader sr = new StreamReader(path);
+        string strLine = sr.ReadLine();
+        while (strLine != null)
+        {
+            moduleMap.Add(strLine[0], int.Parse(strLine.Substring(1, strLine.Length - 1)));
+            strLine = sr.ReadLine();
+
+        }
+        sr.Close();
+    }
 }

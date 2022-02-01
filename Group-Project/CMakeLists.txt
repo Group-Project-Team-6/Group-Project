@@ -1,18 +1,11 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.0)
 project(Group-Game-Project)
 
-include_directories(
-	src
-)
+find_package(Bullet CONFIG REQUIRED)
 
- include_directories(
-	src/Bullet/include/bullet
-)
-link_directories(
-	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/lib
-	${PROJECT_SOURCE_DIR}/Group-Project/src/Bullet/debug/lib
-)
+include_directories(${BULLET_INCLUDE_DIR})
+link_directories(${BULLET_LIBRARY_DIRS})
 
 add_executable(Game
 	src/game/main.cpp
-)	
+)

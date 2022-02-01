@@ -24,6 +24,7 @@ public class Splash : MonoBehaviour
         Vector2 hitUV = new Vector2(0, 0);
         Mesh m = collision.gameObject.GetComponent<MeshFilter>().mesh;
         Vector3 p = collision.contacts[0].point;
+        Vector3 proj = new Vector3();
 
         for (int i = 0; i < m.triangles.Length; i+=3)
         {
@@ -38,15 +39,15 @@ public class Splash : MonoBehaviour
 
             Vector3 cross = Vector3.Cross(ac, ab); // Normal
             Vector3 n = -cross.normalized;  // Noraml normalized
-            Vector3 r = pa - (Vector3.Dot(pa, n) * n) + a;
+            Vector3 r = pa - (Vector3.Dot(pa, n) * n) + a;  // vector from origin to projection from p to triangle plane
             Vector3 ra = a - r;
             Vector3 rb = b - r;
             Vector3 rc = c - r;
 
-            float A = cross.magnitude;
-            float aA = Vector3.Cross(ra, rb).magnitude;
-            float bA = Vector3.Cross(rb, rc).magnitude;
-            float cA = Vector3.Cross(rc, ra).magnitude;
+            float A = cross.magnitude; //// total Area
+            float aA = Vector3.Cross(ra, rb).magnitude; // divided Area
+            float bA = Vector3.Cross(rb, rc).magnitude;// divided Area
+            float cA = Vector3.Cross(rc, ra).magnitude;// divided Area
 
             //Debug.Log("i: " + i + "=================");
             //Debug.Log(A + " " + (aA + bA + cA));
@@ -58,10 +59,24 @@ public class Splash : MonoBehaviour
                 shortestTri[2] = m.triangles[i + 2];
                 shortestTri[1] = m.triangles[i + 1];
                 shortestTri[0] = m.triangles[i];
+                proj = r;
             }           
         }
         Debug.Log(m.uv[shortestTri[0]] + " " + m.uv[shortestTri[1]] + " " + m.uv[shortestTri[2]]);
-        
+        Vector3 aa = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+        Vector3 bb = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+        Vector3 cc = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
+
+        Vector3 Al = (bb - aa).normalized * (Vector3.Dot((bb - aa).normalized, (proj - aa)));
+        Vector3 lR = (proj - aa) - Al;
+        Vector3 Al2 = (bb - aa).normalized * (Vector3.Dot((bb - aa).normalized, (cc - aa)));
+        Vector3 l2C = (cc - aa) - Al2;
+        float Rc = lR.magnitude / l2C.magnitude;
+        float Rb = ((proj - bb) - (((cc - bb).magnitude * Rc) * (cc - bb).normalized)).magnitude / (bb - aa).magnitude;
+        float Ra = 1 - Rc - Rb;
+        Debug.Log(Ra + " " + Rb + " " + Rc);
+        hitUV = m.uv[shortestTri[0]] * Ra + m.uv[shortestTri[1]] * Rb + m.uv[shortestTri[2]] * Rc;
+        Debug.Log(hitUV);
         //Debug.Log("Splash Pos: "+ p);
         //Debug.Log("Vertex a: " + shortestTri[0] + ", Vertex b: " + shortestTri[1] + ",Vertex c: " + shortestTri[2]);
         //Vector3 f = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);

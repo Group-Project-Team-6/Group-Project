@@ -480,7 +480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 1745023771357995761, guid: 6c65263dc7c18784f8fc77789b081923, type: 3}
-  dist: 2
+  dist: 1
 --- !u!1 &301203673
 GameObject:
   m_ObjectHideFlags: 0

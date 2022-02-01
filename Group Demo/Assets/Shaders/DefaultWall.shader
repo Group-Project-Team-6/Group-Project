@@ -13,11 +13,12 @@ Shader "Custom/DefaultWall" {
     }
     SubShader{
         Tags{"Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True"}
+
         pass {
             Tags{"LightMode"="ForwardBase"}
-
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
+            LOD 200
             CGPROGRAM
 
             #pragma vertex vert

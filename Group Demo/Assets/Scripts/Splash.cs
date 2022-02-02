@@ -5,7 +5,7 @@ using UnityEngine;
 public class Splash
 {
     public Vector3 position;
-    public float radius;
+    public float halfSize;
     public float mass;
     public Splash()
     {

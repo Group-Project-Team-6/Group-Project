@@ -27,11 +27,11 @@ public class PaintableWall : MonoBehaviour
             }
             else if (SplashManager.approach == 2)
             {
-                gameObject.layer = 1;
+                gameObject.layer = 0;
                 Splash s = new Splash();
                 s.mass = collision.gameObject.GetComponent<Rigidbody>().mass;
                 s.position = collision.contacts[0].point;
-                s.radius = collision.gameObject.GetComponent<Collider>().bounds.size.magnitude;
+                s.halfSize = collision.gameObject.GetComponent<Collider>().bounds.size.magnitude;
 
                 SplashManager.splashes.Add(s);
             }

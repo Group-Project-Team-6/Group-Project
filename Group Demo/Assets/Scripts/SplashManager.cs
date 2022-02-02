@@ -10,6 +10,7 @@ public class SplashManager : MonoBehaviour
     public static int approach = 1;
     public static List<Splash> splashes;
     public static SplashManager instance;
+
     public static List<GameObject> debugs;
     public static GameObject splashR;
     // Start is called before the first frame update

@@ -696,7 +696,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Approach: 2
   ShowDebug: 0
-  splashRadius: {fileID: 661306798046905662, guid: 0e3fa386b9f448c49b4194dd183ba8ed, type: 3}
+  splashRadius: {fileID: 8417739077383625798, guid: 5acd688f1a6b60f458a5e14c24386cb2, type: 3}
 --- !u!1 &408969440
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,7 +725,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 408969440}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.06, y: -0.5, z: 0.05}
   m_LocalScale: {x: 50, y: 1, z: 50}
   m_Children: []
   m_Father: {fileID: 538814344}
@@ -1199,7 +1199,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 55
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -1207,7 +1207,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &963194228
@@ -1218,7 +1218,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.7444446, z: -3.5}
+  m_LocalPosition: {x: 0, y: 1.7444446, z: -5}
   m_LocalScale: {x: 1, y: 1.1111112, z: 1}
   m_Children:
   - {fileID: 3819021}

@@ -1,4 +1,4 @@
-#include "../../..//Advanced-Game-Technologies-David/Common/Window.h"
+#include "../common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
 
 #include <iostream>

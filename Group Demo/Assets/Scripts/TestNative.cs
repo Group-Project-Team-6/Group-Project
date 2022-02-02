@@ -12,7 +12,7 @@ public class TestNative : MonoBehaviour
         Test(c, 4);
         for(int i = 0; i < c.Length; i++)
         {
-            Debug.Log(c[i]);
+            //Debug.Log(c[i]);
         }
         
     }

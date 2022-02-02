@@ -1,5 +1,0 @@
-﻿  main.cpp
-main.obj : error LNK2019: unresolved external symbol "void * __cdecl btAlignedAllocInternal(unsigned __int64,int)" (?btAlignedAllocInternal@@YAPEAX_KH@Z) referenced in function "public: static void * __cdecl btAxisSweep3Internal<unsigned short>::operator new(unsigned __int64)" (??2?$btAxisSweep3Internal@G@@SAPEAX_K@Z)
-main.obj : error LNK2019: unresolved external symbol "void __cdecl btAlignedFreeInternal(void *)" (?btAlignedFreeInternal@@YAXPEAX@Z) referenced in function "public: static void __cdecl btAxisSweep3Internal<unsigned short>::operator delete(void *)" (??3?$btAxisSweep3Internal@G@@SAXPEAX@Z)
-main.obj : error LNK2019: unresolved external symbol "public: __cdecl btAxisSweep3::btAxisSweep3(class btVector3 const &,class btVector3 const &,unsigned short,class btOverlappingPairCache *,bool)" (??0btAxisSweep3@@QEAA@AEBVbtVector3@@0GPEAVbtOverlappingPairCache@@_N@Z) referenced in function main
-C:\Users\Night\OneDrive\Documentos\GitHub\Group-Project\Group-Project\Group-Project\build\Debug\Game.exe : fatal error LNK1120: 3 unresolved externals

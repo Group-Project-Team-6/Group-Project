@@ -14,58 +14,26 @@ public class PaintableWall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Splash>())
+        if (collision.gameObject.GetComponent<SplashBall>())
         {
-            if (Splash.approach == 1)
+            if (SplashManager.approach == 1)
             {
-                int[] shortestTri = new int[3];
-                Vector3 proj = new Vector3();
-
-                FindTriangle(collision, ref shortestTri, ref proj);
-
-                Mesh m = gameObject.GetComponent<MeshFilter>().mesh;
-                Vector2 hitUV;
-
-                //Debug.Log("Tris:" + shortestTri[0] + " " + shortestTri[1] + " " + shortestTri[2]);
-                //Debug.Log("UVs:" + m.uv[shortestTri[0]] + " " + m.uv[shortestTri[1]] + " " + m.uv[shortestTri[2]]);
-
-                Vector3 aa = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
-                Vector3 bb = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
-                Vector3 cc = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
-
-                Vector3 AC = cc - aa;
-                Vector3 AR = proj - aa;
-                float Rc = Ratio(Proj(AR, AC), AC);
-
-                Vector3 BC = cc - bb;
-                Vector3 BR = proj - bb;
-                float Rb = Ratio(BR - Proj(BR, BC), bb - aa);
-                float Ra = 1.0f - Rc - Rb;
-                Debug.Log(Ra + " " + Rb + " " + Rc);
-                hitUV = m.uv[shortestTri[0]] * Ra + m.uv[shortestTri[1]] * Rb + m.uv[shortestTri[2]] * Rc;
-                Debug.Log(hitUV.x + " " + hitUV.y);
-
-                //Debug.Log("Splash Pos: "+ p);
-                //Debug.Log("Vertex a: " + shortestTri[0] + ", Vertex b: " + shortestTri[1] + ",Vertex c: " + shortestTri[2]);
-                //Vector3 f = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
-                //Vector3 h = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
-                //Vector3 k = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
-
-                //GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //g.transform.position = new Vector3(f.x, f.y, f.z); ;
-                //GameObject gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //gg.transform.position = new Vector3(h.x, h.y, h.z);
-                //GameObject ggg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                //ggg.transform.position = new Vector3(k.x, k.y, k.z);
+                GetUV(collision);
             }
-            else if (Splash.approach == 2)
+            else if (SplashManager.approach == 2)
             {
-                GameObject g = new GameObject();
+                gameObject.layer = 1;
+                Splash s = new Splash();
+                s.mass = collision.gameObject.GetComponent<Rigidbody>().mass;
+                s.position = collision.contacts[0].point;
+                s.radius = collision.gameObject.GetComponent<Collider>().bounds.size.magnitude;
+
+                SplashManager.splashes.Add(s);
             }
         }
     }
@@ -135,5 +103,50 @@ public class PaintableWall : MonoBehaviour
                 proj = r;
             }
         }
+    }
+
+    private Vector2 GetUV(Collision collision)
+    {
+        int[] shortestTri = new int[3];
+        Vector3 proj = new Vector3();
+
+        FindTriangle(collision, ref shortestTri, ref proj);
+
+        Mesh m = gameObject.GetComponent<MeshFilter>().mesh;
+        Vector2 hitUV;
+
+        //Debug.Log("Tris:" + shortestTri[0] + " " + shortestTri[1] + " " + shortestTri[2]);
+        //Debug.Log("UVs:" + m.uv[shortestTri[0]] + " " + m.uv[shortestTri[1]] + " " + m.uv[shortestTri[2]]);
+
+        Vector3 aa = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+        Vector3 bb = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+        Vector3 cc = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
+
+        Vector3 AC = cc - aa;
+        Vector3 AR = proj - aa;
+        float Rc = Ratio(Proj(AR, AC), AC);
+
+        Vector3 BC = cc - bb;
+        Vector3 BR = proj - bb;
+        float Rb = Ratio(BR - Proj(BR, BC), bb - aa);
+        float Ra = 1.0f - Rc - Rb;
+        Debug.Log(Ra + " " + Rb + " " + Rc);
+        hitUV = m.uv[shortestTri[0]] * Ra + m.uv[shortestTri[1]] * Rb + m.uv[shortestTri[2]] * Rc;
+        Debug.Log(hitUV.x + " " + hitUV.y);
+
+        return hitUV;
+
+        //Debug.Log("Splash Pos: "+ p);
+        //Debug.Log("Vertex a: " + shortestTri[0] + ", Vertex b: " + shortestTri[1] + ",Vertex c: " + shortestTri[2]);
+        //Vector3 f = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+        //Vector3 h = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+        //Vector3 k = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
+
+        //GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //g.transform.position = new Vector3(f.x, f.y, f.z); ;
+        //GameObject gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //gg.transform.position = new Vector3(h.x, h.y, h.z);
+        //GameObject ggg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //ggg.transform.position = new Vector3(k.x, k.y, k.z);
     }
 }

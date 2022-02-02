@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(Group-Game-Project)
 
+set(CMAKE_PREFIX_PATH "/lib/cmake")
+
 find_package(Bullet CONFIG REQUIRED)
 if(Bullet_FOUND)
 	include_directories(${BULLET_INCLUDE_DIRS})

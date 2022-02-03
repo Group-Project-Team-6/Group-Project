@@ -11,6 +11,7 @@ endif()
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
 	src/Physics/PhysicsTestScene.h
+
 )
 
 add_library(OpenGLRendering
@@ -20,7 +21,7 @@ add_library(OpenGLRendering
 	src/Plugins/OpenGLRendering/OGLMesh.h
 	src/Plugins/OpenGLRendering/OGLRenderer.cpp
 	src/Plugins/OpenGLRendering/OGLRenderer.h
-	src/Plugins/OpenGLRendering/OGLShader.cpp
+	src/Plugins/OpenGLRendering/OGLShader.cpp 
 	src/Plugins/OpenGLRendering/OGLShader.h
 	src/Plugins/OpenGLRendering/OGLTexture.cpp
 	src/Plugins/OpenGLRendering/OGLTexture.h

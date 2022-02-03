@@ -1,91 +1,121 @@
 cmake_minimum_required(VERSION 3.0)
 project(Group-Game-Project)
-
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
 
-find_package(Bullet CONFIG REQUIRED)
-if(Bullet_FOUND)
-	include_directories(${BULLET_INCLUDE_DIRS})
-endif()
-
-add_library(Physics
-	src/Physics/PhysicsTestScene.cpp
-	src/Physics/PhysicsTestScene.h
-)
-
-add_library(OpenGLRendering
-	src/OpenGLRendering/OGLComputeShader.cpp
-	src/OpenGLRendering/OGLComputeShader.h
-	src/OpenGLRendering/OGLMesh.cpp
-	src/OpenGLRendering/OGLMesh.h
-	src/OpenGLRendering/OGLRenderer.cpp
-	src/OpenGLRendering/OGLRenderer.h
-	src/OpenGLRendering/OGLShader.cpp
-	src/OpenGLRendering/OGLShader.h
-	src/OpenGLRendering/OGLTexture.cpp
-	src/OpenGLRendering/OGLTexture.h
-)
-
+#Common Component
 add_library(Common
-	src/Common/Assets.cpp
 	src/Common/Assets.h
-	src/Common/Camera.cpp
 	src/Common/Camera.h
-	src/Common/GameTimer.cpp
 	src/Common/GameTimer.h
-	src/Common/Keyboard.cpp
 	src/Common/Keyboard.h
-	src/Common/Maths.cpp
 	src/Common/Maths.h
-	src/Common/Matrix2.cpp
 	src/Common/Matrix2.h
-	src/Common/Matrix3.cpp
 	src/Common/Matrix4.h
-	src/Common/MeshAnimation.cpp
 	src/Common/MeshAnimation.h
-	src/Common/MeshGeometry.cpp
 	src/Common/MeshGeometry.h
-	src/Common/MeshMaterial.cpp
 	src/Common/MeshMaterial.h
-	src/Common/Mouse.cpp
 	src/Common/Mouse.h
-	src/Common/Plane.cpp
 	src/Common/Plane.h
-	src/Common/Quaternion.cpp
 	src/Common/Quaternion.h
-	src/Common/RendererBase.cpp
 	src/Common/RendererBase.h
-	src/Common/ShaderBase.cpp
 	src/Common/ShaderBase.h
-	src/Common/SimpleFont.cpp
 	src/Common/SimpleFont.h
-	src/Common/TextureBase.cpp
 	src/Common/TextureBase.h
-	src/Common/TextureLoader.cpp
 	src/Common/TextureLoader.h
-	src/Common/TextureWriter.cpp
 	src/Common/TextureWriter.h
-	src/Common/Vector2.cpp
 	src/Common/Vector2.h
-	src/Common/Vector3.cpp
 	src/Common/Vector3.h
-	src/Common/Vector4.cpp
 	src/Common/Vector4.h
-	src/Common/Win32Keyboard.cpp
 	src/Common/Win32Keyboard.h
-	src/Common/Win32Mouse.cpp
 	src/Common/Win32Mouse.h
-	src/Common/Win32Window.cpp
 	src/Common/Win32Window.h
-	src/Common/Window.cpp
 	src/Common/Window.h
+
+	src/Common/Assets.cpp
+	src/Common/Camera.cpp
+	src/Common/GameTimer.cpp
+	src/Common/Keyboard.cpp
+	src/Common/Maths.cpp
+	src/Common/Matrix2.cpp
+	src/Common/Matrix3.cpp
+	src/Common/MeshAnimation.cpp
+	src/Common/MeshGeometry.cpp
+	src/Common/MeshMaterial.cpp
+	src/Common/Mouse.cpp
+	src/Common/Plane.cpp
+	src/Common/Quaternion.cpp
+	src/Common/RendererBase.cpp
+	src/Common/ShaderBase.cpp
+	src/Common/SimpleFont.cpp
+	src/Common/TextureBase.cpp
+	src/Common/TextureLoader.cpp
+	src/Common/TextureWriter.cpp
+	src/Common/Vector2.cpp
+	src/Common/Vector3.cpp
+	src/Common/Vector4.cpp
+	src/Common/Win32Keyboard.cpp
+	src/Common/Win32Mouse.cpp
+	src/Common/Win32Window.cpp
+	src/Common/Window.cpp
 )
 
+#Physics Component
+add_library(Physics
+	src/Physics/PhysicsTestScene.h
+
+	src/Physics/PhysicsTestScene.cpp
+)
+
+#Graphic Component
+add_library(OpenGLRendering
+	src/OpenGLRendering/OGLComputeShader.h
+	src/OpenGLRendering/OGLMesh.h
+	src/OpenGLRendering/OGLRenderer.h
+	src/OpenGLRendering/OGLShader.h
+	src/OpenGLRendering/OGLTexture.h
+
+	src/OpenGLRendering/OGLComputeShader.cpp
+	src/OpenGLRendering/OGLMesh.cpp
+	src/OpenGLRendering/OGLRenderer.cpp
+	src/OpenGLRendering/OGLShader.cpp
+	src/OpenGLRendering/OGLTexture.cpp	
+)
+
+#Audio Component
+add_library(FMOD SHARED IMPORTED)
+set_property(TARGET FMOD PROPERTY
+	IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/src/FMOD/api/core/lib/x64/fmod.dll"
+)
+set_property(TARGET FMOD PROPERTY
+	IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/src/FMOD/api/core/lib/x64/fmod_vc.lib"
+)
+set_property(TARGET FMOD PROPERTY
+	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/FMOD/api/core/inc"
+)
+
+add_library(Audio
+	src/Audio/Audio.h
+
+	src/Audio/Audio.cpp
+
+)
+
+#Executable
 add_executable(Game
+	src/game/GameEntity.h
+
 	src/game/main.cpp
 	src/game/GameEntity.cpp
-	src/game/GameEntity.h
 )
 
+#Targeting Directories & Linking Libraries
+find_package(Bullet CONFIG REQUIRED)
+if(Bullet_FOUND)
+	target_include_directories(Physics PRIVATE ${BULLET_INCLUDE_DIRS})
+else()
+	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
+endif()
+
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Game Physics OpenGLRendering)
+target_link_libraries(Audio FMOD)
+target_link_libraries(Game Physics OpenGLRendering Audio)

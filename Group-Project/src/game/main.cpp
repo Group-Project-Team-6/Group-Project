@@ -4,7 +4,7 @@
 #include <iostream>
 
 using namespace NCL;
-using namespace CSC8503;
+//using namespace CSC8503;
 
 int main() {
 

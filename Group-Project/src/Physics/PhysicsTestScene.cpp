@@ -1,7 +1,7 @@
 #include "PhysicsTestScene.h"
 
-using namespace NCL;
-using namespace CSC8503;
+//using namespace NCL;
+//using namespace CSC8503;
 
 PhysicsTestScene::PhysicsTestScene() {
 

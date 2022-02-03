@@ -10,6 +10,7 @@ endif()
 
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
+	src/Physics/PhysicsTestScene.h
 )
 
 add_library(OpenGLRendering
@@ -82,7 +83,9 @@ add_library(Common
 
 add_executable(Game
 	src/game/main.cpp
+	src/game/GameEntity.cpp
+	src/game/GameEntity.h
 )
 
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Game ${BULLET_LIBRARIES} Physics)
+target_link_libraries(Game Physics OpenGLRendering)

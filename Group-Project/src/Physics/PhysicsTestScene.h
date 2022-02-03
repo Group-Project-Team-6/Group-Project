@@ -2,35 +2,26 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "GameObject.h"
 
-namespace NCL {
-	namespace CSC8503 {
-		class PhysicsTestScene {
-		public:
-			PhysicsTestScene();
+class PhysicsTestScene {
+	public:
+		PhysicsTestScene();
 
-			~PhysicsTestScene();
+		~PhysicsTestScene();
 
-			void UpdateGame(float dt);
+		void UpdateGame(float dt);
 
-		private:
-			void InitScene();
+	private:
+		void InitScene();
 
-			int maxProxies;
-			btVector3 worldAabbMin;
-			btVector3 worldAabbMax;
-			btAxisSweep3* broadphase;
+		int maxProxies;
+		btVector3 worldAabbMin;
+		btVector3 worldAabbMax;
+		btAxisSweep3* broadphase;
 
-			btDefaultCollisionConfiguration* collisionConfiguration;
-			btCollisionDispatcher* dispatcher;
-			btSequentialImpulseConstraintSolver* solver;
-			btDiscreteDynamicsWorld* dynamicsWorld;
-
-			//GameObject* sphere;
-			//GameObject* ground;
-
-		};
-	}
-}
+		btDefaultCollisionConfiguration* collisionConfiguration;
+		btCollisionDispatcher* dispatcher;
+		btSequentialImpulseConstraintSolver* solver;
+		btDiscreteDynamicsWorld* dynamicsWorld;
+};
 

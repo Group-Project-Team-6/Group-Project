@@ -400,6 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SplashWidth: 20
+  SplashHeight: 200
   tex: {fileID: 0}
 --- !u!1 &195290674
 GameObject:
@@ -472,7 +474,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 11ac4d70102bea54989478b56af70a03, type: 2}
+  - {fileID: 2100000, guid: def25a4ceca89ef45868ae7869679487, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -806,6 +808,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SplashWidth: 5
+  SplashHeight: 5
   tex: {fileID: 0}
 --- !u!1 &470491946
 GameObject:

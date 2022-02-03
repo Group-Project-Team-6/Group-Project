@@ -30,14 +30,17 @@ public class PaintableWall : MonoBehaviour
             if (SplashManager.approach == 1)
             {
                 Vector2 uv = GetUV(collision);
-                uv.y = 1 - uv.y;
                 Color32[] c = new Color32[SplashWidth * SplashHeight];
                 for (int i = 0; i < SplashWidth * SplashHeight; i++) c[i] = Color.red;
-                if (Mathf.Min(SplashWidth, tex.width - (int)(uv.x * tex.width)) != 0 && Mathf.Min(SplashHeight, tex.height - (int)(uv.y * tex.height)) != 0)
+                int w = tex.width - 1;
+                int h = tex.height - 1;
+                if (Mathf.Min(SplashWidth, w - (int)(uv.x * w)) != 0 && Mathf.Min(SplashHeight, h - (int)(uv.y * h)) != 0)
                 {
-                    int xLength = Mathf.Min((int)(uv.x * tex.width), SplashWidth);
-                    int yLength = Mathf.Min((int)(uv.y * tex.height), SplashHeight);
-                    tex.SetPixels32(Mathf.Max(0,(int)(uv.x * tex.width) - SplashWidth/2), Mathf.Max(0, (int)(uv.y * tex.width) - SplashHeight/2), Mathf.Min(xLength, tex.width - (int)(uv.x * tex.width)), Mathf.Min(yLength, tex.height - (int)(uv.y * tex.height)), c);
+                    int x = (int)(uv.x * w);
+                    int y = (int)(uv.y * h);
+                    int xLength = Mathf.Min(x + SplashWidth / 2, SplashWidth);
+                    int yLength = Mathf.Min(y + SplashHeight /2, SplashHeight);
+                    tex.SetPixels32(Mathf.Max(0,x - (SplashWidth/2)), Mathf.Max(0, y - SplashHeight/2), Mathf.Min(xLength, w - xLength + SplashWidth / 2), Mathf.Min(yLength, h - yLength + SplashWidth / 2), c);
                     tex.Apply();
                 }
                 //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", hitTex);
@@ -91,7 +94,7 @@ public class PaintableWall : MonoBehaviour
 
             Vector3 cross = Vector3.Cross(ac, ab); // Normal            
             Vector3 n = cross.normalized;  // Noraml normalized
-            if (!(Vector3.Dot(n, -collision.GetContact(0).normal) > 0.8f)) continue;
+            if (!(Vector3.Dot(n, collision.GetContact(0).normal) > 0.8f)) continue;
 
             Vector3 r = pa - (Vector3.Dot(pa, n) * n) + a;  // vector from origin to projection from p to triangle plane
 
@@ -176,7 +179,15 @@ public class PaintableWall : MonoBehaviour
         Debug.Log(m.uv[shortestTri[0]] * triRatio[0] + " " + m.uv[shortestTri[1]] * triRatio[1] + " " + m.uv[shortestTri[2]] * triRatio[2]);
         hitUV = m.uv[shortestTri[0]] * triRatio[0] + m.uv[shortestTri[1]] * triRatio[1] + m.uv[shortestTri[2]] * triRatio[2];
         Debug.Log(hitUV.x + " " + hitUV.y);
-
+        Vector3 f = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+        Vector3 h = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+        Vector3 k = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
+        GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        g.transform.position = new Vector3(f.x, f.y, f.z); ;
+        GameObject gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        gg.transform.position = new Vector3(h.x, h.y, h.z);
+        GameObject ggg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        ggg.transform.position = new Vector3(k.x, k.y, k.z);
         return hitUV;
 
         //Debug.Log("Splash Pos: "+ p);

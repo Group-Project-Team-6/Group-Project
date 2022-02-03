@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8417739077383625802}
   - component: {fileID: 8417739077383625801}
   - component: {fileID: 8417739077383625800}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SplashCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

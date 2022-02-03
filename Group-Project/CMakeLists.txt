@@ -8,25 +8,21 @@ if(Bullet_FOUND)
 	include_directories(${BULLET_INCLUDE_DIRS})
 endif()
 
+add_library(CSC8503
+	src/CSC8503/GameTechRenderer.cpp
+	src/CSC8503/GameTechRenderer.h
+	src/CSC8503/GameWorld.cpp
+	src/CSC8503/GameWorld.h
+	src/CSC8503/Transform.cpp
+	src/CSC8503/Transform.h
+)
+
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
 	src/Physics/PhysicsTestScene.h
-
 )
 
 add_library(OpenGLRendering
-<<<<<<< HEAD
-	src/Plugins/OpenGLRendering/OGLComputeShader.cpp
-	src/Plugins/OpenGLRendering/OGLComputeShader.h
-	src/Plugins/OpenGLRendering/OGLMesh.cpp
-	src/Plugins/OpenGLRendering/OGLMesh.h
-	src/Plugins/OpenGLRendering/OGLRenderer.cpp
-	src/Plugins/OpenGLRendering/OGLRenderer.h
-	src/Plugins/OpenGLRendering/OGLShader.cpp 
-	src/Plugins/OpenGLRendering/OGLShader.h
-	src/Plugins/OpenGLRendering/OGLTexture.cpp
-	src/Plugins/OpenGLRendering/OGLTexture.h
-=======
 	src/OpenGLRendering/OGLComputeShader.cpp
 	src/OpenGLRendering/OGLComputeShader.h
 	src/OpenGLRendering/OGLMesh.cpp
@@ -37,7 +33,6 @@ add_library(OpenGLRendering
 	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.cpp
 	src/OpenGLRendering/OGLTexture.h
->>>>>>> e8ead807ccb1895d503b01a9309f5dd50d0e07a4
 )
 
 add_library(Common
@@ -54,6 +49,8 @@ add_library(Common
 	src/Common/Matrix2.cpp
 	src/Common/Matrix2.h
 	src/Common/Matrix3.cpp
+	src/Common/Matrix3.h
+	src/Common/Matrix4.cpp
 	src/Common/Matrix4.h
 	src/Common/MeshAnimation.cpp
 	src/Common/MeshAnimation.h
@@ -67,6 +64,8 @@ add_library(Common
 	src/Common/Plane.h
 	src/Common/Quaternion.cpp
 	src/Common/Quaternion.h
+	src/Common/RenderObject.cpp
+	src/Common/RenderObject.h
 	src/Common/RendererBase.cpp
 	src/Common/RendererBase.h
 	src/Common/ShaderBase.cpp
@@ -102,4 +101,4 @@ add_executable(Game
 )
 
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Game Physics OpenGLRendering)
+target_link_libraries(Game Physics OpenGLRendering CSC8503)

@@ -38,9 +38,11 @@ public class PaintableWall : MonoBehaviour
                 {
                     int x = (int)(uv.x * w);
                     int y = (int)(uv.y * h);
-                    int xLength = Mathf.Min(x + SplashWidth / 2, SplashWidth);
-                    int yLength = Mathf.Min(y + SplashHeight /2, SplashHeight);
-                    tex.SetPixels32(Mathf.Max(0,x - (SplashWidth/2)), Mathf.Max(0, y - SplashHeight/2), Mathf.Min(xLength, w - xLength + SplashWidth / 2), Mathf.Min(yLength, h - yLength + SplashWidth / 2), c);
+                    int xFirstHalf = Mathf.Min(x, SplashWidth/2);  //[SplashWidth / 2   ->   SplashWidth]
+                    int yFirstHalf = Mathf.Min(y, SplashHeight/2); //[SplashHeight / 2   ->   SplashHeight]
+                    int xSecondHalf = Mathf.Min(SplashWidth - SplashWidth / 2, w - x + 1);
+                    int ySecondHalf = Mathf.Min(SplashHeight - SplashHeight / 2, h - y + 1);
+                    tex.SetPixels32(Mathf.Max(0,x - (SplashWidth/2)), Mathf.Max(0, y - SplashHeight/2), xFirstHalf + xSecondHalf, yFirstHalf + ySecondHalf, c);
                     tex.Apply();
                 }
                 //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", hitTex);

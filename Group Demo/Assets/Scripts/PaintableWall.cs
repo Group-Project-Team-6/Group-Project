@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class PaintableWall : MonoBehaviour
 {
-    List<Texture> textures;
+    //public RenderTexture hitTex;
+    public int SplashWidth = 10;
+    public int SplashHeight = 100;
+    public Texture2D tex;
     // Start is called before the first frame update
     void Start()
     {
-        textures = new List<Texture>();
+        //hitTex = new Texture2D(256, 256);
+        tex = new Texture2D(256, 256);
+        transform.GetComponent<Renderer>().material.SetTexture("_Tex",tex);
     }
 
     // Update is called once per frame
@@ -21,13 +26,24 @@ public class PaintableWall : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<SplashBall>())
         {
+            gameObject.layer = 0;
             if (SplashManager.approach == 1)
             {
-                GetUV(collision);
+                Vector2 uv = GetUV(collision);
+                uv.y = 1 - uv.y;
+                Color32[] c = new Color32[SplashWidth * SplashHeight];
+                for (int i = 0; i < SplashWidth * SplashHeight; i++) c[i] = Color.red;
+                if (Mathf.Min(SplashWidth, tex.width - (int)(uv.x * tex.width)) != 0 && Mathf.Min(SplashHeight, tex.height - (int)(uv.y * tex.height)) != 0)
+                {
+                    int xLength = Mathf.Min((int)(uv.x * tex.width), SplashWidth);
+                    int yLength = Mathf.Min((int)(uv.y * tex.height), SplashHeight);
+                    tex.SetPixels32(Mathf.Max(0,(int)(uv.x * tex.width) - SplashWidth/2), Mathf.Max(0, (int)(uv.y * tex.width) - SplashHeight/2), Mathf.Min(xLength, tex.width - (int)(uv.x * tex.width)), Mathf.Min(yLength, tex.height - (int)(uv.y * tex.height)), c);
+                    tex.Apply();
+                }
+                //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", hitTex);
             }
             else if (SplashManager.approach == 2)
             {
-                gameObject.layer = 0;
                 Splash s = new Splash();
                 s.mass = collision.gameObject.GetComponent<Rigidbody>().mass;
                 s.position = collision.contacts[0].point;
@@ -54,7 +70,7 @@ public class PaintableWall : MonoBehaviour
     }
 
 
-    private void FindTriangle(Collision collision, ref int[] shortestTri, ref Vector3 proj)
+    private void FindTriangle(Collision collision, ref int[] shortestTri, ref Vector3 proj, ref float[] triRatio)
     {
         float shortestDist = float.MaxValue;
         Mesh m = gameObject.GetComponent<MeshFilter>().mesh;
@@ -75,7 +91,8 @@ public class PaintableWall : MonoBehaviour
 
             Vector3 cross = Vector3.Cross(ac, ab); // Normal            
             Vector3 n = cross.normalized;  // Noraml normalized
-            if (!(Vector3.Dot(n, -collision.GetContact(0).normal) < -0.8f)) continue;
+            if (!(Vector3.Dot(n, -collision.GetContact(0).normal) > 0.8f)) continue;
+
             Vector3 r = pa - (Vector3.Dot(pa, n) * n) + a;  // vector from origin to projection from p to triangle plane
 
             Debug.DrawLine(r, r + cross.normalized * 10, Color.magenta, 10.0f);
@@ -90,8 +107,8 @@ public class PaintableWall : MonoBehaviour
             float cA = Vector3.Cross(rc, ra).magnitude;// divided Area
 
             //Debug.Log("i: " + i + "=================");
-            //Debug.Log(A + " " + (aA + bA + cA) + " " + (A != (aA + bA + cA)));
             if (Mathf.Abs(A - (aA + bA + cA)) > 0.01f) continue;
+            //Debug.Log(A + " " + aA + " "+ bA + " " + cA + " " + (A != (aA + bA + cA)));
             //Debug.Log("Dist:" + "p" + p + "  r: " + r + " - " + (p - r).magnitude + " " + shortestDist);
             if ((p - r).magnitude < shortestDist)
             {
@@ -100,6 +117,9 @@ public class PaintableWall : MonoBehaviour
                 shortestTri[2] = m.triangles[i + 2];
                 shortestTri[1] = m.triangles[i + 1];
                 shortestTri[0] = m.triangles[i];
+                triRatio[2] = aA/A;
+                triRatio[1] = cA/A;
+                triRatio[0] = bA/A;
                 proj = r;
             }
         }
@@ -108,9 +128,10 @@ public class PaintableWall : MonoBehaviour
     private Vector2 GetUV(Collision collision)
     {
         int[] shortestTri = new int[3];
+        float[] triRatio = new float[3];
         Vector3 proj = new Vector3();
 
-        FindTriangle(collision, ref shortestTri, ref proj);
+        FindTriangle(collision, ref shortestTri, ref proj, ref triRatio);
 
         Mesh m = gameObject.GetComponent<MeshFilter>().mesh;
         Vector2 hitUV;
@@ -118,20 +139,42 @@ public class PaintableWall : MonoBehaviour
         //Debug.Log("Tris:" + shortestTri[0] + " " + shortestTri[1] + " " + shortestTri[2]);
         //Debug.Log("UVs:" + m.uv[shortestTri[0]] + " " + m.uv[shortestTri[1]] + " " + m.uv[shortestTri[2]]);
 
-        Vector3 aa = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
-        Vector3 bb = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
-        Vector3 cc = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
+            //Vector3 aa = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+            //Vector3 bb = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+            //Vector3 cc = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
 
-        Vector3 AC = cc - aa;
-        Vector3 AR = proj - aa;
-        float Rc = Ratio(Proj(AR, AC), AC);
+            //Vector3 tangent = (bb - aa).normalized;
+            //Vector3 normal = Vector3.Cross(cc - aa, tangent).normalized;
+            //Vector3 cotangent = Vector3.Cross(normal, tangent).normalized;
 
-        Vector3 BC = cc - bb;
-        Vector3 BR = proj - bb;
-        float Rb = Ratio(BR - Proj(BR, BC), bb - aa);
-        float Ra = 1.0f - Rc - Rb;
-        Debug.Log(Ra + " " + Rb + " " + Rc);
-        hitUV = m.uv[shortestTri[0]] * Ra + m.uv[shortestTri[1]] * Rb + m.uv[shortestTri[2]] * Rc;
+            //Vector2 planeC = new Vector2(Vector3.Dot(cc - aa,cotangent), Vector3.Dot(cc - aa, tangent));
+            //Vector2 planeB = new Vector2(Vector3.Dot(bb - aa, cotangent), Vector3.Dot(bb - aa, tangent));
+            //Vector2 planeA = new Vector2(0, 0);
+            //Vector2 planeR = new Vector2(Vector3.Dot(proj - aa, cotangent), Vector3.Dot(proj - aa, tangent));
+
+            //Debug.Log(planeA + " " + planeB + " " + planeC + " " + planeR);
+
+            //float yamyb = (planeA.y - planeB.y);
+            //float xrmxb = planeR.x - planeB.x;
+            //float yrmyb = planeR.y - planeB.x;
+            //float denorm = (yamyb * (planeC.x - planeB.x)) + ((planeB.x - planeA.x) * (planeC.y - planeB.y));
+
+            //float Rc = (yamyb * xrmxb + (planeB.x - planeA.x) * yrmyb) / denorm;
+            //float Ra = Mathf.Abs(((planeB.y - planeC.y) * xrmxb + (planeC.x - planeB.x) * yrmyb) / denorm);
+            //float Rb = 1 - Rc - Ra;
+
+        //3D Approach (!Failed)
+        //Vector3 AC = cc - aa;
+        //Vector3 AR = proj - aa;
+        //float Rc = Ratio(Proj(AR, AC), AC);
+
+        //Vector3 BC = cc - bb;
+        //Vector3 BR = proj - bb;
+        //float Rb = Ratio(BR - Proj(BR, BC), bb - aa);
+        //float Ra = 1.0f - Rc - Rb;
+        
+        Debug.Log(m.uv[shortestTri[0]] * triRatio[0] + " " + m.uv[shortestTri[1]] * triRatio[1] + " " + m.uv[shortestTri[2]] * triRatio[2]);
+        hitUV = m.uv[shortestTri[0]] * triRatio[0] + m.uv[shortestTri[1]] * triRatio[1] + m.uv[shortestTri[2]] * triRatio[2];
         Debug.Log(hitUV.x + " " + hitUV.y);
 
         return hitUV;

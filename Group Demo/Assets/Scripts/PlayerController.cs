@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
         {
             rigBody.AddForce(transform.up*1000, ForceMode.Impulse);
         }
-        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X")*10,0));
+    }
+
+    void Update()
+    {
+        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * 10, 0));
     }
 }

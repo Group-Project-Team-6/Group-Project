@@ -400,6 +400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tex: {fileID: 0}
 --- !u!1 &195290674
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,7 +695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51e8b78e158fa144b9a816ad9b206ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Approach: 2
+  Approach: 1
   ShowDebug: 0
   splashRadius: {fileID: 8417739077383625798, guid: 5acd688f1a6b60f458a5e14c24386cb2, type: 3}
 --- !u!1 &408969440
@@ -805,6 +806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tex: {fileID: 0}
 --- !u!1 &470491946
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +838,7 @@ Transform:
   m_LocalScale: {x: 5, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 538814344}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &470491948
 BoxCollider:
@@ -934,8 +936,8 @@ Transform:
   - {fileID: 408969441}
   - {fileID: 301203674}
   - {fileID: 37549913}
-  - {fileID: 1687218713}
   - {fileID: 470491947}
+  - {fileID: 1687218713}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1199,7 +1201,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 55
-  m_RenderingPath: 1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -1313,7 +1315,7 @@ Transform:
   m_LocalScale: {x: 5, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 538814344}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1687218714
 BoxCollider:

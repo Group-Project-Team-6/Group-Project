@@ -14,7 +14,7 @@ https://research.ncl.ac.uk/game/
 
 #include "Assets.h"
 
-#ifdef WIN32
+#ifdef Win32
 #include <filesystem>
 using namespace std::experimental::filesystem::v1;
 #endif
@@ -55,7 +55,7 @@ void TextureLoader::RegisterTextureLoadFunction(TextureLoadFunction f, const std
 }
 
 std::string TextureLoader::GetFileExtension(const std::string& fileExtension) {
-#ifdef WIN32
+#ifdef Win32
 	path p = path(fileExtension);
 
 	path ext = p.extension();

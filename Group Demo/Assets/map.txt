@@ -1,6 +1,6 @@
-SSSSSS
-SSSSPS
-SSS#P#
-SS##P#
-S#PPPP
-SSPP#S
+PPP###
+P#P###
+PPP###
+P##PPP
+P#PP#P
+PPP#PP

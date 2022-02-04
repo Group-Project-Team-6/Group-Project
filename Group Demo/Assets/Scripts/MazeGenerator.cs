@@ -5,182 +5,239 @@ using System.IO;
 
 public class MazeGenerator : MonoBehaviour
 {
-    private string[,] level;
 
-    private int[,] potentialNodes;
-    int numberOfNodes;
-    private int[] usedNodes;
+    private string[,] level;
 
     private bool up = false;
     private bool down = false;
     private bool left = false;
     private bool right = false;
 
-    private bool end = false;
+    private int posX;
+    private int posY;
 
-    private int r;
+    private int tempX;
+    private int tempY;
+
+    public int length;
+    public int height;
+
+    bool end;
+
+    private int randInt1;
+    private bool check;
+    private int optionsCount;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        int x = 6;
-        numberOfNodes = 0;
-        potentialNodes = new int[(x*x),2];
-        usedNodes = new int[(x*x)];
-        level = new string[x, x];
+        MazeGenCheck();
+    }
 
-        int posX = 0;
-        int posY = 0;
+    // Update is called once per frame
+    void Update()
+    {
 
-        //for (int i = 0; i < ((x * x) - 1); i++)
+    }
+
+    void MazeGenCheck()
+    {
+        int pathCounter;
         while (true)
         {
-            level[posX, posY] = "S";
-            posX++;
-            if (posX == x)
-            {
-                posX = 0;
-                posY++;
-            }
-            if (posY == x) { break; }
+            MazeGen();
 
+            pathCounter = 0;
+            for (int i = 0; i < height; i++) // check the number of paths
+            {
+                for (int z = 0; z < length; z++)
+                {
+                    if (level[z, i] == "P") { pathCounter++; }
+                }
+            }
+            if (pathCounter >= ((length * height) / 2)) { break; }
+        }
+    }
+
+    void MazeGen()
+    {
+        level = new string[length, height];
+
+
+        for (int i = 0; i < height; i++) // populate
+        {
+            for (int z = 0; z < length; z++)
+            {
+                level[z, i] = "S";
+            }
         }
 
-        posX = Random.Range(0, 6);
-        posY = Random.Range(0, 6);
+        posX = Random.Range(0, length); // pick random start
+        posY = Random.Range(0, height);
+        level[posX, posY] = "P";
 
-        //level[posX, posY] = "P";
-
-        while (true)
+        end = false;
+        while (end == false)
         {
+
             up = false;
             down = false;
             left = false;
             right = false;
+            optionsCount = 0;
 
-            level[posX, posY] = "P";
 
-            if (posY != 0 && level[posX, posY - 1] == "S") { up = true; } // Check neighbours 
-            if (posY != 5 && level[posX, posY + 1] == "S") { down = true; }
-            if (posX != 0 && level[posX - 1, posY] == "S") { left = true; }
-            if (posX != 5 && level[posX + 1, posY] == "S") { right = true; }
+            if (posY != 0) { if (level[posX, posY - 1] == "S") { up = true; optionsCount++; } } // check if empty
+            if (posY != (height - 1)) { if (level[posX, posY + 1] == "S") { down = true; optionsCount++; } }
+            if (posX != 0) { if (level[posX - 1, posY] == "S") { left = true; optionsCount++; } }
+            if (posX != (length - 1)) { if (level[posX + 1, posY] == "S") { right = true; optionsCount++; } }
 
-            if (up == true || down == true || left == true || right == true)
+
+            if (up == false && down == false && left == false && right == false)
             {
+                //end = true;
 
-                if (up == true) { Assign(posX, posY - 1, ref potentialNodes, ref numberOfNodes); } // Assign values to neighbours and store potential new points
-                if (down == true) { Assign(posX, posY + 1, ref potentialNodes, ref numberOfNodes); }
-                if (left == true) { Assign(posX - 1, posY, ref potentialNodes, ref numberOfNodes); }
-                if (right == true) { Assign(posX + 1, posY, ref potentialNodes, ref numberOfNodes); }
-
-                while (true) // Pick a new point
+                tempX = 0;
+                tempY = 0;
+                while (true) // find new start
                 {
-
-                    if (numberOfNodes == 1) 
+                    if (level[tempX, tempY] == "P")
                     {
-                        int i = 0;
-                        int z = 0;
-                        while (true) // infinite loop issue
-                        {
-                            if (level[i, z] == "S")
-                            {
-                                posX = i;
-                                posY = z;
-                                break;
-                            }
+                        if (posY != 0) { if (level[posX, posY - 1] == "S") { posX = tempX; posY = tempY; break; } }
+                        else if (posY != (height - 1)) { if (level[posX, posY + 1] == "S") { posX = tempX; posY = tempY; break; } }
+                        else if (posX != 0) { if (level[posX - 1, posY] == "S") { posX = tempX; posY = tempY; break; } }
+                        else if (posX != (length - 1)) { if (level[posX + 1, posY] == "S") { posX = tempX; posY = tempY; break; } }
 
-                            if (i == 5 && z == 5)
-                            {
-                                end = true;
-                                break;
-                            }
-
-                            i++;
-                            if (i == 6)
-                            {
-                                i = 0;
-                                z++;
-                            }
-
-                        }
-
-                        break; 
                     }
 
-                    int next = Random.Range(0, numberOfNodes);
-                    posX = potentialNodes[next, 0];
-                    posY = potentialNodes[next, 1];
-
-                    bool check = false;
-                    for (int i = 0; i < numberOfNodes; i++)
+                    tempX++;
+                    if (tempX == length)
                     {
-                        if (usedNodes[i] == next) { check = true; }
+                        tempX = 0;
+                        tempY++;
                     }
-                    if (check == false)
-                    {
-
-                        Debug.Log(numberOfNodes + "---");
-                        usedNodes[usedNodes.Length - 1] = next;
-
-                        break;
-                    }
-
-                    /*
-                    if (j == 2000) 
-                    {
-                        Debug.Log(numberOfNodes + " ending ---");
-                        end = true;
-                        break; 
-                    }
-                    */
+                    if (tempY == height) { end = true; break; }
                 }
+
             }
-            /*
+
             else
             {
-                int i = 0;
-                int z = 0;
-                while (true)
+                randInt1 = 4;
+                if (optionsCount > 1)
                 {
-                    if (level[i,z] == "S")
+                    check = true;
+                    while (check)
                     {
-                        posX = i;
-                        posY = z;
-                        break;
+                        randInt1 = Random.Range(0, 4); // pick next wall
+                        switch (randInt1)
+                        {
+                            case 0:
+                                if (up == true)
+                                {
+                                    check = false;
+                                    level[posX, posY - 1] = "#";
+                                }
+                                break;
+                            case 1:
+                                if (down == true)
+                                {
+                                    check = false;
+                                    level[posX, posY + 1] = "#";
+                                }
+                                break;
+                            case 2:
+                                if (left == true)
+                                {
+                                    check = false;
+                                    level[posX - 1, posY] = "#";
+                                }
+                                break;
+                            case 3:
+                                if (right == true)
+                                {
+                                    check = false;
+                                    level[posX + 1, posY] = "#";
+                                }
+                                break;
+                        }
+
+                    }
+                }
+                check = true;
+                while (check) // pick next path
+                {
+                    int randInt2;
+
+                    if (randInt1 != 4)
+                    {
+                        while (true) // check to not replace wall with path
+                        {
+                            randInt2 = Random.Range(0, 4);
+                            if (randInt2 != randInt1) { break; }
+                        }
+                    }
+                    else
+                    {
+                        randInt2 = Random.Range(0, 4);
+                    }
+                    switch (randInt2)
+                    {
+                        case 0:
+                            if (up == true)
+                            {
+                                check = false;
+                                level[posX, posY - 1] = "P";
+                                posY = posY - 1;
+                            }
+                            break;
+                        case 1:
+                            if (down == true)
+                            {
+                                check = false;
+                                level[posX, posY + 1] = "P";
+                                posY = posY + 1;
+                            }
+                            break;
+                        case 2:
+                            if (left == true)
+                            {
+                                check = false;
+                                level[posX - 1, posY] = "P";
+                                posX = posX - 1;
+                            }
+                            break;
+                        case 3:
+                            if (right == true)
+                            {
+                                check = false;
+                                level[posX + 1, posY] = "P";
+                                posX = posX + 1;
+                            }
+                            break;
                     }
 
-                    if (i == 4 && z == 4)
-                    {
-                        end = true;
-                        break;
-                    }
-
-                    i++;
-                    if (i == 6)
-                    {
-                        i = 0;
-                        z++;
-                    }
-                    
                 }
             }
-            */
-            //if (up == false && down == false && left == false && right == false) { end = true; }
-
-            if (end == true) { break; }
-
         }
 
-        
-        string mapline = "";
+        for (int i = 0; i < height; i++) // fill gaps
+        {
+            for (int z = 0; z < length; z++)
+            {
+                if (level[z, i] == "S") { level[z, i] = "#"; }
+            }
+        }
+
+
+        string mapline = ""; // create text file
         string map = Application.dataPath + "/map.txt";
         File.WriteAllText(map, "");
 
-
-        for (int i = 0; i < x; i++)
+        for (int i = 0; i < height; i++)
         {
-            for (int z = 0; z < x; z++)
+            for (int z = 0; z < length; z++)
             {
                 mapline = mapline + level[z, i];
             }
@@ -189,25 +246,8 @@ public class MazeGenerator : MonoBehaviour
 
             mapline = null;
         }
-        
+
 
     }
 
-    void Assign(int x, int y, ref int[,] pN, ref int nON)
-    {
-        r = Random.Range(0, 2);
-        if (r != 1) {
-            level[x, y] = "P";
-            pN[nON, 0] = x;
-            pN[nON, 1] = y;
-            nON++;
-        }
-        else { level[x, y] = "#"; }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

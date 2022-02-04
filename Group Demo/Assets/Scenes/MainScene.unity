@@ -404,10 +404,6 @@ MonoBehaviour:
   SplashHeight: 1
   PlaneHeight: 10
   PlaneWidth: 100
-  SplashTexs:
-  - {fileID: 2800000, guid: 77bd96b5e896cbf448d756aea57726e2, type: 3}
-  - {fileID: 2800000, guid: 323a48f022a5ae4429b3be24b4b910e5, type: 3}
-  index: 0
   tex: {fileID: 0}
 --- !u!1 &195290674
 GameObject:
@@ -568,6 +564,10 @@ MonoBehaviour:
   color:
     serializedVersion: 2
     rgba: 4278190335
+  SplashTexs:
+  - {fileID: 2800000, guid: f2da6423a87788142b5ede7dc1fe7cd5, type: 3}
+  - {fileID: 2800000, guid: a1b669da2adedd947a93d54accc7ba83, type: 3}
+  index: 0
 --- !u!1 &301203673
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,10 +821,6 @@ MonoBehaviour:
   SplashHeight: 1
   PlaneHeight: 10
   PlaneWidth: 10
-  SplashTexs:
-  - {fileID: 2800000, guid: 77bd96b5e896cbf448d756aea57726e2, type: 3}
-  - {fileID: 2800000, guid: 323a48f022a5ae4429b3be24b4b910e5, type: 3}
-  index: 0
   tex: {fileID: 0}
 --- !u!1 &470491946
 GameObject:

@@ -9,8 +9,6 @@ public class PaintableWall : MonoBehaviour
     public int SplashHeight = 100;
     public float PlaneHeight = 10;
     public float PlaneWidth = 10;
-    public List<Texture2D> SplashTexs;
-    public int index = 0;
     public Texture2D tex;
     // Start is called before the first frame update
     void Start()
@@ -18,7 +16,7 @@ public class PaintableWall : MonoBehaviour
         float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
         float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
         //hitTex = new Texture2D(256, 256);
-        tex = new Texture2D((int)(2560* WidthRatio), (int)(2560 * HeightRatio));
+        tex = new Texture2D((int)(1280* WidthRatio), (int)(1280 * HeightRatio));
         transform.GetComponent<Renderer>().material.SetTexture("_Tex",tex);
         Color32[] background = new Color32[tex.width * tex.height];
         for (int i = 0; i < (tex.width * tex.height); i++) background[i] = new Color32(0, 0, 0, 0);
@@ -37,15 +35,14 @@ public class PaintableWall : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<SplashBall>())
         {
-            index++;
-            if (index >= SplashTexs.Count) index = 0;
+            SplashBall ball = collision.gameObject.GetComponent<SplashBall>();
             gameObject.layer = 0;
             if (SplashManager.approach == 1)
             {
                 Vector2 uv = GetUV(collision);
-                Color32[] c = SplashTexs[index].GetPixels32();// new Color32[SplashWidth * SplashHeight];
-                SplashHeight = SplashTexs[index].height;
-                SplashWidth = SplashTexs[index].width;
+                Color32[] c = ball.tex.GetPixels32();// new Color32[SplashWidth * SplashHeight];
+                SplashHeight = ball.tex.height;
+                SplashWidth = ball.tex.width;
                 Color32 baseColor = collision.gameObject.GetComponent<SplashBall>().color;
                 int x = (int)(uv.x * (tex.width - 1));
                 int y = (int)(uv.y * (tex.height - 1));

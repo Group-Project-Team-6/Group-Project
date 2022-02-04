@@ -5,15 +5,26 @@ using UnityEngine;
 public class PaintableWall : MonoBehaviour
 {
     //public RenderTexture hitTex;
-    public int SplashWidth = 10;
+    public int SplashWidth = 100;
     public int SplashHeight = 100;
+    public float PlaneHeight = 10;
+    public float PlaneWidth = 10;
+    public List<Texture2D> SplashTexs;
+    public int index = 0;
     public Texture2D tex;
     // Start is called before the first frame update
     void Start()
     {
+        float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
+        float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
         //hitTex = new Texture2D(256, 256);
-        tex = new Texture2D(256, 256);
+        tex = new Texture2D((int)(2560* WidthRatio), (int)(2560 * HeightRatio));
         transform.GetComponent<Renderer>().material.SetTexture("_Tex",tex);
+        Color32[] background = new Color32[tex.width * tex.height];
+        for (int i = 0; i < (tex.width * tex.height); i++) background[i] = new Color32(0, 0, 0, 0);
+        tex.SetPixels32(0, 0, tex.width, tex.height, background);
+        Debug.Log(tex.width);
+        Debug.Log(tex.height);
     }
 
     // Update is called once per frame
@@ -26,23 +37,48 @@ public class PaintableWall : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<SplashBall>())
         {
+            index++;
+            if (index >= SplashTexs.Count) index = 0;
             gameObject.layer = 0;
             if (SplashManager.approach == 1)
             {
                 Vector2 uv = GetUV(collision);
-                Color32[] c = new Color32[SplashWidth * SplashHeight];
-                for (int i = 0; i < SplashWidth * SplashHeight; i++) c[i] = Color.red;
-                int w = tex.width - 1;
-                int h = tex.height - 1;
-                if (Mathf.Min(SplashWidth, w - (int)(uv.x * w)) != 0 && Mathf.Min(SplashHeight, h - (int)(uv.y * h)) != 0)
+                Color32[] c = SplashTexs[index].GetPixels32();// new Color32[SplashWidth * SplashHeight];
+                SplashHeight = SplashTexs[index].height;
+                SplashWidth = SplashTexs[index].width;
+                Color32 baseColor = collision.gameObject.GetComponent<SplashBall>().color;
+                int x = (int)(uv.x * (tex.width - 1));
+                int y = (int)(uv.y * (tex.height - 1));
+                int halfX = x - SplashWidth / 2;
+                int halfY = y - SplashHeight / 2;
+                Debug.Log(halfY);
+                Debug.Log(halfX);
+                for (int v = 0; v < SplashHeight; v++)
                 {
-                    int x = (int)(uv.x * w);
-                    int y = (int)(uv.y * h);
-                    int xLength = Mathf.Min(x + SplashWidth / 2, SplashWidth);
-                    int yLength = Mathf.Min(y + SplashHeight /2, SplashHeight);
-                    tex.SetPixels32(Mathf.Max(0,x - (SplashWidth/2)), Mathf.Max(0, y - SplashHeight/2), Mathf.Min(xLength, w - xLength + SplashWidth / 2), Mathf.Min(yLength, h - yLength + SplashWidth / 2), c);
-                    tex.Apply();
+                    for(int u = 0; u < SplashWidth; u++)
+                    {
+                        int i = v * SplashWidth + u;
+                        int posX = u + halfX;
+                        int posY = v + halfY;
+                        if (posX > tex.width - 1 || posX < 0 || posY > tex.height - 1 || posY < 0) continue;
+                        if (c[i].a > 0.7)
+                            tex.SetPixel(posX, posY, baseColor);
+                    }
                 }
+                tex.Apply();
+                //int w = tex.width - 1;
+                //int h = tex.height - 1;
+                //if (Mathf.Min(SplashWidth, w - (int)(uv.x * w)) != 0 && Mathf.Min(SplashHeight, h - (int)(uv.y * h)) != 0)
+                //{
+                //    int x = (int)(uv.x * w);
+                //    int y = (int)(uv.y * h);
+                //    int xFirstHalf = Mathf.Min(x, SplashWidth/2);  //[SplashWidth / 2   ->   SplashWidth]
+                //    int yFirstHalf = Mathf.Min(y, SplashHeight/2); //[SplashHeight / 2   ->   SplashHeight]
+                //    int xSecondHalf = Mathf.Min(SplashWidth - SplashWidth / 2, w - x + 1);
+                //    int ySecondHalf = Mathf.Min(SplashHeight - SplashHeight / 2, h - y + 1);
+                //    tex.SetPixels32(Mathf.Max(0,x - (SplashWidth/2)), Mathf.Max(0, y - SplashHeight/2), xFirstHalf + xSecondHalf, yFirstHalf + ySecondHalf, c);
+                //    tex.Apply();
+                //}
                 //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", hitTex);
             }
             else if (SplashManager.approach == 2)
@@ -179,28 +215,18 @@ public class PaintableWall : MonoBehaviour
         Debug.Log(m.uv[shortestTri[0]] * triRatio[0] + " " + m.uv[shortestTri[1]] * triRatio[1] + " " + m.uv[shortestTri[2]] * triRatio[2]);
         hitUV = m.uv[shortestTri[0]] * triRatio[0] + m.uv[shortestTri[1]] * triRatio[1] + m.uv[shortestTri[2]] * triRatio[2];
         Debug.Log(hitUV.x + " " + hitUV.y);
-        Vector3 f = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
-        Vector3 h = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
-        Vector3 k = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
-        GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        g.transform.position = new Vector3(f.x, f.y, f.z); ;
-        GameObject gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        gg.transform.position = new Vector3(h.x, h.y, h.z);
-        GameObject ggg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        ggg.transform.position = new Vector3(k.x, k.y, k.z);
-        return hitUV;
-
-        //Debug.Log("Splash Pos: "+ p);
-        //Debug.Log("Vertex a: " + shortestTri[0] + ", Vertex b: " + shortestTri[1] + ",Vertex c: " + shortestTri[2]);
-        //Vector3 f = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
-        //Vector3 h = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
-        //Vector3 k = collision.gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
-
+        //Vector3 f = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
+        //Vector3 h = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);
+        //Vector3 k = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[2]]);
         //GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //g.transform.position = new Vector3(f.x, f.y, f.z); ;
         //GameObject gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //gg.transform.position = new Vector3(h.x, h.y, h.z);
         //GameObject ggg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //ggg.transform.position = new Vector3(k.x, k.y, k.z);
+        return hitUV;
+
+        //Debug.Log("Splash Pos: "+ p);
+        //Debug.Log("Vertex a: " + shortestTri[0] + ", Vertex b: " + shortestTri[1] + ",Vertex c: " + shortestTri[2]);
     }
 }

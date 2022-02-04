@@ -80,7 +80,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.9528302, g: 0.7146226, b: 0.7146226, a: 0}
+    - _Color: {r: 1, g: 0.64779866, b: 0.64779866, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _PlayerPos: {r: 1000, g: 1000, b: 1000, a: 1}
   m_BuildTextureStacks: []

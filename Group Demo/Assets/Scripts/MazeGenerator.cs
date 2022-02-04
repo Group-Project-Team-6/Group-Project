@@ -230,6 +230,31 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
+        
+        int paths;
+        for (int i = 0; i < height; i++) // add connecting paths
+        {
+            for (int z = 0; z < length; z++)
+            {
+                if (level[z, i] == "#") 
+                {
+                    paths = 0;
+                    if (i != 0) { if (level[z, i - 1] == "P") { paths++; } }
+                    if (i != (height - 1)) { if (level[z, i + 1] == "P") { paths++; } }
+                    if (z != 0) { if (level[z - 1, i] == "P") { paths++; } }
+                    if (z != (length - 1)) { if (level[z + 1, i] == "P") { paths++; } }
+
+                    if (paths > 1) {
+                        int r = Random.Range(0, 3);
+                        if (r == 0)
+                        {
+                            level[z, i] = "P";
+                        }
+                    }
+                }
+            }
+        }
+        
 
         string mapline = ""; // create text file
         string map = Application.dataPath + "/map.txt";

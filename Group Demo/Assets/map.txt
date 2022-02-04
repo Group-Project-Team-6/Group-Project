@@ -1,6 +1,10 @@
-PPP###
-P#P###
-PPP###
-P##PPP
-P#PP#P
-PPP#PP
+PPPPP#PPPP
+####PPP##P
+PPPPP####P
+PP#PPPP#PP
+PPP#PPP#PP
+##PP#PPPP#
+###PP#PPP#
+###PPPP###
+###PPP####
+##########

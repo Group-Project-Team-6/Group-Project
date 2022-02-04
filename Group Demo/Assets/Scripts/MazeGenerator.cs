@@ -35,12 +35,15 @@ public class MazeGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        level = new string[length, height];
+
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
         LevelTextFile("/map.txt");
 
         MazeGenCheck();
+        numberOfStairs = 0;
         AddStairs();
         LevelTextFile("/map2.txt");
 
@@ -60,12 +63,15 @@ public class MazeGenerator : MonoBehaviour
         length = w;
         height = l;
 
+        level = new string[length, height];
+
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
         LevelTextFile("/map.txt");
 
         MazeGenCheck();
+        numberOfStairs = 0;
         AddStairs();
         LevelTextFile("/map2.txt"); // layered maps
 
@@ -96,7 +102,7 @@ public class MazeGenerator : MonoBehaviour
     {
         tempX = 0;
         tempY = 0;
-        int numStairs = 0;
+        
         while (true)
         {
             up = false;
@@ -109,7 +115,7 @@ public class MazeGenerator : MonoBehaviour
             if (r == 1)
             {
 
-                if (level[tempX, tempY] == "P")
+                if (level[tempX, tempY] == "P" && neighbourStairCheck())
                 {
                     if (tempY != 0) { if (level[tempX, tempY - 1] == "P") { up = true; optionsCount++; } }
                     if (tempY != (height - 1)) { if (level[tempX, tempY + 1] == "P") { down = true; optionsCount++; } }
@@ -118,10 +124,10 @@ public class MazeGenerator : MonoBehaviour
 
                     if (optionsCount == 1)
                     {
-                        if (up == true) { level[tempX, tempY] = "A"; numStairs++; }
-                        if (down == true) { level[tempX, tempY] = "V"; numStairs++; }
-                        if (left == true) { level[tempX, tempY] = "<"; numStairs++; }
-                        if (right == true) { level[tempX, tempY] = ">"; numStairs++; }
+                        if (up == true) { level[tempX, tempY] = "A"; numberOfStairs++; }
+                        if (down == true) { level[tempX, tempY] = "V"; numberOfStairs++; }
+                        if (left == true) { level[tempX, tempY] = "<"; numberOfStairs++; }
+                        if (right == true) { level[tempX, tempY] = ">"; numberOfStairs++; }
                     }
 
                     else if (optionsCount == 2)
@@ -129,10 +135,10 @@ public class MazeGenerator : MonoBehaviour
                         if ((up == true && down == true) || (left == true && right == true)) { }
                         else
                         {
-                            if (up == true && left == true && level[tempX - 1, tempY - 1] == "P") { level[tempX, tempY] = "A"; numStairs++; }
-                            if (up == true && right == true && level[tempX + 1, tempY - 1] == "P") { level[tempX, tempY] = ">"; numStairs++; }
-                            if (down == true && left == true && level[tempX - 1, tempY + 1] == "P") { level[tempX, tempY] = "<"; numStairs++; }
-                            if (down == true && right == true && level[tempX + 1, tempY + 1] == "P") { level[tempX, tempY] = "V"; numStairs++; }
+                            if (up == true && left == true && level[tempX - 1, tempY - 1] == "P") { level[tempX, tempY] = "A"; numberOfStairs++; }
+                            if (up == true && right == true && level[tempX + 1, tempY - 1] == "P") { level[tempX, tempY] = ">"; numberOfStairs++; }
+                            if (down == true && left == true && level[tempX - 1, tempY + 1] == "P") { level[tempX, tempY] = "<"; numberOfStairs++; }
+                            if (down == true && right == true && level[tempX + 1, tempY + 1] == "P") { level[tempX, tempY] = "V"; numberOfStairs++; }
 
                         }
                     }
@@ -149,13 +155,23 @@ public class MazeGenerator : MonoBehaviour
             }
             if (tempY == height) { AddStairs(); }
 
-            if (numStairs >= 3) { numberOfStairs = numStairs; StairPositions(); break; }
+            if (numberOfStairs >= 3) { StairPositions(); break; }
         }
+    }
+
+    bool neighbourStairCheck()
+    {
+        bool check = true;
+        if (tempY != 0) { if (level[tempX, tempY - 1] == "A" || level[tempX, tempY - 1] == "V") { check = false; } }
+        else if (tempY != (height - 1)) { if (level[tempX, tempY + 1] == "A" || level[tempX, tempY + 1] == "V") { check = false; } }
+        else if (tempX != 0) { if (level[tempX - 1, tempY] == "<" || level[tempX - 1, tempY] == ">") { check = false; } }
+        else if (tempX != (length - 1)) { if (level[tempX + 1, tempY] == "<" || level[tempX + 1, tempY] == ">") { check = false; } }
+        return check;
     }
 
     void StairPositions()
     {
-        stairPos = new int[numberOfStairs, 2];
+        stairPos = new int[numberOfStairs + 1, 2];
 
         int x = 0;
         for (int i = 0; i < height; i++)
@@ -180,22 +196,29 @@ public class MazeGenerator : MonoBehaviour
         {
             MazeGen();
 
+            bool stairCheck = true;
             pathCounter = 0;
-            for (int i = 0; i < height; i++) // check the number of paths
+            for (int i = 0; i < height; i++) // check the number of paths and that stairs connect
             {
                 for (int z = 0; z < length; z++)
                 {
                     if (level[z, i] == "P") { pathCounter++; }
+                    if (level[z, i] == "S") 
+                    {
+                        stairCheck = false;
+                        if (i != 0) { if (level[z, i - 1] == "P") { stairCheck = true; } }
+                        else if (i != (height - 1)) { if (level[z, i + 1] == "P") { stairCheck = true; } }
+                        else if (z != 0) { if (level[z - 1, i] == "P") { stairCheck = true; } }
+                        else if (z != (length - 1)) { if (level[z + 1, i] == "P") { stairCheck = true; } }
+                    }
                 }
             }
-            if (pathCounter >= ((length * height) / 2)) { break; }
+            if (pathCounter >= ((length * height) / 2) && stairCheck) { break; }
         }
     }
 
     void MazeGen()
     {
-        level = new string[length, height];
-
 
         for (int i = 0; i < height; i++) // populate
         {

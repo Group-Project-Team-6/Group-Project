@@ -1,10 +1,7 @@
-#PPP####PP
-#P#####PPP
-SP##PPPPP#
-#P##PPPPPS
-#P##P#PSP#
-PP##PPP#PP
-PPPPP###PP
-PPPPPPP#P#
-######P#P#
-######PPP#
+PSP####
+P#PPPP#
+P##PPP#
+PPSP#P#
+PP#PPP#
+SP#P###
+PPPP###

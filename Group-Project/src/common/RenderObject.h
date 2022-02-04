@@ -4,9 +4,10 @@
 #include "../Common/ShaderBase.h"
 #include "../Common/Vector4.h"
 
+
 namespace NCL {
 	using namespace NCL::Rendering;
-
+	
 	class MeshGeometry;
 	namespace CSC8503 {
 		class Transform;
@@ -50,7 +51,7 @@ namespace NCL {
 			MeshGeometry*	mesh;
 			TextureBase*	texture;
 			ShaderBase*		shader;
-			Transform*		transform;
+			Transform*	transform;
 			Vector4			colour;
 		};
 	}

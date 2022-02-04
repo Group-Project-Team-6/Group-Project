@@ -20,6 +20,7 @@ add_library(CSC8503
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
 	src/Physics/PhysicsTestScene.h
+	src/Physics/btNCLmotionState.h
 )
 
 add_library(OpenGLRendering
@@ -33,7 +34,11 @@ add_library(OpenGLRendering
 	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.cpp
 	src/OpenGLRendering/OGLTexture.h
+	src/OpenGLRendering/glad.c
 )
+
+#set_property(TARGET OpenGLRendering PROPERTY
+#INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/OpenGLRendering/glad")
 
 add_library(Common
 	src/Common/Assets.cpp
@@ -100,5 +105,8 @@ add_executable(Game
 	src/game/GameEntity.h
 )
 
-target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Game Physics OpenGLRendering CSC8503)
+target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
+target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
+target_link_libraries(CSC8503 Common OpenGLRendering)
+target_link_libraries(OpenGLRendering Common)
+target_link_libraries(Common ${BULLET_LIBRARIES})

@@ -8,6 +8,7 @@ GameEntity::GameEntity(string objectName) {
 	motionState = nullptr;
 	rigidBody = nullptr;
 	isActive = true;
+
 }
 
 GameEntity::~GameEntity() {

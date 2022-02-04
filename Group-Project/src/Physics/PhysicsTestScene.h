@@ -3,7 +3,7 @@
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
-#include "..//CSC8503/GameTechRenderer.h"
+#include "../CSC8503/GameTechRenderer.h"
 #include "../game/GameEntity.h"
 
 class PhysicsTestScene {

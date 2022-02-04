@@ -3,6 +3,7 @@
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 #include "../common/RenderObject.h"
+#include "../CSC8503/Transform.h"
 
 #include <vector>
 
@@ -69,6 +70,8 @@ public:
 		return worldID;
 	}
 
+	Transform& ConvertbtTransform(btTransform);
+
 protected:
 	RenderObject* renderObject;
 	btCollisionObject* collisionObject;
@@ -76,6 +79,8 @@ protected:
 	btCollisionShape* collisionShape;
 	btDefaultMotionState* motionState;
 	btRigidBody* rigidBody;
+	
+	Transform physicsTransform;
 
 	string name;
 

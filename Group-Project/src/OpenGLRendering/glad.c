@@ -608,7 +608,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glad/glad.h>
+
+#include "../OpenGLRendering/glad/glad.h"
+//#include <glad/glad.h> WARNING EDITED FILE TO MAKE RUN. MAKE CAUSE PROBLEMS!
 
 static void* get_proc(const char *namez);
 

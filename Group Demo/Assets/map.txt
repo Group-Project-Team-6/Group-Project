@@ -1,7 +1,7 @@
-###PP##
-###>P##
-PPP#P##
-PPPPPP#
-P####P<
-P<##PPP
-PPPPPPP
+PPP#PPP
+P#PPPPP
+P#PPA#P
+PPPP##P
+##>P#PP
+###P<#P
+###PPPP

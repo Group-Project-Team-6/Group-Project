@@ -162,10 +162,10 @@ public class MazeGenerator : MonoBehaviour
     bool neighbourStairCheck()
     {
         bool check = true;
-        if (tempY != 0) { if (level[tempX, tempY - 1] == "A" || level[tempX, tempY - 1] == "V") { check = false; } }
-        else if (tempY != (height - 1)) { if (level[tempX, tempY + 1] == "A" || level[tempX, tempY + 1] == "V") { check = false; } }
-        else if (tempX != 0) { if (level[tempX - 1, tempY] == "<" || level[tempX - 1, tempY] == ">") { check = false; } }
-        else if (tempX != (length - 1)) { if (level[tempX + 1, tempY] == "<" || level[tempX + 1, tempY] == ">") { check = false; } }
+        if (tempY != 0) { if (level[tempX, tempY - 1] == "A" || level[tempX, tempY - 1] == "V" || level[tempX, tempY - 1] == "<" || level[tempX, tempY - 1] == ">") { check = false; } }
+        else if (tempY != (height - 1)) { if (level[tempX, tempY + 1] == "A" || level[tempX, tempY + 1] == "V" || level[tempX, tempY + 1] == "<" || level[tempX, tempY + 1] == ">") { check = false; } }
+        else if (tempX != 0) { if (level[tempX - 1, tempY] == "<" || level[tempX - 1, tempY] == ">" || level[tempX - 1, tempY] == "A" || level[tempX - 1, tempY] == "V") { check = false; } }
+        else if (tempX != (length - 1)) { if (level[tempX + 1, tempY] == "<" || level[tempX + 1, tempY] == ">" || level[tempX + 1, tempY] == "A" || level[tempX + 1, tempY] == "V") { check = false; } }
         return check;
     }
 

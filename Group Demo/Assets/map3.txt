@@ -1,7 +1,7 @@
-PSP####
-P#PPPP#
-P##PPP#
-PPSP#P#
-PP#PPP#
-SP#P###
-PPPP###
+####PPP
+##PPP#P
+#SP#PSP
+##PPPPP
+###SPPP
+###PPPP
+###PPPP

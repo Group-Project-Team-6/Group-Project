@@ -5,24 +5,19 @@ using UnityEngine;
 public class PaintableWall : MonoBehaviour
 {
     //public RenderTexture hitTex;
+    public bool LoadOnAwake = false;
     public int SplashWidth = 100;
     public int SplashHeight = 100;
     public float PlaneHeight = 10;
     public float PlaneWidth = 10;
     public Texture2D tex;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
-        float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
-        //hitTex = new Texture2D(256, 256);
-        tex = new Texture2D((int)(320* WidthRatio), (int)(320 * HeightRatio));
-        transform.GetComponent<Renderer>().material.SetTexture("_Tex",tex);
-        Color32[] background = new Color32[tex.width * tex.height];
-        for (int i = 0; i < (tex.width * tex.height); i++) background[i] = new Color32(0, 0, 0, 0);
-        tex.SetPixels32(0, 0, tex.width, tex.height, background);
-        Debug.Log(tex.width);
-        Debug.Log(tex.height);
+        if (LoadOnAwake)
+        {
+            TexInit();
+        }
     }
 
     // Update is called once per frame
@@ -31,10 +26,26 @@ public class PaintableWall : MonoBehaviour
 
     }
 
+    void TexInit()
+    {
+        if (tex == null)
+        {
+            float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
+            float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
+            //hitTex = new Texture2D(256, 256);
+            tex = new Texture2D((int)(320 * WidthRatio), (int)(320 * HeightRatio));
+            transform.GetComponent<Renderer>().material.SetTexture("_Tex", tex);
+            Color32[] background = new Color32[tex.width * tex.height];
+            for (int i = 0; i < (tex.width * tex.height); i++) background[i] = new Color32(0, 0, 0, 0);
+            tex.SetPixels32(0, 0, tex.width, tex.height, background);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<SplashBall>())
         {
+            TexInit();
             SplashBall ball = collision.gameObject.GetComponent<SplashBall>();
             gameObject.layer = 0;
             if (SplashManager.approach == 1)

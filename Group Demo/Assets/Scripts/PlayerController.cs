@@ -45,8 +45,10 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log( collision.contacts[0].point);
+        //Debug.Log( collision.contacts[0].point);
+        if (Vector3.Dot(collision.contacts[0].normal, Vector3.up) > 0.5f) return;
         ParticleSystem partSys = Instantiate<ParticleSystem>(ps,collision.contacts[0].point,new Quaternion());
         partSys.Play();
+        Destroy(partSys.gameObject, 2.0f);
     }
 }

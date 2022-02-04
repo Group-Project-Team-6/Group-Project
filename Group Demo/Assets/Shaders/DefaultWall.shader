@@ -58,7 +58,7 @@ Shader "Custom/DefaultWall" {
             fixed4 frag(v2f i) : SV_Target{
                 //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
                 fixed4 color = tex2D(_Tex,i.texcoord);
-                if (color.x == 1.0) i.color = fixed4(0.0, 0.0, 0.0, 1.0);
+                if (color.a > 0.5) i.color = color;
                 if(i.pos.z < _CullingDistance || _IsCasted == 0.0) return i.color; //(1 - i.pos.z + 0.07)
                 float factor = (1 - i.pos.z + _CullingDistance);
                 return  i.color * fixed4(1,1,1, clamp(pow(factor, _CullingFactor), 0.0, 1.0)); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *;

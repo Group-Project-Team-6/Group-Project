@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SplashBall : MonoBehaviour
 {
+    public float mass = 1.0f;
+    public float radius = 1.0f;
+    public Color32 color = Color.black;
     // Start is called before the first frame update
     void Start()
     {

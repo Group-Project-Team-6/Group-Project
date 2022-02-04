@@ -46,7 +46,7 @@ Shader "Custom/DefualtFloor"
             fixed4 frag(v2f i) : SV_Target{
                 //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
                 fixed4 color = tex2D(_Tex,i.texcoord);
-                if (color.x == 1.0) i.color = fixed4(0.0, 0.0, 0.0, 1.0);
+                if (color.a > 0.5) i.color = color;
                 return i.color; //(1 - i.pos.z + 0.07)
             }
 

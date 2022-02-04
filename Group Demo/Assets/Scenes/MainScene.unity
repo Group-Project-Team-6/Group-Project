@@ -454,8 +454,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mMap: {fileID: 538814346}
   unitLength: 3
-  width: 10
-  length: 10
+  width: 100
+  length: 100
 --- !u!114 &538814346
 MonoBehaviour:
   m_ObjectHideFlags: 0

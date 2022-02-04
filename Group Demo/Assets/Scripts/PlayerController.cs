@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody rigBody;
+    public ParticleSystem ps;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,9 +15,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(Input.GetKey(KeyCode.W)){
+        if (Input.GetKey(KeyCode.W))
+        {
 
-            rigBody.AddForce(transform.forward * 50,ForceMode.Impulse);
+            rigBody.AddForce(transform.forward * 50, ForceMode.Impulse);
         }
         if (Input.GetKey(KeyCode.S))
         {
@@ -32,12 +34,19 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            rigBody.AddForce(transform.up*1000, ForceMode.Impulse);
+            rigBody.AddForce(transform.up * 1000, ForceMode.Impulse);
         }
     }
 
     void Update()
     {
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * 10, 0));
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log( collision.contacts[0].point);
+        ParticleSystem partSys = Instantiate<ParticleSystem>(ps,collision.contacts[0].point,new Quaternion());
+        partSys.Play();
     }
 }

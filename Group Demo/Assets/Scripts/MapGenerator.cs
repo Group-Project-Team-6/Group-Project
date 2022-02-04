@@ -28,7 +28,6 @@ public class MapGenerator : MonoBehaviour
     {
         mazeGen.maze = new List<string>();
         mazeGen.Generate(length, width);
-        DeleteChild();
         for (int level = 0; level < mazeGen.maze.Count; level++)
         {
             for (int l = 0; l < mazeGen.length; l++)

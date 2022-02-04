@@ -17,8 +17,11 @@ public class PlayerFollower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float rot = Mathf.Min(transform.position.y - Input.GetAxis("Mouse Y") , player.transform.position.y + 2.0f);
-        rot = Mathf.Max(rot, player.transform.position.y - 1.0f);
+
+        transform.LookAt(player.transform);
+        float rot = Mathf.Min(transform.position.y - Input.GetAxis("Mouse Y") , player.transform.position.y + 1.5f);
+        rot = Mathf.Max(rot, player.transform.position.y - 1.5f);
+
         transform.position = new Vector3(transform.position.x, rot , transform.position.z);
         transform.LookAt(player.transform);
     }

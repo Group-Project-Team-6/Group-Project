@@ -16,7 +16,7 @@ public class PaintableWall : MonoBehaviour
         float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
         float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
         //hitTex = new Texture2D(256, 256);
-        tex = new Texture2D((int)(1280* WidthRatio), (int)(1280 * HeightRatio));
+        tex = new Texture2D((int)(640* WidthRatio), (int)(640 * HeightRatio));
         transform.GetComponent<Renderer>().material.SetTexture("_Tex",tex);
         Color32[] background = new Color32[tex.width * tex.height];
         for (int i = 0; i < (tex.width * tex.height); i++) background[i] = new Color32(0, 0, 0, 0);

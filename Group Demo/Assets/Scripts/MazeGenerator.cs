@@ -40,16 +40,16 @@ public class MazeGenerator : MonoBehaviour
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
-        LevelTextFile("/map.txt");
+        LevelTextFile("/map0.txt");
 
         MazeGenCheck();
         numberOfStairs = 0;
         AddStairs();
-        LevelTextFile("/map2.txt");
+        LevelTextFile("/map1.txt");
 
         MazeGenCheck();
-        LevelTextFile("/map3.txt");
-
+        LevelTextFile("/map2.txt");
+        
     }
 
     // Update is called once per frame
@@ -58,7 +58,7 @@ public class MazeGenerator : MonoBehaviour
 
     }
 
-    void Generate(int l, int w) 
+    public void Generate(int l, int w) 
     {
         length = w;
         height = l;
@@ -68,15 +68,15 @@ public class MazeGenerator : MonoBehaviour
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
-        LevelTextFile("/map.txt");
+        LevelTextFile("/map0.txt");
 
         MazeGenCheck();
         numberOfStairs = 0;
         AddStairs();
-        LevelTextFile("/map2.txt"); // layered maps
+        LevelTextFile("/map1.txt"); // layered maps
 
         MazeGenCheck();
-        LevelTextFile("/map3.txt");
+        LevelTextFile("/map2.txt");
     }
 
     void LevelTextFile(string fileName)

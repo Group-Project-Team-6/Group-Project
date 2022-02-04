@@ -24,7 +24,7 @@ public class SplashShooter : MonoBehaviour
             index++;
             if (index >= SplashTexs.Count) index = 0;
             GameObject g = Instantiate(obj, transform.position + transform.forward * dist, new Quaternion());
-            if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position).normalized * dist * 1000);
+            if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position + transform.up * 2).normalized * dist * 1000);
             if (g.GetComponent<SplashBall>()) { 
                 SplashBall sb = g.GetComponent<SplashBall>();
                 sb.color = this.color;

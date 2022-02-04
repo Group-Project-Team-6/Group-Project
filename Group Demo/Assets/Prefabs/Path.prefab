@@ -139,6 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LoadOnAwake: 0
   SplashWidth: 100
   SplashHeight: 100
   PlaneHeight: 10

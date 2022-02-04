@@ -1,7 +1,10 @@
-##PPPP#
-##PP#P#
-#VP#SA#
-PPPPP##
-P#S>PPP
-PPP#S#P
-PPP#PPP
+#PPPPP##P#
+PPP#SPPPP#
+PPPPPPPP##
+PP####P#PP
+PP#S##PPPP
+#P####P###
+PP###PP###
+PPPP#PP###
+##PPPSP###
+####PPP###

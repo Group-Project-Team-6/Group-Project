@@ -1,19 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    MazeGenerator mazeGen;
+    public MazeGenerator mazeGen;
     public ModuleMap mMap;
     public int unitLength = 10;
     public int width;
     public int length;
+    List<string> maze;
 
     // Start is called before the first frame update
     void Start()
     { 
-        mazeGen = new MazeGenerator();
         mMap.LoadModuleMap();
         Generate();
     }
@@ -26,13 +28,13 @@ public class MapGenerator : MonoBehaviour
 
     public void Generate()
     {
-        mazeGen.maze = new List<string>();
         mazeGen.Generate(length, width);
-        for (int level = 0; level < mazeGen.maze.Count; level++)
+        LoadMaze();
+        for (int level = 0; level < maze.Count; level++)
         {
-            for (int l = 0; l < mazeGen.length; l++)
+            for (int l = 0; l < length; l++)
             {
-                for (int w = 0; w < mazeGen.width; w++)
+                for (int w = 0; w < width; w++)
                 {
                     AddChild(GetSymbol(level, l, w),level,l,w);
                 }
@@ -42,7 +44,44 @@ public class MapGenerator : MonoBehaviour
 
     private char GetSymbol(int level, int l, int w)
     {
-        return mazeGen.maze[level][l* mazeGen.width + w];
+        //Debug.Log(level + " " + (l * width + w));
+        return maze[level][l * width + w];
+    }
+
+    private void LoadMaze()
+    {
+        maze = new List<string>();
+        int index = 0;
+        while(index != -1)
+        {
+            try
+            {
+                string path = Path.Combine(Application.dataPath, "map" + index.ToString() + ".txt");
+                StreamReader sr = new StreamReader(path);
+                string level = "";
+                string strLine = sr.ReadLine();
+                while (strLine != null)
+                {
+                    level += strLine;
+                    strLine = sr.ReadLine();
+                }
+                maze.Add(level);
+                Debug.Log(maze[index]);
+                sr.Close();
+                index++;
+            }
+            catch (Exception e)
+            {
+                index = -1;
+                Debug.LogError(e.Message);
+            }
+            finally
+            {
+
+            }
+                
+        }
+       // Debug.Log("Leve: " + maze.Count);
     }
 
     private void AddChild(char symbol, int level, int l, int w)

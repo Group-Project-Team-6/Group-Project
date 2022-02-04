@@ -6,10 +6,12 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody rigBody;
     public ParticleSystem ps;
+    private bool onGround;
     // Start is called before the first frame update
     void Start()
     {
         rigBody = transform.GetComponent<Rigidbody>();
+        onGround = true;
     }
 
     // Update is called once per frame
@@ -32,9 +34,10 @@ public class PlayerController : MonoBehaviour
         {
             rigBody.AddForce(-transform.right * 50, ForceMode.Impulse);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && onGround)
         {
-            rigBody.AddForce(transform.up * 1000, ForceMode.Impulse);
+            onGround = false;
+            rigBody.AddForce(transform.up * 500, ForceMode.Impulse);
         }
     }
 
@@ -46,7 +49,12 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         //Debug.Log( collision.contacts[0].point);
-        if (Vector3.Dot(collision.contacts[0].normal, Vector3.up) > 0.5f) return;
+        if (Vector3.Dot(collision.contacts[0].normal, Vector3.up) > 0.5f)
+        {
+            onGround = true;
+            return;
+        }
+
         ParticleSystem partSys = Instantiate<ParticleSystem>(ps,collision.contacts[0].point,new Quaternion());
         partSys.Play();
         Destroy(partSys.gameObject, 2.0f);

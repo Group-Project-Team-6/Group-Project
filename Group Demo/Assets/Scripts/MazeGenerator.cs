@@ -28,16 +28,148 @@ public class MazeGenerator : MonoBehaviour
     private bool check;
     private int optionsCount;
 
+    private int numberOfStairs;
+    private int[,] stairPos;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        numberOfStairs = 0;
         MazeGenCheck();
+        AddStairs();
+        LevelTextFile("/map.txt");
+
+        MazeGenCheck();
+        AddStairs();
+        LevelTextFile("/map2.txt");
+
+        MazeGenCheck();
+        LevelTextFile("/map3.txt");
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    void Generate(int l, int w) 
+    {
+        length = w;
+        height = l;
+
+        numberOfStairs = 0;
+        MazeGenCheck();
+        AddStairs();
+        LevelTextFile("/map.txt");
+
+        MazeGenCheck();
+        AddStairs();
+        LevelTextFile("/map2.txt"); // layered maps
+
+        MazeGenCheck();
+        LevelTextFile("/map3.txt");
+    }
+
+    void LevelTextFile(string fileName)
+    {
+        string mapline = ""; // create text file
+        string map = Application.dataPath + fileName;
+        File.WriteAllText(map, "");
+
+        for (int i = 0; i < height; i++)
+        {
+            for (int z = 0; z < length; z++)
+            {
+                mapline = mapline + level[z, i];
+            }
+
+            File.AppendAllText(map, mapline + "\n");
+
+            mapline = null;
+        }
+    }
+
+    void AddStairs()
+    {
+        tempX = 0;
+        tempY = 0;
+        int numStairs = 0;
+        while (true)
+        {
+            up = false;
+            down = false;
+            left = false;
+            right = false;
+            optionsCount = 0;
+
+            int r = Random.Range(0,3);
+            if (r == 1)
+            {
+
+                if (level[tempX, tempY] == "P")
+                {
+                    if (tempY != 0) { if (level[tempX, tempY - 1] == "P") { up = true; optionsCount++; } }
+                    if (tempY != (height - 1)) { if (level[tempX, tempY + 1] == "P") { down = true; optionsCount++; } }
+                    if (tempX != 0) { if (level[tempX - 1, tempY] == "P") { left = true; optionsCount++; } }
+                    if (tempX != (length - 1)) { if (level[tempX + 1, tempY] == "P") { right = true; optionsCount++; } }
+
+                    if (optionsCount == 1)
+                    {
+                        if (up == true) { level[tempX, tempY] = "A"; numStairs++; }
+                        if (down == true) { level[tempX, tempY] = "V"; numStairs++; }
+                        if (left == true) { level[tempX, tempY] = "<"; numStairs++; }
+                        if (right == true) { level[tempX, tempY] = ">"; numStairs++; }
+                    }
+
+                    else if (optionsCount == 2)
+                    {
+                        if ((up == true && down == true) || (left == true && right == true)) { }
+                        else
+                        {
+                            if (up == true && left == true && level[tempX - 1, tempY - 1] == "P") { level[tempX, tempY] = "A"; numStairs++; }
+                            if (up == true && right == true && level[tempX + 1, tempY - 1] == "P") { level[tempX, tempY] = ">"; numStairs++; }
+                            if (down == true && left == true && level[tempX - 1, tempY + 1] == "P") { level[tempX, tempY] = "<"; numStairs++; }
+                            if (down == true && right == true && level[tempX + 1, tempY + 1] == "P") { level[tempX, tempY] = "V"; numStairs++; }
+
+                        }
+                    }
+
+
+                }
+            }
+
+            tempX++;
+            if (tempX == length)
+            {
+                tempX = 0;
+                tempY++;
+            }
+            if (tempY == height) { AddStairs(); }
+
+            if (numStairs >= 3) { numberOfStairs = numStairs; StairPositions(); break; }
+        }
+    }
+
+    void StairPositions()
+    {
+        stairPos = new int[numberOfStairs, 2];
+
+        int x = 0;
+        for (int i = 0; i < height; i++)
+        {
+            for (int z = 0; z < length; z++)
+            {
+                if (level[z, i] == "A" || level[z, i] == "V" || level[z, i] == "<" || level[z, i] == ">") 
+                {
+                    stairPos[x, 0] = z;
+                    stairPos[x, 1] = i;
+                    x++;
+                }
+            }
+        }
 
     }
 
@@ -96,8 +228,6 @@ public class MazeGenerator : MonoBehaviour
 
             if (up == false && down == false && left == false && right == false)
             {
-                //end = true;
-
                 tempX = 0;
                 tempY = 0;
                 while (true) // find new start
@@ -254,25 +384,19 @@ public class MazeGenerator : MonoBehaviour
                 }
             }
         }
-        
 
-        string mapline = ""; // create text file
-        string map = Application.dataPath + "/map.txt";
-        File.WriteAllText(map, "");
-
-        for (int i = 0; i < height; i++)
-        {
-            for (int z = 0; z < length; z++)
+        if (numberOfStairs > 0) {
+            for (int i = 0; i < height; i++) // create space for stairs
             {
-                mapline = mapline + level[z, i];
+                for (int z = 0; z < length; z++)
+                {
+                    for (int x = 0; x < numberOfStairs; x++) 
+                    { 
+                        if (z == stairPos[x, 0] && i == stairPos[x, 1]) { level[z, i] = "S"; }
+                    }
+                }
             }
-
-            File.AppendAllText(map, mapline + "\n");
-
-            mapline = null;
         }
-
-
     }
 
 }

@@ -93,13 +93,6 @@ set_property(TARGET FMOD PROPERTY
 	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/FMOD/api/core/inc"
 )
 
-add_library(Audio
-	src/Audio/Audio.h
-
-	src/Audio/Audio.cpp
-
-)
-
 #Executable
 add_executable(Game
 	src/game/GameEntity.h
@@ -117,5 +110,4 @@ else()
 endif()
 
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Audio FMOD)
-target_link_libraries(Game Physics OpenGLRendering Audio)
+target_link_libraries(Game Physics OpenGLRendering)

@@ -34,11 +34,11 @@ public:
 		collisionObject = newCollisionObject;
 	}
 
-	btDefaultMotionState* GetMotionState() const {
+	btNCLMotionState* GetMotionState() const {
 		return motionState;
 	}
 
-	void SetMotionState(btDefaultMotionState* newMotionState) {
+	void SetMotionState(btNCLMotionState* newMotionState) {
 		motionState = newMotionState;
 	}
 
@@ -77,7 +77,7 @@ protected:
 	btCollisionObject* collisionObject;
 
 	btCollisionShape* collisionShape;
-	btDefaultMotionState* motionState;
+	btNCLMotionState* motionState;
 	btRigidBody* rigidBody;
 	
 	Transform physicsTransform;

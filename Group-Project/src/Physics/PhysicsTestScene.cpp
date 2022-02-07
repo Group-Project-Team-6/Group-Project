@@ -1,4 +1,5 @@
 #include "PhysicsTestScene.h"
+#include "../Physics/btNClmotionState.h"
 #include "../OpenGLRendering/OGLMesh.h"
 #include "../OpenGLRendering/OGLTexture.h"
 #include "../OpenGLRendering/OGLShader.h"
@@ -50,7 +51,7 @@ void PhysicsTestScene::InitScene() {
 
 	btVector3 position = { 0, 50, 0 };
 	btQuaternion orientation = { 0, 0, 0, 1 };
-	btDefaultMotionState* sphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+	btNCLMotionState* sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
 	btCollisionShape* sphereShape = new btSphereShape(1);
 	btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
 	btRigidBody* sphereBody = new btRigidBody(sphereCI);

@@ -2,35 +2,41 @@ cmake_minimum_required(VERSION 3.0)
 project(Group-Game-Project)
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
 
+#CSC8503 Component
 add_library(CSC8503
 	src/CSC8503/GameTechRenderer.cpp
-	src/CSC8503/GameTechRenderer.h
 	src/CSC8503/GameWorld.cpp
-	src/CSC8503/GameWorld.h
 	src/CSC8503/Transform.cpp
+
+	src/CSC8503/GameTechRenderer.h
+	src/CSC8503/GameWorld.h
 	src/CSC8503/Transform.h
 )
 
+#Physics Component
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
+
 	src/Physics/PhysicsTestScene.h
 	src/Physics/btNCLmotionState.h
 )
 
+#Graphic Component
 add_library(OpenGLRendering
 	src/OpenGLRendering/OGLComputeShader.cpp
-	src/OpenGLRendering/OGLComputeShader.h
 	src/OpenGLRendering/OGLMesh.cpp
-	src/OpenGLRendering/OGLMesh.h
-	src/OpenGLRendering/OGLRenderer.cpp
-	src/OpenGLRendering/OGLRenderer.h
+	src/OpenGLRendering/OGLRenderer.cpp	
 	src/OpenGLRendering/OGLShader.cpp
-	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.cpp
-	src/OpenGLRendering/OGLTexture.h
 	src/OpenGLRendering/glad.c
-)
 
+	src/OpenGLRendering/OGLComputeShader.h
+	src/OpenGLRendering/OGLMesh.h
+	src/OpenGLRendering/OGLRenderer.h
+	src/OpenGLRendering/OGLShader.h
+	src/OpenGLRendering/OGLTexture.h
+)
+#GUI Component
 add_library(imgui SHARED IMPORTED
 	src/imgui/imgui_demo.cpp
 	src/imgui/imgui_draw.cpp
@@ -51,13 +57,39 @@ add_library(imgui SHARED IMPORTED
 	src/imgui/imstb_truetype.h
 	src/imgui/glfw/GLFW/glfw3.h
 )
-
 set_property(TARGET imgui PROPERTY
 	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/imgui/glfw/GLFW"
 )
 
 #Common Component
 add_library(Common
+	src/Common/Assets.cpp
+	src/Common/Camera.cpp
+	src/Common/GameTimer.cpp
+	src/Common/Keyboard.cpp
+	src/Common/Maths.cpp
+	src/Common/Matrix2.cpp
+	src/Common/Matrix3.cpp
+	src/Common/MeshAnimation.cpp
+	src/Common/MeshGeometry.cpp
+	src/Common/MeshMaterial.cpp
+	src/Common/Mouse.cpp
+	src/Common/Plane.cpp
+	src/Common/Quaternion.cpp
+	src/Common/RendererBase.cpp
+	src/Common/ShaderBase.cpp
+	src/Common/SimpleFont.cpp
+	src/Common/TextureBase.cpp
+	src/Common/TextureLoader.cpp
+	src/Common/TextureWriter.cpp
+	src/Common/Vector2.cpp
+	src/Common/Vector3.cpp
+	src/Common/Vector4.cpp
+	src/Common/Win32Keyboard.cpp
+	src/Common/Win32Mouse.cpp
+	src/Common/Win32Window.cpp
+	src/Common/Window.cpp
+
 	src/Common/Assets.h
 	src/Common/Camera.h
 	src/Common/GameTimer.h
@@ -90,33 +122,6 @@ add_library(Common
 	src/Common/Win32Mouse.h
 	src/Common/Win32Window.h
 	src/Common/Window.h
-
-	src/Common/Assets.cpp
-	src/Common/Camera.cpp
-	src/Common/GameTimer.cpp
-	src/Common/Keyboard.cpp
-	src/Common/Maths.cpp
-	src/Common/Matrix2.cpp
-	src/Common/Matrix3.cpp
-	src/Common/MeshAnimation.cpp
-	src/Common/MeshGeometry.cpp
-	src/Common/MeshMaterial.cpp
-	src/Common/Mouse.cpp
-	src/Common/Plane.cpp
-	src/Common/Quaternion.cpp
-	src/Common/RendererBase.cpp
-	src/Common/ShaderBase.cpp
-	src/Common/SimpleFont.cpp
-	src/Common/TextureBase.cpp
-	src/Common/TextureLoader.cpp
-	src/Common/TextureWriter.cpp
-	src/Common/Vector2.cpp
-	src/Common/Vector3.cpp
-	src/Common/Vector4.cpp
-	src/Common/Win32Keyboard.cpp
-	src/Common/Win32Mouse.cpp
-	src/Common/Win32Window.cpp
-	src/Common/Window.cpp
 )
 
 #Audio Component

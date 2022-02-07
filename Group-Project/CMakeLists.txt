@@ -119,28 +119,6 @@ add_library(Common
 	src/Common/Window.cpp
 )
 
-#Physics Component
-add_library(Physics
-	src/Physics/PhysicsTestScene.h
-
-	src/Physics/PhysicsTestScene.cpp
-)
-
-#Graphic Component
-add_library(OpenGLRendering
-	src/OpenGLRendering/OGLComputeShader.h
-	src/OpenGLRendering/OGLMesh.h
-	src/OpenGLRendering/OGLRenderer.h
-	src/OpenGLRendering/OGLShader.h
-	src/OpenGLRendering/OGLTexture.h
-
-	src/OpenGLRendering/OGLComputeShader.cpp
-	src/OpenGLRendering/OGLMesh.cpp
-	src/OpenGLRendering/OGLRenderer.cpp
-	src/OpenGLRendering/OGLShader.cpp
-	src/OpenGLRendering/OGLTexture.cpp	
-)
-
 #Audio Component
 add_library(FMOD SHARED IMPORTED)
 set_property(TARGET FMOD PROPERTY

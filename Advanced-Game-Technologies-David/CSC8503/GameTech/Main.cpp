@@ -13,6 +13,8 @@
 #include "../CSC8503Common/PushdownState.h"
 #include "../CSC8503Common/PushdownMachine.h"
 
+#include "../../Plugins/VulkanRendering/VulkanRenderer.h"
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -275,17 +277,17 @@ int main() {
 		return -1;
 	}	
 	srand(time(0));
-	w->ShowOSPointer(false);
+	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
 	//IntroScreen* IS = new IntroScreen();
 	//IS->TestPushdownAutomata(w);
-
+	
 	//TestPathfinding();
 
 	bool onGoing = true;
 	//TestBehaviourTree();
 
-	TutorialGame* g = new TutorialGame();
+	//TutorialGame* g = new TutorialGame();
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE) && onGoing) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
@@ -306,7 +308,7 @@ int main() {
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
-		onGoing = g->UpdateGame(dt);
+		//onGoing = g->UpdateGame(dt);
 		//DisplayPathfinding();
 	}
 	Window::DestroyGameWindow();

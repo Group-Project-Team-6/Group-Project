@@ -8,9 +8,19 @@ if(Bullet_FOUND)
 	include_directories(${BULLET_INCLUDE_DIRS})
 endif()
 
+add_library(CSC8503
+	src/CSC8503/GameTechRenderer.cpp
+	src/CSC8503/GameTechRenderer.h
+	src/CSC8503/GameWorld.cpp
+	src/CSC8503/GameWorld.h
+	src/CSC8503/Transform.cpp
+	src/CSC8503/Transform.h
+)
+
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
 	src/Physics/PhysicsTestScene.h
+	src/Physics/btNCLmotionState.h
 )
 
 add_library(OpenGLRendering
@@ -24,6 +34,7 @@ add_library(OpenGLRendering
 	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.cpp
 	src/OpenGLRendering/OGLTexture.h
+	src/OpenGLRendering/glad.c
 )
 
 add_library(imgui SHARED IMPORTED
@@ -65,6 +76,8 @@ add_library(Common
 	src/Common/Matrix2.cpp
 	src/Common/Matrix2.h
 	src/Common/Matrix3.cpp
+	src/Common/Matrix3.h
+	src/Common/Matrix4.cpp
 	src/Common/Matrix4.h
 	src/Common/MeshAnimation.cpp
 	src/Common/MeshAnimation.h
@@ -78,6 +91,8 @@ add_library(Common
 	src/Common/Plane.h
 	src/Common/Quaternion.cpp
 	src/Common/Quaternion.h
+	src/Common/RenderObject.cpp
+	src/Common/RenderObject.h
 	src/Common/RendererBase.cpp
 	src/Common/RendererBase.h
 	src/Common/ShaderBase.cpp
@@ -112,5 +127,8 @@ add_executable(Game
 	src/game/GameEntity.h
 )
 
-target_link_libraries(Physics ${BULLET_LIBRARIES} Common)
-target_link_libraries(Game Physics OpenGLRendering)
+target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
+target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
+target_link_libraries(CSC8503 Common OpenGLRendering)
+target_link_libraries(OpenGLRendering Common)
+target_link_libraries(Common ${BULLET_LIBRARIES})

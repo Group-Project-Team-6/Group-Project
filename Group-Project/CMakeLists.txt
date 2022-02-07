@@ -26,6 +26,31 @@ add_library(OpenGLRendering
 	src/OpenGLRendering/OGLTexture.h
 )
 
+add_library(imgui SHARED IMPORTED
+	src/imgui/imgui_demo.cpp
+	src/imgui/imgui_draw.cpp
+	src/imgui/imgui_impl_glfw.cpp
+	src/imgui/imgui_impl_opengl3.cpp
+	src/imgui/imgui_tables.cpp
+	src/imgui/imgui_widgets.cpp
+	src/imgui/imgui.cpp
+
+	src/imgui/imconfig.h
+	src/imgui/imgui_impl_glfw.h
+	src/imgui/imgui_impl_opengl3_loader.h
+	src/imgui/imgui_impl_opengl3.h
+	src/imgui/imgui_internal.h
+	src/imgui/imgui.h
+	src/imgui/imstb_rectpack.h
+	src/imgui/imstb_textedit.h
+	src/imgui/imstb_truetype.h
+	src/imgui/glfw/GLFW/glfw3.h
+)
+
+set_property(TARGET imgui PROPERTY
+	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/imgui/glfw/GLFW"
+)
+
 add_library(Common
 	src/Common/Assets.cpp
 	src/Common/Assets.h

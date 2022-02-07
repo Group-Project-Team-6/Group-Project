@@ -8,7 +8,7 @@ https://research.ncl.ac.uk/game/
 */
 #pragma once
 #include "../../Common/MeshGeometry.h"
-#include "glad\glad.h"
+#include "glad/glad.h"
 
 #include <string>
 

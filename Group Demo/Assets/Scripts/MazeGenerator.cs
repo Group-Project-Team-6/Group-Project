@@ -210,6 +210,50 @@ public class MazeGenerator : MonoBehaviour
                         else if (i != (height - 1)) { if (level[z, i + 1] == "P") { stairCheck = true; } }
                         else if (z != 0) { if (level[z - 1, i] == "P") { stairCheck = true; } }
                         else if (z != (length - 1)) { if (level[z + 1, i] == "P") { stairCheck = true; } }
+
+                        if (stairCheck == false) // Create a path to stairs
+                        {
+                            int x = z;
+                            int y = i;
+                            while (true)
+                            {
+                                int nextDirection = Random.Range(0, 4);
+
+                                switch (nextDirection)
+                                {
+                                    case 0:
+                                        if (y != 0 && level[x, y - 1] != "S")
+                                        {
+                                            level[x, y - 1] = "P";
+                                            y--;
+                                        }
+                                    case 1:
+                                        if (y != (height - 1) && level[x, y + 1] != "S")
+                                        {
+                                            level[x, y + 1] = "P";
+                                            y--;
+                                        }
+                                    case 2:
+                                        if (x != 0 && level[x - 1, y] != "S")
+                                        {
+                                            level[x - 1, y] = "P";
+                                            y--;
+                                        }
+                                    case 3:
+                                        if (x != (length - 1) && level[x + 1, y] != "S")
+                                        {
+                                            level[x + 1, y - 1] = "P";
+                                            y--;
+                                        }
+                                }
+
+                                if (y != 0) { if (level[x, y - 1] == "P") { stairCheck = true; break; } }
+                                else if (y != (height - 1)) { if (level[x, y + 1] == "P") { stairCheck = true; break; } }
+                                else if (x != 0) { if (level[x - 1, y] == "P") { stairCheck = true; break; } }
+                                else if (x != (length - 1)) { if (level[x + 1, y] == "P") { stairCheck = true; break; } }
+
+                            }
+                        }
                     }
                 }
             }

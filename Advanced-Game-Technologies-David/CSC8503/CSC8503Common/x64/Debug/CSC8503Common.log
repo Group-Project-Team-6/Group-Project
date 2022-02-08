@@ -1,0 +1,20 @@
+﻿  CollisionDetection.cpp
+  Debug.cpp
+  GameObject.cpp
+  GameWorld.cpp
+  NavigationGrid.cpp
+  NavigationMesh.cpp
+  PhysicsObject.cpp
+  PhysicsSystem.cpp
+  PositionConstraint.cpp
+  PushdownMachine.cpp
+  PushdownState.cpp
+  QuadTree.cpp
+  RenderObject.cpp
+  SpringConstraint.cpp
+  StateMachine.cpp
+  StateTransition.cpp
+  Transform.cpp
+  Generating Code...
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\CSC8503\CSC8503Common\PhysicsObject.cpp(71,8): warning C4101:  'j': unreferenced local variable
+  CSC8503Common.vcxproj -> C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\x64\Debug\CSC8503Common.lib

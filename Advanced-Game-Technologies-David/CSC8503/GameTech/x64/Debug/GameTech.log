@@ -1,0 +1,8 @@
+﻿  GameTechRenderer.cpp
+  Main.cpp
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory
+  StateGameObject.cpp
+  TutorialGame.cpp
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory
+  Generating Code...
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory

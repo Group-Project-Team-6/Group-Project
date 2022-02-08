@@ -1,9 +1,1 @@
-﻿  callbacks.c
-  compress.c
-  host.c
-  list.c
-  packet.c
-  peer.c
-  protocol.c
-  win32.c
-  Networking-ENet.vcxproj -> H:\Projects\Group-Project\Advanced-Game-Technologies-David\x64\Release\Networking-ENet.lib
+﻿  Networking-ENet.vcxproj -> C:\Users\Chris\Documents\Projects\Group-Project\Advanced-Game-Technologies-David\x64\Release\Networking-ENet.lib

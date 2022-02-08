@@ -1,2 +1,14 @@
-﻿  VulkanRenderer.cpp
-  VulkanRendering.vcxproj -> C:\Uni\Games Engineering Code\game-engineering-codebase\x64\Debug\VulkanRendering.lib
+﻿  VulkanDescriptorSetLayoutBuilder.cpp
+  VulkanMesh.cpp
+  VulkanPipelineBuilder.cpp
+  VulkanRenderer.cpp
+H:\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\VulkanRendering\VulkanRenderer.cpp(454,22): warning C4834: discarding return value of function with 'nodiscard' attribute
+H:\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\VulkanRendering\VulkanRenderer.cpp(461,24): warning C4834: discarding return value of function with 'nodiscard' attribute
+H:\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\VulkanRendering\VulkanRenderer.cpp(475,22): warning C4834: discarding return value of function with 'nodiscard' attribute
+H:\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\VulkanRendering\VulkanRenderer.cpp(681,31): warning C4834: discarding return value of function with 'nodiscard' attribute
+  VulkanRenderPassBuilder.cpp
+  VulkanShader.cpp
+  VulkanShaderBuilder.cpp
+  VulkanTexture.cpp
+  Generating Code...
+  VulkanRendering.vcxproj -> H:\Projects\Group-Project\Advanced-Game-Technologies-David\x64\Debug\VulkanRendering.lib

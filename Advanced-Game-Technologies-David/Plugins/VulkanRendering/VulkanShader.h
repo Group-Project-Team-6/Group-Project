@@ -2,6 +2,11 @@
 
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif // !NOMINMAX
+
 #include <Windows.h> //vulkan hpp needs this included beforehand!
 #include <minwindef.h>
 #endif

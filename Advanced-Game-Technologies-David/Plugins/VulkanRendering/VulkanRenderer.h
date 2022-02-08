@@ -24,7 +24,7 @@ _-_-_-_-_-_-_-""  ""
 #include <minwindef.h>
 #endif
 
-#include <vulkan/vulkan.hpp> //
+#include <vulkan/vulkan.hpp>
 
 #include "VulkanShader.h"
 #include "VulkanMesh.h"

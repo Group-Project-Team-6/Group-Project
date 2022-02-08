@@ -71,10 +71,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VULKAN_SDK)\Include\glslang\Public;$(VULKAN_SDK)\Include\glslang\SPIRV;$(VULKAN_SDK)\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VULKAN_SDK)\Lib\;$(VULKAN_SDK)\glslang\build\glslang\$(Configuration)\;$(VULKAN_SDK)\glslang\build\OGLCompilersDLL\$(Configuration)\;$(VULKAN_SDK)\glslang\build\SPIRV\$(Configuration)\;$(VULKAN_SDK)\glslang\build\glslang\OSDependent\Windows\$(Configuration)\;$(VULKAN_SDK)\glslang\build\HLSL\$(Configuration)\;$(VULKAN_SDK)\spirv-tools\build\source\$(Configuration)\;$(VULKAN_SDK)\spirv-tools\build\source\link\$(Configuration)\;$(VULKAN_SDK)\spirv-tools\build\source\opt\$(Configuration)\;$(LibraryPath);$(SolutionDir)$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(VULKAN_SDK)\Lib;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VULKAN_SDK)\Include;$(VULKAN_SDK)\glslang\;$(VULKAN_SDK)\glslang\glslang\Public;$(VULKAN_SDK)\glslang\SPIRV;$(IncludePath)</IncludePath>
+    <IncludePath>$(VULKAN_SDK)\Include\glslang\Public;$(VULKAN_SDK)\Include\glslang\SPIRV;$(VULKAN_SDK)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VULKAN_SDK)\Lib;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,6 +93,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>NOMINMAX;VK_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.2.198.1\Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>vulkan-1.lib;VkLayer_utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -120,6 +123,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.2.198.1\Include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

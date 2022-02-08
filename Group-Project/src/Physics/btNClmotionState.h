@@ -12,39 +12,37 @@ public:
 		m_centerOfMassOffset(centerOfMassOffset),
 		m_startWorldTrans(startTrans),
 		m_userPointer(0)
-
 	{
 	}
 
 	//~btNCLMotionState();
 
-	 btTransform getWorldTransform() {
-		return btTransform;
+	 virtual btTransform getWorldTransform() const{
+		return m_graphicsWorldTrans;
 	}
 
-	void setWorldTransform(btTransform newbtTransform) {
-		btTransform = newbtTransform;
+	virtual void setWorldTransform(btTransform newbtTransform) {
+		m_graphicsWorldTrans = newbtTransform;
 	}
 
-	void ConvertbtTransform(const btTransform intialBTTransform, Transform intialNCLTransform) {
+	void ConvertbtTransform(const btTransform intialBTTransform) {
 
 		m_graphicsWorldTrans = intialBTTransform;
-		nclTransform = intialNCLTransform;
 
 		btQuaternion btRot = intialBTTransform.getRotation();
 		btVector3 btPos = intialBTTransform.getOrigin();
 
-		Quaternion nclRot = intialNCLTransform.GetOrientation();
-		Vector3 nclPos = intialNCLTransform.GetPosition();
+		Quaternion nclRot = nclTransform.GetOrientation();
+		Vector3 nclPos = nclTransform.GetPosition();
 
-		nclRot.x = btRot.x;
-		nclRot.y = btRot.y;
-		nclRot.z = btRot.z;
-		nclRot.w = btRot.w;
+		nclRot.x = btRot.x();
+		nclRot.y = btRot.y();
+		nclRot.z = btRot.z();
+		nclRot.w = btRot.w();
 
-		nclPos.x = btPos.x;
-		nclPos.y = btPos.y;
-		nclPos.z = btPos.z;
+		nclPos.x = btPos.x();
+		nclPos.y = btPos.y();
+		nclPos.z = btPos.z();
 
 		nclTransform.SetOrientation(nclRot);
 		nclTransform.SetPosition(nclPos);
@@ -57,6 +55,6 @@ protected:
 	btTransform m_startWorldTrans;
 	void* m_userPointer;
 
-	btTransform btTransform;
+	//btTransform btTransform;
 	Transform nclTransform;
 };

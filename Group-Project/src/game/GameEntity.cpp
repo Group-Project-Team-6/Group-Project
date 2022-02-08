@@ -5,7 +5,7 @@ GameEntity::GameEntity(string objectName) {
 	name = objectName;
 	renderObject = nullptr;
 	collisionObject = nullptr;
-	motionState = nullptr;
+	//motionState = nullptr;
 	rigidBody = nullptr;
 	isActive = true;
 
@@ -14,6 +14,6 @@ GameEntity::GameEntity(string objectName) {
 GameEntity::~GameEntity() {
 	delete renderObject;
 	delete collisionObject;
-	delete motionState;
+	//delete motionState;
 	delete rigidBody;
 }

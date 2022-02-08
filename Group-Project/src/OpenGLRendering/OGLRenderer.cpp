@@ -20,14 +20,14 @@ https://research.ncl.ac.uk/game/
 
 #include "../Common/MeshGeometry.h"
 
-#ifdef _WIN32
+#ifdef _WIN64
 #include "../Common/Win32Window.h"
 
 #include "KHR\khrplatform.h"
 #include "glad\glad.h"
 
 #include "GL/GL.h"
-#include "KHR/WGLext.h"
+#include "KHR/wglext.h"
 
 PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 #endif

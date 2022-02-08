@@ -3,11 +3,20 @@
 #include "../OpenGLRendering/OGLMesh.h"
 #include "../OpenGLRendering/OGLTexture.h"
 #include "../OpenGLRendering/OGLShader.h"
+#include "../common/TextureLoader.h"
+
+#include "../CSC8503/GameWorld.h"
+
+
 
 //using namespace NCL;
 //using namespace CSC8503;
 
 PhysicsTestScene::PhysicsTestScene() {
+
+	world = new GameWorld();
+	renderer = new GameTechRenderer(*world);
+	//Debug::SetRenderer(renderer);
 
 	//Default Broadphase
 	maxProxies = 1024;
@@ -43,6 +52,14 @@ void PhysicsTestScene::InitAssets() {
 
 	loadFunc("cube.msh", &sphereMesh);
 
+	//basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkboard.png");
+	//basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+
+	InitCamera();
+}
+
+void PhysicsTestScene::InitCamera() {
+	world->GetMainCamera();
 }
 
 void PhysicsTestScene::InitScene() {
@@ -51,7 +68,8 @@ void PhysicsTestScene::InitScene() {
 
 	btVector3 position = { 0, 50, 0 };
 	btQuaternion orientation = { 0, 0, 0, 1 };
-	btNCLMotionState* sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+	//sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+	sphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btCollisionShape* sphereShape = new btSphereShape(1);
 	btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
 	btRigidBody* sphereBody = new btRigidBody(sphereCI);
@@ -60,7 +78,9 @@ void PhysicsTestScene::InitScene() {
 	sphere->SetMotionState(sphereMotion);
 	sphere->SetCollisionShape(sphereShape);
 	sphere->SetRigidBody(sphereBody);
-	//sphere->SetRenderObject(new RenderObject(&sphere->ConvertbtTransform(), sphereMesh, basicTex, basicShader));
+	sphereMotion->ConvertbtTransform();
+
+	sphere->SetRenderObject(new RenderObject(&sphere->GetMotionState()->getNCLTransform(), sphereMesh, basicTex, basicShader));
 	
 	dynamicsWorld->addRigidBody(sphere->GetRigidBody());
 	

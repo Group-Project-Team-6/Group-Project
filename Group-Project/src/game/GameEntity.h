@@ -34,11 +34,11 @@ public:
 		collisionObject = newCollisionObject;
 	}
 
-	btNCLMotionState* GetMotionState() const {
+	btDefaultMotionState* GetMotionState() const {
 		return motionState;
 	}
 
-	void SetMotionState(btNCLMotionState* newMotionState) {
+	void SetMotionState(btDefaultMotionState* newMotionState) {
 		motionState = newMotionState;
 	}
 
@@ -70,14 +70,14 @@ public:
 		return worldID;
 	}
 
-	Transform& ConvertbtTransform(btTransform);
+	//Transform& ConvertbtTransform(btTransform);
 
 protected:
 	RenderObject* renderObject;
 	btCollisionObject* collisionObject;
 
 	btCollisionShape* collisionShape;
-	btNCLMotionState* motionState;
+	btDefaultMotionState* motionState;
 	btRigidBody* rigidBody;
 	
 	Transform physicsTransform;

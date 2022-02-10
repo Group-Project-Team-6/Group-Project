@@ -2,7 +2,7 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "../common/RenderObject.h"
+#include "../Common/RenderObject.h"
 #include "../CSC8503/Transform.h"
 
 #include <vector>

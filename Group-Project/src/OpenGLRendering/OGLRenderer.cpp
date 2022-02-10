@@ -20,7 +20,7 @@ https://research.ncl.ac.uk/game/
 
 #include "../Common/MeshGeometry.h"
 
-#ifdef _WIN64
+#ifdef _WIN32
 #include "../Common/Win32Window.h"
 
 #include "KHR\khrplatform.h"

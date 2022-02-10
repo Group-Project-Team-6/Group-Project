@@ -1,6 +1,14 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.22)
 project(Group-Game-Project)
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
+add_subdirectory(src/OpenGLRendering/KHR)
+add_compile_definitions(GLEW_STATIC)
+
+function(print)
+	foreach(var ${ARGN})
+		message("${var} = ${${var}}")
+	endforeach()
+endfunction()
 
 #CSC8503 Component
 add_library(CSC8503
@@ -22,7 +30,7 @@ add_library(Physics
 )
 
 #Graphic Component
-add_library(OpenGLRendering
+add_library(OpenGLRendering STATIC
 	src/OpenGLRendering/OGLComputeShader.cpp
 	src/OpenGLRendering/OGLMesh.cpp
 	src/OpenGLRendering/OGLRenderer.cpp	
@@ -151,6 +159,11 @@ add_executable(Game
 )
 
 #Targeting Directories & Linking Libraries
+find_package(OpenGL REQUIRED)
+if(!OpenGL_FOUND)
+	message(WARNING "OpenGL Not Found")
+endif()
+
 find_package(Bullet CONFIG REQUIRED)
 if(Bullet_FOUND)
 	target_include_directories(Physics PRIVATE ${BULLET_INCLUDE_DIRS})
@@ -161,5 +174,7 @@ endif()
 target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering)
-target_link_libraries(OpenGLRendering Common)
+target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
+
+print(PROJECT_NAME CMAKE_SOURCE_DIR)

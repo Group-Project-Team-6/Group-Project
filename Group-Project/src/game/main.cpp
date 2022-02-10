@@ -1,4 +1,4 @@
-#include "../common/Window.h"
+#include "../Common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
 
 #include <iostream>

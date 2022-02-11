@@ -588,8 +588,8 @@ MonoBehaviour:
   mazeGen: {fileID: 647825621}
   mMap: {fileID: 1076133614}
   unitLength: 3
-  width: 10
-  length: 10
+  width: 50
+  length: 50
 --- !u!1 &647825619
 GameObject:
   m_ObjectHideFlags: 0

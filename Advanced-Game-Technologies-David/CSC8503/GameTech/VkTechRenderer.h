@@ -20,8 +20,12 @@ namespace NCL {
 		protected:
 			void RenderFrame()	override;
 
-			Matrix4 SetupDebugLineMatrix()	const override;
-			Matrix4 SetupDebugStringMatrix()const override;
+			void	InitDefaultRenderPass() override;
+			void	InitDefaultDescriptorPool() override;
+
+
+			//Matrix4 SetupDebugLineMatrix()	const override;
+			//Matrix4 SetupDebugStringMatrix()const override;
 
 			VulkanShader* defaultShader;
 
@@ -39,12 +43,12 @@ namespace NCL {
 
 			VulkanShader* skyboxShader;
 			VulkanMesh* skyboxMesh;
-			GLuint		skyboxTex;
+			VulkanTexture* skyboxTex;
 
 			//shadow mapping things
 			OGLShader* shadowShader;
-			GLuint		shadowTex;
-			GLuint		shadowFBO;
+			VulkanTexture* shadowTex;
+			VulkanTexture* shadowFBO;
 			Matrix4     shadowMatrix;
 
 			Vector4		lightColour;

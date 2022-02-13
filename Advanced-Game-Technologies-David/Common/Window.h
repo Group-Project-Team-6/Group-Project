@@ -28,8 +28,8 @@ namespace NCL {
 	
 	class Window {
 	public:
-		static Window* CreateGameWindow(std::string title = "NCLGL!", int sizeX = 800, int sizeY = 600, bool fullScreen = false, int offsetX = 100, int offsetY = 100);
-
+		static Window* CreateGameWindow(
+std::string title = "NCLGL!", int sizeX = 800, int sizeY = 600, bool fullScreen = false, int offsetX = 100, int offsetY = 100);
 		static void DestroyGameWindow() {
 			delete window;
 			window = nullptr;

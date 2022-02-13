@@ -1,9 +1,0 @@
-﻿  OGLComputeShader.cpp
-  OGLMesh.cpp
-  OGLRenderer.cpp
-C:\Users\Chris\Documents\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLRenderer.cpp(301,51): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\Chris\Documents\Projects\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLRenderer.cpp(323,52): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
-  OGLShader.cpp
-  OGLTexture.cpp
-  Generating Code...
-  OpenGLRendering.vcxproj -> C:\Users\Chris\Documents\Projects\Group-Project\Advanced-Game-Technologies-David\x64\Debug\OpenGLRendering.lib

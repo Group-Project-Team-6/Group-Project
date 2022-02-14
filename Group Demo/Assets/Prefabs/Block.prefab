@@ -105,11 +105,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7558193967956187259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16f424ce4d0fa524aa1633763a66ac39, type: 3}
+  m_Script: {fileID: 11500000, guid: 3720658a09ad39b4583480bce67456cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LoadOnAwake: 0
   SplashWidth: 100
   SplashHeight: 100
   PlaneHeight: 10
   PlaneWidth: 10
-  tex: {fileID: 0}
+  tex: []

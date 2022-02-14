@@ -1,16 +1,17 @@
 #include "PhysicsTestScene.h"
-#include "../Physics/btNClmotionState.h"
+//#include "../Physics/btNClmotionState.h"
 #include "../OpenGLRendering/OGLMesh.h"
 #include "../OpenGLRendering/OGLTexture.h"
 #include "../OpenGLRendering/OGLShader.h"
 #include "../common/TextureLoader.h"
 
 #include "../CSC8503/GameWorld.h"
+#include "../Common/Camera.h"
 
 
-
-//using namespace NCL;
-//using namespace CSC8503;
+using namespace NCL;
+using namespace CSC8503;
+using namespace Maths;
 
 PhysicsTestScene::PhysicsTestScene() {
 
@@ -35,11 +36,18 @@ PhysicsTestScene::PhysicsTestScene() {
 }
 
 PhysicsTestScene::~PhysicsTestScene() {
+	delete world;
+	delete renderer;
+
 	delete broadphase;
 	delete collisionConfiguration;
 	delete dispatcher;
 	delete solver;
 	delete dynamicsWorld;
+
+	delete sphereMesh;
+	delete basicTex;
+	delete basicShader;
 
 }
 
@@ -50,19 +58,26 @@ void PhysicsTestScene::InitAssets() {
 		(*into)->UploadToGPU();
 	};
 
-	loadFunc("cube.msh", &sphereMesh);
+	loadFunc("sphere.msh", &sphereMesh);
 
-	//basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkboard.png");
-	//basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkboard.png");
+	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
 	InitCamera();
 }
 
 void PhysicsTestScene::InitCamera() {
-	world->GetMainCamera();
+	world->GetMainCamera()->SetNearPlane(0.1f);
+	world->GetMainCamera()->SetFarPlane(1000.0f);
+	world->GetMainCamera()->SetPitch(0.0f);
+	world->GetMainCamera()->SetYaw(0.0f);
+	world->GetMainCamera()->SetPosition(Vector3(0, 0, 250));
 }
 
 void PhysicsTestScene::InitScene() {
+	world->ClearAndErase();
+	dynamicsWorld->clearForces();
+
 	//sphere
 	sphere = new GameEntity("Sphere");
 

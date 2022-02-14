@@ -1314,6 +1314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 50
   height: 50
+  floors: 3
 --- !u!1 &647825619
 GameObject:
   m_ObjectHideFlags: 0

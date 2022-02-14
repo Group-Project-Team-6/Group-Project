@@ -21,6 +21,7 @@ public class MazeGenerator : MonoBehaviour
 
     public int length;
     public int height;
+    public int floors;
 
     bool end;
 
@@ -31,26 +32,44 @@ public class MazeGenerator : MonoBehaviour
     private int numberOfStairs;
     private int[,] stairPos;
 
+    private string[] levelString;
+
 
     // Start is called before the first frame update
     void Start()
     {
         level = new string[length, height];
+        levelString = new string[floors];
 
-        numberOfStairs = 0;
-        MazeGenCheck();
-        AddStairs();
-        LevelTextFile("/map.txt");
+        int h = floors;
 
-        MazeGenCheck();
-        numberOfStairs = 0;
-        AddStairs();
-        PathToStairs();
-        LevelTextFile("/map1.txt");
+        if (h > 0)
+        {
+            numberOfStairs = 0;
+            MazeGenCheck();
+            AddStairs();
+            LevelTextFile("/map.txt");
+            LevelToString(0);
 
-        MazeGenCheck();
-        PathToStairs();
-        LevelTextFile("/map2.txt");
+            int g = 0;
+            for (int b = 1; b < (h - 1); b++)
+            {
+                MazeGenCheck();
+                numberOfStairs = 0;
+                AddStairs();
+                PathToStairs();
+                LevelTextFile("/map" + b + ".txt");
+                LevelToString(b);
+                g = b;
+            }
+
+            g++;
+            MazeGenCheck();
+            PathToStairs();
+            LevelTextFile("/map" + g + ".txt");
+            LevelToString(g);
+        }
+
 
     }
 
@@ -60,27 +79,67 @@ public class MazeGenerator : MonoBehaviour
 
     }
 
-    public void Generate(int l, int w) 
+    public void Generate(int l, int w) // Generate any size for 3 levels
     {
         length = w;
         height = l;
 
         level = new string[length, height];
+        levelString = new string[2];
 
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
         LevelTextFile("/map.txt");
+        LevelToString(0);
 
         MazeGenCheck();
         numberOfStairs = 0;
         AddStairs();
         PathToStairs();
         LevelTextFile("/map1.txt"); // layered maps
+        LevelToString(1);
 
         MazeGenCheck();
         PathToStairs();
         LevelTextFile("/map2.txt");
+        LevelToString(2);
+    }
+
+    public void Generate(int l, int w, int h) // Generate any size for a set number of levels
+    {
+        length = w;
+        height = l;
+
+        level = new string[length, height];
+        levelString = new string[h];
+
+        if (h > 0)
+        {
+            numberOfStairs = 0;
+            MazeGenCheck();
+            AddStairs();
+            LevelTextFile("/map.txt");
+            LevelToString(0);
+
+            int g = 0;
+            for (int b = 1; b < (h - 1); b++)
+            {
+                MazeGenCheck();
+                numberOfStairs = 0;
+                AddStairs();
+                PathToStairs();
+                LevelTextFile("/map" + b + ".txt");
+                LevelToString(b);
+                g = b;
+            }
+
+            g++;
+            MazeGenCheck();
+            PathToStairs();
+            LevelTextFile("/map" + g + ".txt");
+            LevelToString(g);
+        }
     }
 
     void LevelTextFile(string fileName)
@@ -99,6 +158,36 @@ public class MazeGenerator : MonoBehaviour
             File.AppendAllText(map, mapline + "\n");
 
             mapline = null;
+        }
+    }
+
+    void LevelToString(int numLevel)
+    {
+        for (int i = 0; i < height; i++)
+        {
+            for (int z = 0; z < length; z++)
+            {
+                levelString[numLevel] = levelString[numLevel] + level[z, i];
+            }
+        }
+        Debug.Log("Level " + numLevel + "\n" + levelString[numLevel]);
+    }
+
+    public string[] GetLevelStrings()
+    {
+        return levelString;
+    }
+
+    public string GetALevelString(int i)
+    {
+        if (levelString.Length >= i)
+        {
+            return levelString[i];
+        }
+        else
+        {
+            Debug.Log("Level does not exist!");
+            return "";
         }
     }
 
@@ -159,7 +248,7 @@ public class MazeGenerator : MonoBehaviour
             }
             if (tempY == height) { AddStairs(); }
 
-            if (numberOfStairs >= ((length * height) / 80)) { StairPositions(); break; }
+            if (numberOfStairs >= ((length * height) / 50)) { StairPositions(); break; }
         }
     }
 
@@ -270,10 +359,6 @@ public class MazeGenerator : MonoBehaviour
                                 else { nextDirection++; }
                             }
 
-
-
-                            Debug.Log("Y = " + y);
-
                             if (y != 0) { if (level[x, y - 1] == "P") { stairCheck = true; break; } }
                             if (y != (height - 1)) { if (level[x, y + 1] == "P") { stairCheck = true; break; } }
                             if (x != 0) { if (level[x - 1, y] == "P") { stairCheck = true; break; } }
@@ -340,9 +425,6 @@ public class MazeGenerator : MonoBehaviour
                         if (tempX != (length - 1)) { if (level[tempX + 1, tempY] == "S") { posX = tempX; posY = tempY; break; } }
 
                     }
-
-                    //Debug.Log("tempX = " + tempX);
-                    //Debug.Log("tempY = " + tempY);
 
                     tempX++;
                     if (tempX == length)

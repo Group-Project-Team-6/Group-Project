@@ -1,3 +1,5 @@
+/build/
+
 # Prerequisites
 *.d
 
@@ -24,7 +26,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe

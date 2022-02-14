@@ -26,6 +26,7 @@ public class CullObstacle : MonoBehaviour
         //if something is raycasted besides player, tell shaders to cull the obstacles out
         if (Physics.Raycast(transform.position, dist.normalized, out hit, Mathf.Infinity, 1))
         {
+            //Debug.DrawLine(transform.position, hit.transform.position);
             if (hit.transform.gameObject != player)
             {
                 Shader.SetGlobalFloat("_IsCasted", 1.0f);

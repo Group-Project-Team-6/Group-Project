@@ -44,11 +44,6 @@ add_library(OpenGLRendering STATIC
 	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.h
 )
-#target_sources(OpenGLRendering INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src/OpenGLRendering/KHR/wglext.h")
-
-#set_property(TARGET OpenGLRendering PROPERTY
-#	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/OpenGLRendering/KHR"
-#)
 
 #GUI Component
 add_library(imgui SHARED IMPORTED

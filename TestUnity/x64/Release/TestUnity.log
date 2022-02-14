@@ -1,0 +1,8 @@
+﻿  Test.cpp
+C:\Users\c0067831\source\repos\TestUnity\Test.cpp(11,26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+     Creating library C:\Users\c0067831\source\repos\TestUnity\x64\Release\TestUnity.lib and object C:\Users\c0067831\source\repos\TestUnity\x64\Release\TestUnity.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 75 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  TestUnity.vcxproj -> C:\Users\c0067831\source\repos\TestUnity\x64\Release\TestUnity.dll

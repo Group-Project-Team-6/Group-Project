@@ -58,6 +58,14 @@ public:
 		collisionShape = newCollisionShape;
 	}
 
+	Transform GetTransform(){
+		return transform;
+	}
+
+	void SetTransform(Transform newtransform) {
+		transform = newtransform;
+	}
+
 	bool IsActive() const {
 		return isActive;
 	}
@@ -80,7 +88,7 @@ protected:
 	btDefaultMotionState* motionState;
 	btRigidBody* rigidBody;
 	
-	Transform physicsTransform;
+	Transform transform;
 
 	string name;
 

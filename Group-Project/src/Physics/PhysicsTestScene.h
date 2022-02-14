@@ -19,6 +19,7 @@ class PhysicsTestScene {
 		void InitAssets();
 		void InitScene();
 		void InitCamera();
+		void UpdateKeys();
 
 		int maxProxies;
 		btVector3 worldAabbMin;

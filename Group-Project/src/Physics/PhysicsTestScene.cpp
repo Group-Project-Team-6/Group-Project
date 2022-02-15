@@ -79,28 +79,30 @@ void PhysicsTestScene::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//sphere
+	//Set position
 	sphere = new GameEntity("Sphere");
-
 	sphere->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
 		.SetScale(Vector3(1, 1, 1))
 		.SetOrientation({ 0,0,0,1 });
 
-	//btVector3 position = { 0, 50, 0 };
-	//btQuaternion orientation = { 0, 0, 0, 1 };
+	//Set Renderer
+	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
+
+	//Set Physics
 	//sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-	sphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 100, 0)));
-	btCollisionShape* sphereShape = new btSphereShape(1);
-	btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
+	sphere->SetMotionState();
+	sphere->SetCollisionShape(new btSphereShape(1));
+	//CI information
+	sphere->SetRigidBody(new btRigidBody())
+
+	//btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
 	btRigidBody* sphereBody = new btRigidBody(sphereCI);
 
 	sphere->SetMotionState(sphereMotion);
 	sphere->SetRigidBody(sphereBody);
 	sphereMotion->ConvertbtTransform();
-
-	//sphere->SetRenderObject(new RenderObject(&sphere->GetMotionState()->getNCLTransform(), sphereMesh, basicTex, basicShader));
-	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
-
+	
 	world->AddGameObject(sphere);
 	dynamicsWorld->addRigidBody(sphere->GetRigidBody()); //Dynamics world inside of our game world class.
 	

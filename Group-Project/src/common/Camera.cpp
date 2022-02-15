@@ -14,8 +14,8 @@ void Camera::UpdateCamera(float dt) {
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
-	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
-	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
+	yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
+	yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
 
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);

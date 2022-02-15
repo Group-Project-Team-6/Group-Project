@@ -4,6 +4,7 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "../CSC8503/GameTechRenderer.h"
+//#include "../Physics/btNClmotionState.h"
 #include "../game/GameEntity.h"
 #include "../Physics/btNClmotionState.h"
 

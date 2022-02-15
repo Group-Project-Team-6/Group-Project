@@ -56,7 +56,7 @@ public:
 		collisionShape = newCollisionShape;
 	}
 
-	Transform& GetTransform(){
+	Transform GetTransform(){
 		return transform;
 	}
 
@@ -76,7 +76,16 @@ public:
 		return worldID;
 	}
 
-	//Transform& ConvertbtTransform(btTransform);
+	Transform ConvertTobtTransform() {
+		Quaternion NCLRot = transform.GetOrientation();
+		Vector3 NCLPos = transform.GetPosition();
+
+		btQuaternion btRot = { NCLRot.x, NCLRot.y, NCLRot.z };
+		btVector3 btPos = { NCLPos.x, NCLPos.y, NCLPos.z };
+
+		btTransform.setRotation(btRot);
+		btTransform.setOrigin(btPos);
+	}
 
 protected:
 	RenderObject* renderObject;
@@ -87,6 +96,10 @@ protected:
 	btRigidBody* rigidBody;
 	
 	Transform transform;
+	btTransform btTransform;
+
+	btQuaternion btRot;
+	btVector3 btPos;
 
 	string name;
 

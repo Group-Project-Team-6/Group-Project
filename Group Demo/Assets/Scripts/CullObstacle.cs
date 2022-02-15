@@ -30,6 +30,7 @@ public class CullObstacle : MonoBehaviour
             if (hit.transform.gameObject != player)
             {
                 Shader.SetGlobalFloat("_IsCasted", 1.0f);
+                //UnityEngine.Rendering.CompareFunction.
             }
             else
             {

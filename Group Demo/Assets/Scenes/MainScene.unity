@@ -1004,7 +1004,8 @@ MonoBehaviour:
   LoadOnAwake: 1
   PlaneHeight: 10
   PlaneWidth: 10
-  tex: []
+  tex:
+  - {fileID: 0}
   texOri:
   - {fileID: 2800000, guid: 45c09729ebb701140a69280d2eed460f, type: 3}
 --- !u!1 &1521388483

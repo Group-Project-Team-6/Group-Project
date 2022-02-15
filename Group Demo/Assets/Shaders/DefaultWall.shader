@@ -18,7 +18,7 @@ Shader "Custom/DefaultWall" {
         pass {
             Tags{"LightMode"="ForwardBase"}
 
-            // Cull Off
+            Cull Off
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
 

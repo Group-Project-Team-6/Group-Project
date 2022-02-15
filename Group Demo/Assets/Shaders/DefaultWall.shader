@@ -7,6 +7,7 @@ Shader "Custom/DefaultWall" {
         _Color("Color", Color) = (1,1,1,1)
         //_MainTex("Albedo (RGB)", 2D) = "white" {}
         _Tex("Tex (RGB)", 2D) = "white" {}
+        _TexOri("TexOri (RGB)", 2D) = "white" {}
         _Glossiness("Smoothness", Range(0,1)) = 0.5
         _Metallic("Metallic", Range(0,1)) = 0.0
         _CullingFactor("CullingFactor", Float) = 1.0
@@ -35,6 +36,7 @@ Shader "Custom/DefaultWall" {
             fixed _CullingDistance;
             //sampler2D _MainTex;
             sampler2D _Tex;
+            sampler2D _TexOri;
 
             struct a2v {
                 float4 vertex : POSITION;
@@ -60,7 +62,10 @@ Shader "Custom/DefaultWall" {
             fixed4 frag(v2f i) : SV_Target{
                 //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
                 fixed4 color = tex2D(_Tex,i.texcoord);
-                if (color.a > 0.5) i.color = color;
+                if (color.a > 0.7) {
+                    i.color = tex2D(_TexOri, i.texcoord);
+                    i.color.a = 1;
+                }
                 if(i.pos.z < _CullingDistance || _IsCasted == 0.0) return i.color; //(1 - i.pos.z + 0.07)
                 float factor = (1 - i.pos.z + _CullingDistance);
                 return  i.color * fixed4(1,1,1, clamp(pow(factor, _CullingFactor), 0.0, 1.0)); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *;

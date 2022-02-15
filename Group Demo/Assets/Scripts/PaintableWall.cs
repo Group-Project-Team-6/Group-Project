@@ -11,9 +11,12 @@ public class PaintableWall : MonoBehaviour
     public float PlaneHeight = 10;
     public float PlaneWidth = 10;
     public List<Texture2D> tex;
+    public List<Texture2D> texOri;
+    Mesh mesh;
     // Start is called before the first frame update
     void Awake()
     {
+        mesh = GetComponent<MeshFilter>().mesh;
         if (LoadOnAwake)
         {
             TexInit();
@@ -28,30 +31,26 @@ public class PaintableWall : MonoBehaviour
 
     void TexInit()
     {
-        try
-        {
             if (tex.Count < 1)
             {
                 
-                Mesh mesh = GetComponent<MeshFilter>().mesh;
                 Debug.Log("Enter TexInit: " + gameObject.name + mesh.subMeshCount);
                 float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
                 float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
                 //hitTex = new Texture2D(256, 256);
                 for (int i = 0; i < mesh.subMeshCount; i++)
                 {
-                    tex.Add(new Texture2D((int)(320 * WidthRatio), (int)(320 * HeightRatio)));
+                    tex.Add(new Texture2D((int)(256 * WidthRatio), (int)(256 * HeightRatio)));
                     transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
+                    int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
+                    transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);
                     Color32[] background = new Color32[tex[i].width * tex[i].height];
                     for (int j = 0; j < (tex[i].width * tex[i].height); j++) background[j] = new Color32(0, 0, 0, 0);
                     tex[i].SetPixels32(0, 0, tex[i].width, tex[i].height, background);
-                }
+                    tex[i].Apply();
             }
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
-        }
+            }
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -141,7 +140,6 @@ public class PaintableWall : MonoBehaviour
     private void FindTriangle(Collision collision, ref int[] shortestTri, ref Vector3 proj, ref float[] triRatio, ref int subMeshNum)
     {
         float shortestDist = float.MaxValue;
-        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
         Vector3 p = collision.GetContact(0).point;
         Debug.DrawLine(p, p - collision.GetContact(0).normal * 100, Color.green, 10.0f);
         for (int mIndex = 0; mIndex < mesh.subMeshCount; mIndex++)
@@ -160,7 +158,7 @@ public class PaintableWall : MonoBehaviour
 
                 Vector3 cross = Vector3.Cross(ac, ab); // Normal            
                 Vector3 n = cross.normalized;  // Noraml normalized
-                if (!(Vector3.Dot(n, collision.GetContact(0).normal) > 0.8f)) continue;
+                if (!(Vector3.Dot(n, collision.GetContact(0).normal) > 0.7f)) continue;
 
                 Vector3 r = pa - (Vector3.Dot(pa, n) * n) + a;  // vector from origin to projection from p to triangle plane
 
@@ -204,8 +202,6 @@ public class PaintableWall : MonoBehaviour
 
         FindTriangle(collision, ref shortestTri, ref proj, ref triRatio, ref mIndex);
 
-        Mesh m = gameObject.GetComponent<MeshFilter>().mesh;
-
         Vector2 hitUV;
 
         //Debug.Log("Tris:" + shortestTri[0] + " " + shortestTri[1] + " " + shortestTri[2]);
@@ -245,8 +241,8 @@ public class PaintableWall : MonoBehaviour
         //float Rb = Ratio(BR - Proj(BR, BC), bb - aa);
         //float Ra = 1.0f - Rc - Rb;
 
-        Debug.Log(m.uv[shortestTri[0]] * triRatio[0] + " " + m.uv[shortestTri[1]] * triRatio[1] + " " + m.uv[shortestTri[2]] * triRatio[2]);
-        hitUV = m.uv[shortestTri[0]] * triRatio[0] + m.uv[shortestTri[1]] * triRatio[1] + m.uv[shortestTri[2]] * triRatio[2];
+        Debug.Log(mesh.uv[shortestTri[0]] * triRatio[0] + " " + mesh.uv[shortestTri[1]] * triRatio[1] + " " + mesh.uv[shortestTri[2]] * triRatio[2]);
+        hitUV = mesh.uv[shortestTri[0]] * triRatio[0] + mesh.uv[shortestTri[1]] * triRatio[1] + mesh.uv[shortestTri[2]] * triRatio[2];
         Debug.Log(hitUV.x + " " + hitUV.y);
         //Vector3 f = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[0]]);
         //Vector3 h = gameObject.transform.localToWorldMatrix * ToVector4(m.vertices[shortestTri[1]]);

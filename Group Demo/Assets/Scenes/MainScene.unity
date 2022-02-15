@@ -478,7 +478,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: f2da6423a87788142b5ede7dc1fe7cd5, type: 3}
   - {fileID: 2800000, guid: a1b669da2adedd947a93d54accc7ba83, type: 3}
   index: 0
-  shotHeight: 4
+  shotHeight: 2
 --- !u!114 &195290683
 MonoBehaviour:
   m_ObjectHideFlags: 0

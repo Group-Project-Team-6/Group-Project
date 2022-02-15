@@ -19,7 +19,7 @@ Shader "Custom/DefaultWall" {
             Tags{"LightMode"="ForwardBase"}
 
             Cull Off
-            ZWrite Off
+            ZWrite On
             Blend SrcAlpha OneMinusSrcAlpha
 
             CGPROGRAM

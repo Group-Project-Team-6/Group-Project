@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody rigBody;
     public ParticleSystem ps;
+    public float sensitivity;
     private bool onGround;
     // Start is called before the first frame update
     void Start()
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * 10, 0));
+        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
     }
 
     void OnCollisionEnter(Collision collision)

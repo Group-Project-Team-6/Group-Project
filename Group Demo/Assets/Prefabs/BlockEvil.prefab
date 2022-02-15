@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4724322947949776994}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.12528, y: 0.36278594, z: 22.569904}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 934938625419319029}
@@ -59,7 +59,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -143,8 +143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadOnAwake: 0
-  SplashWidth: 100
-  SplashHeight: 100
   PlaneHeight: 10
   PlaneWidth: 10
   tex: []
@@ -176,7 +174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -260,8 +258,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadOnAwake: 0
-  SplashWidth: 100
-  SplashHeight: 100
   PlaneHeight: 10
   PlaneWidth: 10
   tex: []
@@ -289,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4911767135365647944, guid: 4ae27e30acf0e9449986527fc69ccc85, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4911767135365647944, guid: 4ae27e30acf0e9449986527fc69ccc85, type: 3}
       propertyPath: m_LocalRotation.w
@@ -351,7 +347,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79180a1c80b937c44b28eaf2398a929b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -435,8 +431,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadOnAwake: 0
-  SplashWidth: 100
-  SplashHeight: 100
   PlaneHeight: 10
   PlaneWidth: 10
   tex: []

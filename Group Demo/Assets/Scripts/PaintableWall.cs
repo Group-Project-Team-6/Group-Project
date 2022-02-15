@@ -31,25 +31,25 @@ public class PaintableWall : MonoBehaviour
 
     void TexInit()
     {
-            if (tex.Count < 1)
+        if (tex.Count < 1)
+        {
+
+            Debug.Log("Enter TexInit: " + gameObject.name + mesh.subMeshCount);
+            float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
+            float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
+            //hitTex = new Texture2D(256, 256);
+            for (int i = 0; i < mesh.subMeshCount; i++)
             {
-                
-                Debug.Log("Enter TexInit: " + gameObject.name + mesh.subMeshCount);
-                float WidthRatio = PlaneHeight > PlaneWidth ? PlaneWidth / PlaneHeight : 1;
-                float HeightRatio = PlaneHeight > PlaneWidth ? 1 : PlaneHeight / PlaneWidth;
-                //hitTex = new Texture2D(256, 256);
-                for (int i = 0; i < mesh.subMeshCount; i++)
-                {
-                    tex.Add(new Texture2D((int)(64 * WidthRatio), (int)(64 * HeightRatio)));
-                    transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
-                    int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
-                    transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);
-                    Color32[] background = new Color32[tex[i].width * tex[i].height];
-                    for (int j = 0; j < (tex[i].width * tex[i].height); j++) background[j] = new Color32(0, 0, 0, 0);
-                    tex[i].SetPixels32(0, 0, tex[i].width, tex[i].height, background);
-                    tex[i].Apply();
+                tex.Add(new Texture2D((int)(64 * WidthRatio), (int)(64 * HeightRatio)));
+                transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
+                int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
+                transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);
+                Color32[] background = new Color32[tex[i].width * tex[i].height];
+                for (int j = 0; j < (tex[i].width * tex[i].height); j++) background[j] = new Color32(0, 0, 0, 0);
+                tex[i].SetPixels32(0, 0, tex[i].width, tex[i].height, background);
+                tex[i].Apply();
             }
-            }
+        }
 
     }
 
@@ -85,7 +85,15 @@ public class PaintableWall : MonoBehaviour
                             int posY = v + halfY;
                             if (posX > tex[mIndex].width - 1 || posX < 0 || posY > tex[mIndex].height - 1 || posY < 0) continue;
                             if (c[i].a > 0.7)
-                                tex[mIndex].SetPixel(posX, posY, baseColor);
+                            {
+                                float factor = ((float)u / (float)SplashWidth) * ((float)v / (float)SplashHeight);
+                                tex[mIndex].SetPixel(posX, posY, new Color32(
+                                    (byte)(factor * (float)baseColor.r),
+                                    (byte)(factor * (float)baseColor.b),
+                                    (byte)(factor * (float)baseColor.g),
+                                    baseColor.a));
+                            }
+
                         }
                     }
                     tex[mIndex].Apply();

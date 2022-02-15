@@ -20,16 +20,16 @@ PhysicsTestScene::PhysicsTestScene() {
 	renderer = new GameTechRenderer(*world);
 
 	//Default Broadphase
-	//maxProxies = 1024;
-	//worldAabbMin = {-100, -100, -100};
-	//worldAabbMax = {100, 100, 100};
-	//broadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
+	maxProxies = 1024;
+	worldAabbMin = {-100, -100, -100};
+	worldAabbMax = {100, 100, 100};
+	broadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
-	//collisionConfiguration = new btDefaultCollisionConfiguration();
-	//dispatcher = new btCollisionDispatcher(collisionConfiguration);
-	//solver = new btSequentialImpulseConstraintSolver();
-	//dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-	//dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	collisionConfiguration = new btDefaultCollisionConfiguration();
+	dispatcher = new btCollisionDispatcher(collisionConfiguration);
+	solver = new btSequentialImpulseConstraintSolver();
+	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 	InitAssets();
 	InitCamera();
@@ -60,8 +60,9 @@ void PhysicsTestScene::InitAssets() {
 	};
 
 	loadFunc("sphere.msh", &sphereMesh);
+	loadFunc("cube.msh", &cubeMesh);
 
-	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkboard.png");
+	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 }
 
@@ -70,12 +71,12 @@ void PhysicsTestScene::InitCamera() {
 	world->GetMainCamera()->SetFarPlane(1000.0f);
 	world->GetMainCamera()->SetPitch(0.0f);
 	world->GetMainCamera()->SetYaw(0.0f);
-	world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
+	world->GetMainCamera()->SetPosition(Vector3(0, 0, 50));
 }
 
 void PhysicsTestScene::InitScene() {
-	//world->ClearAndErase();
-	//dynamicsWorld->clearForces();
+	world->ClearAndErase();
+	dynamicsWorld->clearForces();
 
 	//sphere
 	sphere = new GameEntity("Sphere");
@@ -88,22 +89,20 @@ void PhysicsTestScene::InitScene() {
 	//btVector3 position = { 0, 50, 0 };
 	//btQuaternion orientation = { 0, 0, 0, 1 };
 	//sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-	//sphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 100, 0)));
-	//btCollisionShape* sphereShape = new btSphereShape(1);
-	//btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
-	//btRigidBody* sphereBody = new btRigidBody(sphereCI);
+	sphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 100, 0)));
+	btCollisionShape* sphereShape = new btSphereShape(1);
+	btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
+	btRigidBody* sphereBody = new btRigidBody(sphereCI);
 
-	//sphere->SetMotionState(sphereMotion);
-	////sphere->SetRigidBody(sphereBody);
-	//sphereMotion->ConvertbtTransform();
+	sphere->SetMotionState(sphereMotion);
+	sphere->SetRigidBody(sphereBody);
+	sphereMotion->ConvertbtTransform();
 
 	//sphere->SetRenderObject(new RenderObject(&sphere->GetMotionState()->getNCLTransform(), sphereMesh, basicTex, basicShader));
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
 
-	sphere->GetRenderObject()->SetColour({ 1, 1, 1, 1 });
-
 	world->AddGameObject(sphere);
-	//dynamicsWorld->addRigidBody(sphere->GetRigidBody());
+	dynamicsWorld->addRigidBody(sphere->GetRigidBody()); //Dynamics world inside of our game world class.
 	
 	//ground
 }
@@ -112,9 +111,6 @@ void PhysicsTestScene::UpdateGame(float dt) {
 
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
-	//world->UpdateWorld(dt);
-
-	//renderer->Update(dt);
 	renderer->Render();
 }
 

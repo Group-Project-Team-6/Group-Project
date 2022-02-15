@@ -37,6 +37,8 @@ class PhysicsTestScene {
 		GameEntity* ground;
 
 		OGLMesh* sphereMesh = nullptr;
+		OGLMesh* cubeMesh = nullptr;
+
 		OGLTexture* basicTex = nullptr;
 		OGLShader* basicShader = nullptr;
 

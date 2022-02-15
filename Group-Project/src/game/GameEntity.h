@@ -10,8 +10,6 @@
 using std::vector;
 using std::string;
 
-using namespace NCL;
-using namespace CSC8503;
 
 class GameEntity {
 public:
@@ -58,7 +56,7 @@ public:
 		collisionShape = newCollisionShape;
 	}
 
-	Transform GetTransform(){
+	Transform& GetTransform(){
 		return transform;
 	}
 

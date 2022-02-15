@@ -6,8 +6,8 @@ public class PaintableWall : MonoBehaviour
 {
     //public RenderTexture hitTex;
     public bool LoadOnAwake = false;
-    public int SplashWidth = 100;
-    public int SplashHeight = 100;
+    int SplashWidth;
+    int SplashHeight;
     public float PlaneHeight = 10;
     public float PlaneWidth = 10;
     public List<Texture2D> tex;
@@ -40,7 +40,7 @@ public class PaintableWall : MonoBehaviour
                 //hitTex = new Texture2D(256, 256);
                 for (int i = 0; i < mesh.subMeshCount; i++)
                 {
-                    tex.Add(new Texture2D((int)(256 * WidthRatio), (int)(256 * HeightRatio)));
+                    tex.Add(new Texture2D((int)(128 * WidthRatio), (int)(128 * HeightRatio)));
                     transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
                     int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
                     transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);

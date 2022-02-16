@@ -30,7 +30,6 @@ Shader "Custom/DefaultWall" {
             #include "UnityCG.cginc"
 
             fixed4 _Color;
-            float _IsCasted;
             float _CullingFactor;
             float _CullingDistance;
             //sampler2D _MainTex;

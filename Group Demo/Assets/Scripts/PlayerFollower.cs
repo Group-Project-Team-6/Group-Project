@@ -26,7 +26,7 @@ public class PlayerFollower : MonoBehaviour
         //float rot = Mathf.Min(transform.position.y - Input.GetAxis("Mouse Y") , player.transform.position.y + 3.0f);
         //rot = Mathf.Max(rot, player.transform.position.y - (cCol.height / 3.0f));
         angle = Mathf.Clamp(angle, -70, 45);
-        transform.localPosition = new Vector3(transform.localPosition.x, 10* Mathf.Sin(Mathf.Deg2Rad*angle) + height, -5 * Mathf.Cos(Mathf.Deg2Rad*angle));
+        transform.localPosition = new Vector3(transform.localPosition.x,10 * Mathf.Sin(Mathf.Deg2Rad*angle) + height, -5 * Mathf.Cos(Mathf.Deg2Rad*angle));
         transform.LookAt(player.transform.position + new Vector3(0,height * 0.5f,0));
     }
 }

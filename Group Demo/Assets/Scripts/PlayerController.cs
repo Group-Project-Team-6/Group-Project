@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     {
         rigBody = transform.GetComponent<Rigidbody>();
         onGround = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
     }
 
     // Update is called once per frame

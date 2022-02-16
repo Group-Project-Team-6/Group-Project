@@ -10,7 +10,7 @@ Shader "Custom/DefaultWall" {
         _Glossiness("Smoothness", Range(0,1)) = 0.5
         _Metallic("Metallic", Range(0,1)) = 0.0
         _CullingFactor("CullingFactor", Float) = 1.0
-        _CullingDistance("CullingDistance", Range(0,1)) = 0.08
+        _CullingDistance("CullingDistance", Float) = 0.08
     }
     SubShader{
         Tags{"Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True"}
@@ -32,7 +32,7 @@ Shader "Custom/DefaultWall" {
             fixed4 _Color;
             float _IsCasted;
             float _CullingFactor;
-            fixed _CullingDistance;
+            float _CullingDistance;
             //sampler2D _MainTex;
             sampler2D _Tex;
             sampler2D _TexOri;
@@ -65,9 +65,10 @@ Shader "Custom/DefaultWall" {
                     i.color = tex2D(_TexOri, i.texcoord);
                     i.color.a = 1;
                 }
-                if(i.pos.z < _CullingDistance || _IsCasted == 0.0) return i.color; //(1 - i.pos.z + 0.07)
-                float factor = (1 - i.pos.z + _CullingDistance);
-                return  i.color * fixed4(1,1,1, clamp(pow(factor, _CullingFactor), 0.0, 1.0)); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *;
+                if (UNITY_NEAR_CLIP_VALUE == -1.0) i.pos.z = (i.pos.z + 1.0) * 0.5;
+                if(i.pos.z < _CullingDistance) return i.color; //(1 - i.pos.z + 0.07)
+                float factor = 1.0 - (i.pos.z - _CullingDistance);
+                return  i.color * fixed4(1,1,1, clamp(pow(factor, _CullingFactor), 0.0, 1.0)); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0);
             }
 
             ENDCG            

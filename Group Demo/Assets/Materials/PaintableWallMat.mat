@@ -65,8 +65,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _CullingDistance: 0.03
-    - _CullingFactor: 20
+    - _CullingDistance: 0.006
+    - _CullingFactor: 500
     - _CullingPower: 1
     - _CullingRadius: 2
     - _Cutoff: 0.5

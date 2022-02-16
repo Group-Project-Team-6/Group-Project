@@ -2,7 +2,10 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+
 #include "../Common/RenderObject.h"
+#include "../Physics/PhysicsObject.h"
+
 #include "../CSC8503/Transform.h"
 
 #include <vector>
@@ -16,6 +19,7 @@ public:
 	GameEntity(string name = "");
 	~GameEntity();
 
+	//Graphics
 	RenderObject* GetRenderObject() const {
 		return renderObject;
 	}
@@ -24,22 +28,7 @@ public:
 		renderObject = newObject;
 	}
 
-	btCollisionObject* GetCollisionObject() const {
-		return collisionObject;
-	}
-
-	void SetCollisionObject(btCollisionObject* newCollisionObject) {
-		collisionObject = newCollisionObject;
-	}
-
-	btDefaultMotionState* GetMotionState() const {
-		return motionState;
-	}
-
-	void SetMotionState(btDefaultMotionState* newMotionState) {
-		motionState = newMotionState;
-	}
-
+	//Physics
 	btRigidBody* GetRigidBody() const {
 		return rigidBody;
 	}
@@ -48,20 +37,21 @@ public:
 		rigidBody = newRigidBody;
 	}
 
-	btCollisionShape* GetCollisionShape() {
-		return collisionShape;
-	}
-
-	void SetCollisionShape(btCollisionShape* newCollisionShape) {
-		collisionShape = newCollisionShape;
-	}
-
-	Transform GetTransform(){
+	//General
+	Transform& GetTransform(){
 		return transform;
 	}
 
 	void SetTransform(Transform newtransform) {
 		transform = newtransform;
+	}
+
+	btTransform& GetbtTransform() {
+		return btTransform;
+	}
+
+	void SetbtTransform(btTransform newbtTransform) {
+		btTransform = newbtTransform;
 	}
 
 	bool IsActive() const {
@@ -76,7 +66,7 @@ public:
 		return worldID;
 	}
 
-	Transform ConvertTobtTransform() {
+	void ConvertTobtTransform() {
 		Quaternion NCLRot = transform.GetOrientation();
 		Vector3 NCLPos = transform.GetPosition();
 
@@ -89,17 +79,10 @@ public:
 
 protected:
 	RenderObject* renderObject;
-	btCollisionObject* collisionObject;
-
-	btCollisionShape* collisionShape;
-	btDefaultMotionState* motionState;
 	btRigidBody* rigidBody;
 	
 	Transform transform;
 	btTransform btTransform;
-
-	btQuaternion btRot;
-	btVector3 btPos;
 
 	string name;
 

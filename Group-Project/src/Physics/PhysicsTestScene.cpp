@@ -1,5 +1,5 @@
 #include "PhysicsTestScene.h"
-//#include "../Physics/btNClmotionState.h"
+
 #include "../OpenGLRendering/OGLMesh.h"
 #include "../OpenGLRendering/OGLTexture.h"
 #include "../OpenGLRendering/OGLShader.h"
@@ -71,7 +71,7 @@ void PhysicsTestScene::InitCamera() {
 	world->GetMainCamera()->SetFarPlane(1000.0f);
 	world->GetMainCamera()->SetPitch(0.0f);
 	world->GetMainCamera()->SetYaw(0.0f);
-	world->GetMainCamera()->SetPosition(Vector3(0, 0, 50));
+	world->GetMainCamera()->SetPosition(Vector3(0, 0, 0));
 }
 
 void PhysicsTestScene::InitScene() {
@@ -82,7 +82,7 @@ void PhysicsTestScene::InitScene() {
 	//Set position
 	sphere = new GameEntity("Sphere");
 	sphere->GetTransform()
-		.SetPosition(Vector3(0, 0, 0))
+		.SetPosition(Vector3(0, 25, -200))
 		.SetScale(Vector3(1, 1, 1))
 		.SetOrientation({ 0,0,0,1 });
 
@@ -90,30 +90,58 @@ void PhysicsTestScene::InitScene() {
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
 
 	//Set Physics
-	//sphereMotion = new btNCLMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-	sphere->SetMotionState();
-	sphere->SetCollisionShape(new btSphereShape(1));
-	//CI information
-	sphere->SetRigidBody(new btRigidBody())
+	sphere->ConvertTobtTransform();
 
-	//btRigidBody::btRigidBodyConstructionInfo sphereCI(0, sphereMotion, sphereShape, btVector3(0, 0, 0));
-	btRigidBody* sphereBody = new btRigidBody(sphereCI);
+	int sphereMass = 10;
+	btDefaultMotionState* sphereMotion = new btDefaultMotionState(sphere->GetbtTransform());
+	btVector3 sphereInertia(0, 0, 0);
 
-	sphere->SetMotionState(sphereMotion);
-	sphere->SetRigidBody(sphereBody);
-	sphereMotion->ConvertbtTransform();
-	
+	btCollisionShape* sphereShape = new btSphereShape(0.01);
+	sphereShape->calculateLocalInertia(sphereMass, sphereInertia);
+	btRigidBody::btRigidBodyConstructionInfo sphereCI(sphereMass, sphereMotion, sphereShape, sphereInertia);
+	sphere->SetRigidBody(new btRigidBody(sphereCI));
+
 	world->AddGameObject(sphere);
-	dynamicsWorld->addRigidBody(sphere->GetRigidBody()); //Dynamics world inside of our game world class.
-	
+	dynamicsWorld->addRigidBody(sphere->GetRigidBody());
+
 	//ground
+	ground = new GameEntity("Ground");
+	ground->GetTransform()
+		.SetPosition(Vector3(0, 0, -200))
+		.SetScale(Vector3(100, 1, 100))
+		.SetOrientation(Quaternion(0, 0, 0, 1));
+
+	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
+
+	ground->ConvertTobtTransform();
+
+	int groundMass = 0;
+
+	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
+	//btCollisionShape* groundShape = new btBoxShape({ 50, 1, 50 });
+	//btCollisionShape* groundShape = new btBoxShape({ 50, 50, 1 });
+	//btCollisionShape* groundShape = new btBoxShape({ 1, 50, 50 });
+	btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 1);
+	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, btVector3(0, 0, 0));
+	ground->SetRigidBody(new btRigidBody(groundCI));
+
+	world->AddGameObject(ground);
+	dynamicsWorld->addRigidBody(ground->GetRigidBody());
+
 }
 
 void PhysicsTestScene::UpdateGame(float dt) {
 
+	dynamicsWorld->stepSimulation(1 / 60.f, 10);
+
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
 	renderer->Render();
+
+	
+	btTransform test;
+	sphere->GetRigidBody()->getMotionState()->getWorldTransform(test);
+	std::cout << "Sphere Height " << test.getOrigin().getY() << std::endl;
 }
 
 void PhysicsTestScene::UpdateKeys() {

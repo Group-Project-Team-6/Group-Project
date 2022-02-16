@@ -24,8 +24,10 @@ add_library(CSC8503
 #Physics Component
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
+	src/Physics/PhysicsObject.cpp
 
 	src/Physics/PhysicsTestScene.h
+	src/Physics/PhysicsObject.h
 	src/Physics/btNCLmotionState.h
 )
 

@@ -221,7 +221,6 @@ void GameTechRenderer::RenderCamera() {
 	for (const auto&i : activeObjects) {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
-
 		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
 
 		if (activeShader != shader) {

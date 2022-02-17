@@ -91,7 +91,7 @@ void PhysicsTestScene::InitScene() {
 	sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), sphereMesh, basicTex, basicShader));
 
 	//Set Physics
-	sphere->ConvertTobtTransform();
+	//sphere->ConvertTobtTransform();
 
 	int sphereMass = 10;
 	btVector3 sphereInertia(0, 0, 0);
@@ -116,15 +116,12 @@ void PhysicsTestScene::InitScene() {
 
 	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
 
-	ground->ConvertTobtTransform();
+	//ground->ConvertTobtTransform();
 
 	int groundMass = 0;
 
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
-	//btCollisionShape* groundShape = new btBoxShape({ 50, 1, 50 });
-	//btCollisionShape* groundShape = new btBoxShape({ 50, 50, 1 });
-	//btCollisionShape* groundShape = new btBoxShape({ 1, 50, 50 });
-	btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 1);
+	btCollisionShape* groundShape = new btBoxShape({ 50, 1, 50 });
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, btVector3(0, 0, 0));
 	ground->SetRigidBody(new btRigidBody(groundCI));
 
@@ -141,10 +138,8 @@ void PhysicsTestScene::UpdateGame(float dt) {
 	UpdateKeys();
 	renderer->Render();
 
-	
-	btTransform test;
-	sphere->GetRigidBody()->getMotionState()->getWorldTransform(test);
-	//std::cout << "Sphere Height " << test.getOrigin().getY() << std::endl;
+	//Update RenderObject Function
+	world->UpdatePositions();
 }
 
 void PhysicsTestScene::UpdateKeys() {

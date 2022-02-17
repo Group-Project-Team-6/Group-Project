@@ -66,15 +66,18 @@ public:
 		return worldID;
 	}
 
-	void ConvertTobtTransform() {
-		Quaternion NCLRot = transform.GetOrientation();
-		Vector3 NCLPos = transform.GetPosition();
+	void UpdateRenderPositions() {
 
-		btQuaternion btRot = { NCLRot.x, NCLRot.y, NCLRot.z };
-		btVector3 btPos = { NCLPos.x, NCLPos.y, NCLPos.z };
 
-		btTransform.setRotation(btRot);
-		btTransform.setOrigin(btPos);
+
+		//Quaternion NCLRot = transform.GetOrientation();
+		//Vector3 NCLPos = transform.GetPosition();
+
+		//btQuaternion btRot = { NCLRot.x, NCLRot.y, NCLRot.z };
+		//btVector3 btPos = { NCLPos.x, NCLPos.y, NCLPos.z };
+
+		//btTransform.setRotation(btRot);
+		//btTransform.setOrigin(btPos);
 	}
 
 protected:

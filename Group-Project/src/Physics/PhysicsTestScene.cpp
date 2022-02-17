@@ -7,6 +7,7 @@
 
 #include "../CSC8503/GameWorld.h"
 #include "../Common/Camera.h"
+//#include "../CSC8503/Transform.h"
 
 #include <iomanip>
 
@@ -93,11 +94,13 @@ void PhysicsTestScene::InitScene() {
 	sphere->ConvertTobtTransform();
 
 	int sphereMass = 10;
-	btDefaultMotionState* sphereMotion = new btDefaultMotionState(sphere->GetbtTransform());
 	btVector3 sphereInertia(0, 0, 0);
 
+	btDefaultMotionState* sphereMotion = new btDefaultMotionState(sphere->GetbtTransform());
 	btCollisionShape* sphereShape = new btSphereShape(0.01);
+
 	sphereShape->calculateLocalInertia(sphereMass, sphereInertia);
+
 	btRigidBody::btRigidBodyConstructionInfo sphereCI(sphereMass, sphereMotion, sphereShape, sphereInertia);
 	sphere->SetRigidBody(new btRigidBody(sphereCI));
 
@@ -141,7 +144,7 @@ void PhysicsTestScene::UpdateGame(float dt) {
 	
 	btTransform test;
 	sphere->GetRigidBody()->getMotionState()->getWorldTransform(test);
-	std::cout << "Sphere Height " << test.getOrigin().getY() << std::endl;
+	//std::cout << "Sphere Height " << test.getOrigin().getY() << std::endl;
 }
 
 void PhysicsTestScene::UpdateKeys() {

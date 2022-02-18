@@ -144,8 +144,6 @@ void PhysicsTestScene::UpdateGame(float dt) {
 
 	world->UpdatePositions();
 
-
-
 }
 
 void PhysicsTestScene::UpdateKeys() {

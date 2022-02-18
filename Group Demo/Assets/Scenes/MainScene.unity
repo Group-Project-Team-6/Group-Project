@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 109440879}
   - component: {fileID: 109440878}
   - component: {fileID: 109440882}
+  - component: {fileID: 109440883}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -250,7 +251,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 11ac4d70102bea54989478b56af70a03, type: 2}
+  - {fileID: 2100000, guid: 06451f66470ddf845925507ce0676e65, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -288,7 +289,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109440877}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.71, y: 1.81, z: 8.94}
+  m_LocalPosition: {x: -12.71, y: -0.1, z: 8.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -301,7 +302,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109440877}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3720658a09ad39b4583480bce67456cd, type: 3}
   m_Name: 
@@ -312,6 +313,21 @@ MonoBehaviour:
   tex: []
   texOri:
   - {fileID: 2800000, guid: 0212212dd7440ac418e9bce28c8921a3, type: 3}
+--- !u!114 &109440883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109440877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76595abb4456f53428dc3a0a521f7c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 0
+  Health: 0
+  pc: {fileID: 0}
 --- !u!1 &195290674
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,6 +345,7 @@ GameObject:
   - component: {fileID: 195290682}
   - component: {fileID: 195290683}
   - component: {fileID: 195290680}
+  - component: {fileID: 195290684}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -456,6 +473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ps: {fileID: 3285327754564627923, guid: 51b8cfb7f1a273c40a6cbe85e57a2bd9, type: 3}
   sensitivity: 10
+  fainted: 0
 --- !u!114 &195290682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,6 +514,21 @@ MonoBehaviour:
   PlaneWidth: 10
   tex: []
   texOri: []
+--- !u!114 &195290684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195290674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76595abb4456f53428dc3a0a521f7c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Team: 0
+  Health: 0
+  pc: {fileID: 0}
 --- !u!1 &339919219
 GameObject:
   m_ObjectHideFlags: 0
@@ -1027,6 +1060,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1521388484}
+  - component: {fileID: 1521388485}
   m_Layer: 0
   m_Name: Players
   m_TagString: Untagged
@@ -1049,3 +1083,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1521388485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521388483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1

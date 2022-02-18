@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rigBody;
     public ParticleSystem ps;
     public float sensitivity;
+    public bool fainted;
     private bool onGround;
     // Start is called before the first frame update
     void Start()
@@ -17,7 +18,10 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {
+    {   if (fainted)
+        {
+            return;
+        }
         if (Input.GetKey(KeyCode.W))
         {
 

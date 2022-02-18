@@ -149,6 +149,7 @@ MonoBehaviour:
   texOri:
   - {fileID: 2800000, guid: 9465a509a885b804485ca54558052352, type: 3}
   - {fileID: 2800000, guid: 0212212dd7440ac418e9bce28c8921a3, type: 3}
+  Layer: 8
 --- !u!1001 &3085595605965109962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -264,6 +265,7 @@ MonoBehaviour:
   texOri:
   - {fileID: 2800000, guid: 9465a509a885b804485ca54558052352, type: 3}
   - {fileID: 2800000, guid: 0212212dd7440ac418e9bce28c8921a3, type: 3}
+  Layer: 8
 --- !u!1001 &5247691469124360381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -271,6 +273,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8416457242009233757}
     m_Modifications:
+    - target: {fileID: 4873074373228308897, guid: 4ae27e30acf0e9449986527fc69ccc85, type: 3}
+      propertyPath: Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4911767135365647944, guid: 4ae27e30acf0e9449986527fc69ccc85, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -437,3 +443,4 @@ MonoBehaviour:
   texOri:
   - {fileID: 2800000, guid: 9465a509a885b804485ca54558052352, type: 3}
   - {fileID: 2800000, guid: 0212212dd7440ac418e9bce28c8921a3, type: 3}
+  Layer: 8

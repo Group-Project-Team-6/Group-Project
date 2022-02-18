@@ -12,6 +12,7 @@ public class PaintableWall : MonoBehaviour
     public float PlaneWidth = 10;
     public List<Texture2D> tex;
     public List<Texture2D> texOri;
+    public int Layer;
     Mesh mesh;
     // Start is called before the first frame update
     void Awake()
@@ -61,7 +62,7 @@ public class PaintableWall : MonoBehaviour
             {
                 TexInit();
                 SplashBall ball = collision.gameObject.GetComponent<SplashBall>();
-                gameObject.layer = 0;
+                gameObject.layer = Layer;
                 if (SplashManager.approach == 1)
                 {
                     int mIndex = 0;

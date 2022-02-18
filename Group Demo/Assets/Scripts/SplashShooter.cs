@@ -12,10 +12,6 @@ public class SplashShooter : MonoBehaviour
     public int index = 0;
     public float shotHeight;
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()

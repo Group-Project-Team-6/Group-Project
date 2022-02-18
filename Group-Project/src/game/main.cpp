@@ -20,7 +20,7 @@ using namespace NCL;
 int main() {
 
 	//Setup window
-		glfwSetErrorCallback(glfw_error_callback);
+	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
 		return 1;
 

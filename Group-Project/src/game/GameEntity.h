@@ -47,11 +47,11 @@ public:
 	}
 
 	btTransform& GetbtTransform() {
-		return btTransform;
+		return bttransform;
 	}
 
 	void SetbtTransform(btTransform newbtTransform) {
-		btTransform = newbtTransform;
+		bttransform = newbtTransform;
 	}
 
 	bool IsActive() const {
@@ -68,16 +68,17 @@ public:
 
 	void UpdateRenderPositions() {
 
+		bttransform = rigidBody->getWorldTransform();
 
+		btRot = bttransform.getRotation();
+		btPos = bttransform.getOrigin();
 
-		//Quaternion NCLRot = transform.GetOrientation();
-		//Vector3 NCLPos = transform.GetPosition();
+		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
+		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
 
-		//btQuaternion btRot = { NCLRot.x, NCLRot.y, NCLRot.z };
-		//btVector3 btPos = { NCLPos.x, NCLPos.y, NCLPos.z };
+		transform.SetOrientation(nclRot);
+		transform.SetPosition(nclPos);
 
-		//btTransform.setRotation(btRot);
-		//btTransform.setOrigin(btPos);
 	}
 
 protected:
@@ -85,7 +86,12 @@ protected:
 	btRigidBody* rigidBody;
 	
 	Transform transform;
-	btTransform btTransform;
+	btTransform bttransform;
+
+	btQuaternion btRot;
+	btVector3 btPos;
+	Quaternion nclRot;
+	Vector3 nclPos;
 
 	string name;
 

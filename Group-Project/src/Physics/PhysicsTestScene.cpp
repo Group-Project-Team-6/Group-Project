@@ -95,6 +95,8 @@ void PhysicsTestScene::InitScene() {
 
 	int sphereMass = 10;
 	btVector3 sphereInertia(0, 0, 0);
+	sphere->GetbtTransform().setOrigin({ 0, 25, -200 });
+	sphere->GetbtTransform().setRotation({ 0, 0, 0, 1 });
 
 	btDefaultMotionState* sphereMotion = new btDefaultMotionState(sphere->GetbtTransform());
 	btCollisionShape* sphereShape = new btSphereShape(0.01);
@@ -119,6 +121,8 @@ void PhysicsTestScene::InitScene() {
 	//ground->ConvertTobtTransform();
 
 	int groundMass = 0;
+	ground->GetbtTransform().setOrigin({ 0, 0, -200 });
+	ground->GetbtTransform().setRotation({ 0, 0, 0, 1 });
 
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 1, 50 });
@@ -138,8 +142,10 @@ void PhysicsTestScene::UpdateGame(float dt) {
 	UpdateKeys();
 	renderer->Render();
 
-	//Update RenderObject Function
 	world->UpdatePositions();
+
+
+
 }
 
 void PhysicsTestScene::UpdateKeys() {

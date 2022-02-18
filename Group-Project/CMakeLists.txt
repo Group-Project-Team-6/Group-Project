@@ -170,7 +170,7 @@ endif()
 
 target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
-target_link_libraries(CSC8503 Common OpenGLRendering)
+target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
 

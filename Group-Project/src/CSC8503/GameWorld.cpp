@@ -63,6 +63,6 @@ void GameWorld::UpdateWorld(float dt) {
 
 void GameWorld::UpdatePositions() {
 	for (GameEntity* g : gameObjects) {
-		g->UpdateRenderPositions;
+		g->UpdateRenderPositions();
 	}
 }

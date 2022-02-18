@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -13,6 +14,12 @@ public class MapGenerator : MonoBehaviour
     public int length;
     List<string> maze;
     List<GameObject> Q;
+    GameObject floor;
+    GameObject wall1;
+    GameObject wall2;
+    GameObject wall3;
+    GameObject wall4;
+    public TextMeshPro tmpp;
 
     // Start is called before the first frame update
     private void Awake()
@@ -22,6 +29,11 @@ public class MapGenerator : MonoBehaviour
         Q.Add(transform.Find("Q2").gameObject);
         Q.Add(transform.Find("Q3").gameObject);
         Q.Add(transform.Find("Q4").gameObject);
+        floor = transform.Find("Ground").gameObject;
+        wall1 = transform.Find("Wall1").gameObject;
+        wall2 = transform.Find("Wall2").gameObject;
+        wall3 = transform.Find("Wall3").gameObject;
+        wall4 = transform.Find("Wall4").gameObject;
     }
     void Start()
     { 
@@ -39,7 +51,17 @@ public class MapGenerator : MonoBehaviour
     {
         mazeGen.Generate(length, width);
         LoadMaze();
-        for(int i = 0; i < 4; i++)
+        floor.transform.localScale = new Vector3(length * unitLength * 0.2f, 1, width * unitLength * 0.2f);
+
+        wall1.transform.localScale = new Vector3(length * unitLength * 2.0f, maze.Count * unitLength, 2);
+        wall1.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, width * unitLength);
+        wall2.transform.localScale = new Vector3(length * unitLength * 2.0f, maze.Count * unitLength, 2);
+        wall2.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, -width * unitLength);
+        wall3.transform.localScale = new Vector3(2, maze.Count * unitLength , length * unitLength * 2.0f);
+        wall3.transform.localPosition = new Vector3(-length * unitLength, maze.Count * unitLength * 0.5f - 1.5f, 0);
+        wall4.transform.localScale = new Vector3(2, maze.Count * unitLength, length * unitLength * 2.0f);
+        wall4.transform.localPosition = new Vector3(length * unitLength, maze.Count * unitLength * 0.5f  - 1.5f, 0);
+        for (int i = 0; i < 4; i++)
         {
             for (int level = 0; level < maze.Count; level++)
             {

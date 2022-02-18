@@ -60,3 +60,9 @@ void GameWorld::UpdateWorld(float dt) {
 		std::random_shuffle(gameObjects.begin(), gameObjects.end());
 	}
 }
+
+void GameWorld::UpdatePositions() {
+	for (GameEntity* g : gameObjects) {
+		g->UpdateRenderPositions();
+	}
+}

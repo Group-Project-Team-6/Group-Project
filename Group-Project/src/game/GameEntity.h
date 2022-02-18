@@ -2,7 +2,10 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "../common/RenderObject.h"
+
+#include "../Common/RenderObject.h"
+#include "../Physics/PhysicsObject.h"
+
 #include "../CSC8503/Transform.h"
 
 #include <vector>
@@ -10,14 +13,13 @@
 using std::vector;
 using std::string;
 
-using namespace NCL;
-using namespace CSC8503;
 
 class GameEntity {
 public:
 	GameEntity(string name = "");
 	~GameEntity();
 
+	//Graphics
 	RenderObject* GetRenderObject() const {
 		return renderObject;
 	}
@@ -26,22 +28,7 @@ public:
 		renderObject = newObject;
 	}
 
-	btCollisionObject* GetCollisionObject() const {
-		return collisionObject;
-	}
-
-	void SetCollisionObject(btCollisionObject* newCollisionObject) {
-		collisionObject = newCollisionObject;
-	}
-
-	btDefaultMotionState* GetMotionState() const {
-		return motionState;
-	}
-
-	void SetMotionState(btDefaultMotionState* newMotionState) {
-		motionState = newMotionState;
-	}
-
+	//Physics
 	btRigidBody* GetRigidBody() const {
 		return rigidBody;
 	}
@@ -50,12 +37,21 @@ public:
 		rigidBody = newRigidBody;
 	}
 
-	btCollisionShape* GetCollisionShape() {
-		return collisionShape;
+	//General
+	Transform& GetTransform(){
+		return transform;
 	}
 
-	void SetCollisionShape(btCollisionShape* newCollisionShape) {
-		collisionShape = newCollisionShape;
+	void SetTransform(Transform newtransform) {
+		transform = newtransform;
+	}
+
+	btTransform& GetbtTransform() {
+		return bttransform;
+	}
+
+	void SetbtTransform(btTransform newbtTransform) {
+		bttransform = newbtTransform;
 	}
 
 	bool IsActive() const {
@@ -70,17 +66,32 @@ public:
 		return worldID;
 	}
 
-	Transform& ConvertbtTransform(btTransform);
+	void UpdateRenderPositions() {
+
+		bttransform = rigidBody->getWorldTransform();
+
+		btRot = bttransform.getRotation();
+		btPos = bttransform.getOrigin();
+
+		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
+		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
+
+		transform.SetOrientation(nclRot);
+		transform.SetPosition(nclPos);
+
+	}
 
 protected:
 	RenderObject* renderObject;
-	btCollisionObject* collisionObject;
-
-	btCollisionShape* collisionShape;
-	btDefaultMotionState* motionState;
 	btRigidBody* rigidBody;
 	
-	Transform physicsTransform;
+	Transform transform;
+	btTransform bttransform;
+
+	btQuaternion btRot;
+	btVector3 btPos;
+	Quaternion nclRot;
+	Vector3 nclPos;
 
 	string name;
 

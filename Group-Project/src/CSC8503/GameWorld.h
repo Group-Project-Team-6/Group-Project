@@ -36,6 +36,8 @@ namespace NCL {
 
 			virtual void UpdateWorld(float dt);
 
+			void UpdatePositions();
+
 			void OperateOnContents(GameObjectFunc f);
 
 			void GetObjectIterators(

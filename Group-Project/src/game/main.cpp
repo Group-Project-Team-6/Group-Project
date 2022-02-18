@@ -1,4 +1,4 @@
-#include "../common/Window.h"
+#include "../Common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
 
 #include <iostream>
@@ -14,8 +14,8 @@ int main() {
 		return -1;
 	}
 	srand(time(0));
-	w->ShowOSPointer(true);
-	w->LockMouseToWindow(false);
+	w->ShowOSPointer(false);
+	w->LockMouseToWindow(true);
 
 	PhysicsTestScene* g = new PhysicsTestScene();
 	w->GetTimer()->GetTimeDeltaSeconds();
@@ -39,6 +39,7 @@ int main() {
 
 		g->UpdateGame(dt);
 	}
+
 	Window::DestroyGameWindow();
 
 	return 0;

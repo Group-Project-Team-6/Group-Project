@@ -4,7 +4,9 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "../CSC8503/GameTechRenderer.h"
+//#include "../Physics/btNClmotionState.h"
 #include "../game/GameEntity.h"
+#include "../Physics/btNClmotionState.h"
 
 class PhysicsTestScene {
 	public:
@@ -17,6 +19,8 @@ class PhysicsTestScene {
 	private:
 		void InitAssets();
 		void InitScene();
+		void InitCamera();
+		void UpdateKeys();
 
 		int maxProxies;
 		btVector3 worldAabbMin;
@@ -28,11 +32,18 @@ class PhysicsTestScene {
 		btSequentialImpulseConstraintSolver* solver;
 		btDiscreteDynamicsWorld* dynamicsWorld;
 
+		btDefaultMotionState* sphereMotion;
+
 		GameEntity* sphere;
 		GameEntity* ground;
 
 		OGLMesh* sphereMesh = nullptr;
+		OGLMesh* cubeMesh = nullptr;
+
 		OGLTexture* basicTex = nullptr;
 		OGLShader* basicShader = nullptr;
+
+		GameTechRenderer* renderer;
+		GameWorld* world;
 };
 

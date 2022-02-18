@@ -27,7 +27,7 @@ https://research.ncl.ac.uk/game/
 #include "glad\glad.h"
 
 #include "GL/GL.h"
-#include "KHR/WGLext.h"
+#include "KHR/wglext.h"
 
 PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 #endif

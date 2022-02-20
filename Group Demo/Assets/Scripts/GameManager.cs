@@ -1,38 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
     public float gameTime;
-    public int Score;
+    public int Team1Score;
+    public int Team2Score;
 
-    // Start is called before the first frame update
+    public bool team1Win;
+
+    int maxPoints;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            print("Duplicated GameManager");
+        }
+    }
+
     void Start()
     {
-        //Get Player Data
         gameTime = 300;
+
+        var score = GetComponent<Score>();
+        score.onCollect.AddListener(GivePoints);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Subtract tick from timer
-        //Update Timer;   
+        gameTime -= Time.deltaTime;
+        print("GameTime " + gameTime); 
 
-        if (Timer <= 0)
+        if (gameTime <= 0)
         {
-            //End Game Function
+            //Team1Score > Team2Score
+            //Bool Team1Win = true;
+            //else Team1Win = false
+            EndGame();
         }
     }
 
-    //void OnEventScore()
-        //if
-        //Get items in level
-        //Call EndGame
+    void GivePoints()
+    {
+        //if Team1 Layer Collision
+        Team1Score++;
+        //Change HUD Data
+
+        //else Team2 Layer Collision
+        Team2Score++;
+        //Change HUD Data
+
+        if(Team1Score > (maxPoints/2 + 1))
+        {
+            EndGame(); //Pass Bool  True
+        }
+        
+        if( Team2Score > (maxPoints / 2 + 1))
+        {
+            EndGame(); //Pass Bool False
+        }
+    }
 
     void EndGame()
     {
-
+        //Load End Scene
     }
 }

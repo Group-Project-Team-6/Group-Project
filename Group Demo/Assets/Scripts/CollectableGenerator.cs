@@ -12,9 +12,7 @@ public class CollectableGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //read map
-        //find positions
-        //place collectables
+              
     }
 
     // Update is called once per frame
@@ -53,7 +51,7 @@ public class CollectableGenerator : MonoBehaviour
             int y = Random.Range(0, sizeY);
             int x = Random.Range(0, sizeX);
 
-            if (map2DArray[x, y] == 'S')
+            if (map2DArray[x, y] == 'P')
             {
                 positions[placed, 0] = x;
                 positions[placed, 1] = y;
@@ -67,7 +65,7 @@ public class CollectableGenerator : MonoBehaviour
     {
         float translate = 0;
 
-        for (int i = 0; i < positions.GetLength(x); i++)
+        for (int i = 0; i < positions.GetLength(0); i++)
         {
             Instantiate(collectable, new Vector3(positions[i, 0] * translate, level * translate, positions[i, 1] * translate), Quaternion.identity);
         }

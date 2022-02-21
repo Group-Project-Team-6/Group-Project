@@ -1,7 +1,8 @@
 #pragma once
 #include "../../Common/TextureBase.h"
 #include <string>
-#include <vulkan\vulkan.hpp> //
+
+#include <vulkan\vulkan.hpp>
 #include "VulkanRenderer.h"
 
 namespace NCL {

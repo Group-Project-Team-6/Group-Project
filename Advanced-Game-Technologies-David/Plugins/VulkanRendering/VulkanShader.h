@@ -11,7 +11,7 @@
 #include <minwindef.h>
 #endif
 
-#include "Vulkan/vulkan.hpp"
+#include <vulkan/vulkan.hpp>
 
 #include "../../Common/ShaderBase.h"
 #include <string>

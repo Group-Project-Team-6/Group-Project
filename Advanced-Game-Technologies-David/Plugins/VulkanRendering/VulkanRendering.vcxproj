@@ -93,7 +93,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>NOMINMAX;VK_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.2.198.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.2.198.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,6 +140,7 @@
     <ClInclude Include="VulkanShader.h" />
     <ClInclude Include="VulkanShaderBuilder.h" />
     <ClInclude Include="VulkanTexture.h" />
+    <ClInclude Include="VulkanUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VulkanDescriptorSetLayoutBuilder.cpp" />

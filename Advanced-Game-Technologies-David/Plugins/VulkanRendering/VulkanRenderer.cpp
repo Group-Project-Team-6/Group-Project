@@ -3,6 +3,7 @@
 #include "VulkanTexture.h"
 
 #include "../../Common/TextureLoader.h"
+#include "VulkanUtility.h"
 
 #ifdef WIN32
 #include "../../Common/Win32Window.h"
@@ -13,6 +14,7 @@ using namespace NCL;
 using namespace Rendering;
 
 VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
+	
 	depthBuffer		= nullptr;
 	frameBuffers	= nullptr;
 
@@ -67,7 +69,7 @@ VulkanRenderer::~VulkanRenderer() {
 bool VulkanRenderer::InitInstance() {
 	vk::ApplicationInfo appInfo = vk::ApplicationInfo(this->hostWindow.GetTitle().c_str());
 
-	appInfo.apiVersion = VK_MAKE_VERSION(1, 1, 0);
+	appInfo.apiVersion = VK_MAKE_VERSION(1, 2, 0);
 
 	const char* usedExtensions[] =	{
 		VK_KHR_SURFACE_EXTENSION_NAME,
@@ -107,7 +109,7 @@ bool VulkanRenderer::InitGPUDevice() {
 
 	std::cout << "Vulkan using physical device " << gpu.getProperties().deviceName << std::endl;
 
-	const char* layerNames[]		= { "VK_LAYER_LUNARG_standard_validation" };
+	const char* layerNames[]		= { "VK_LAYER_KHRONOS_validation" };
 	const char* extensionNames[]	= { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	float queuePriority = 0.0f;
@@ -130,11 +132,11 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setPpEnabledLayerNames(layerNames)
 		.setEnabledExtensionCount(sizeof(extensionNames) / sizeof(char*))
 		.setPpEnabledExtensionNames(extensionNames);
-
+	
 	InitSurface();
+	device = gpu.createDevice(createInfo);
 	InitDeviceQueue();
-
-	device		= gpu.createDevice(createInfo);
+	//device		= gpu.createDevice(createInfo);
 	deviceQueue = device.getQueue(gfxQueueIndex, 0);
 	deviceMemoryProperties = gpu.getMemoryProperties();
 
@@ -540,7 +542,7 @@ void	VulkanRenderer::PresentScreenImage() {
 bool VulkanRenderer::CreateDefaultFrameBuffers() {
 	if (frameBuffers) {
 		for (unsigned int i = 0; i < numFrameBuffers; ++i) {
-			device.destroyFramebuffer(frameBuffers[i]);
+			device.destroyFramebuffer(frameBuffers[i]); //potential out of index?
 		}
 	}
 	else {
@@ -602,12 +604,13 @@ void	VulkanRenderer::InitDefaultDescriptorPool() {
 }
 
 void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const string& debugName) {
-	device.setDebugUtilsObjectNameEXT(
-		vk::DebugUtilsObjectNameInfoEXT()
-		.setObjectType(t)
-		.setObjectHandle(handle)
-		.setPObjectName(debugName.c_str()), *dispatcher
-	);
+	std::cout << debugName << std::endl;
+	//device.setDebugUtilsObjectNameEXT(
+	//	vk::DebugUtilsObjectNameInfoEXT()
+	//	.setObjectType(t)
+	//	//.setObjectHandle(handle)
+	//	.setPObjectName(debugName.c_str()), *dispatcher
+	//);
 };
 
 void	VulkanRenderer::UpdateImageDescriptor(vk::DescriptorSet& set, VulkanTexture* tex, vk::Sampler sampler, vk::ImageView forceView, vk::ImageLayout forceLayout, int bindingNum) {

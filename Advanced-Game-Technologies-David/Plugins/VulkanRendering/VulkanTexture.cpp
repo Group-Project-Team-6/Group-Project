@@ -180,8 +180,8 @@ VulkanTexture* VulkanTexture::GenerateTextureInternal(int width, int height, int
 
 	tex->defaultView = tex->GenerateDefaultView(tex->aspectType);
 
-	vkRenderer->SetDebugName(vk::ObjectType::eImage, (uint64_t)tex->image.operator VkImage(), debugName);
-	vkRenderer->SetDebugName(vk::ObjectType::eImageView, (uint64_t)tex->defaultView.operator VkImageView(), debugName);
+	vkRenderer->SetDebugName(vk::ObjectType::eImage, (uint64_t)(VkImage)tex->image, debugName); // defaultView.operator VkImage()
+	vkRenderer->SetDebugName(vk::ObjectType::eImageView, (uint64_t)(VkImageView)tex->defaultView, debugName); //defaultView.operator VkImageView()
 
 	tex->layout = outLayout; //not strictly true until queue submit
 	vk::CommandBuffer tempBuffer = vkRenderer->BeginCmdBuffer();

@@ -39,6 +39,9 @@
     <ClInclude Include="VulkanRenderPassBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanUtility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VulkanMesh.cpp">

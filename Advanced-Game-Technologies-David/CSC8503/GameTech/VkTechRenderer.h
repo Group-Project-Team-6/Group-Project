@@ -14,46 +14,46 @@ namespace NCL {
 
 		class VkTechRenderer : public VulkanRenderer {
 		public:
-			VkTechRenderer(GameWorld& world);
+			VkTechRenderer();
 			~VkTechRenderer();
 
 		protected:
-			void RenderFrame()	override;
+			void	RenderFrame()	override;
 
-			void	InitDefaultRenderPass() override;
-			void	InitDefaultDescriptorPool() override;
+			void	InitDefaultRenderPass() override { VulkanRenderer::InitDefaultRenderPass(); };
+			void	InitDefaultDescriptorPool() override { VulkanRenderer::InitDefaultDescriptorPool(); };
 
 
-			//Matrix4 SetupDebugLineMatrix()	const override;
-			//Matrix4 SetupDebugStringMatrix()const override;
+			//Matrix4 SetupDebugLineMatrix()	const;
+			//Matrix4 SetupDebugStringMatrix()const;
 
-			VulkanShader* defaultShader;
+			//VulkanShader* defaultShader;
 
-			GameWorld& gameWorld;
+			//GameWorld& gameWorld;
 
-			void BuildObjectList();
-			void SortObjectList();
-			void RenderShadowMap();
-			void RenderCamera();
-			void RenderSkybox();
+			//void BuildObjectList();
+			//void SortObjectList();
+			//void RenderShadowMap();
+			//void RenderCamera();
+			//void RenderSkybox();
 
-			void LoadSkybox();
+			//void LoadSkybox();
 
-			vector<const RenderObject*> activeObjects;
+			//vector<const RenderObject*> activeObjects;
 
-			VulkanShader* skyboxShader;
-			VulkanMesh* skyboxMesh;
-			VulkanTexture* skyboxTex;
+			//VulkanShader* skyboxShader;
+			//VulkanMesh* skyboxMesh;
+			//VulkanTexture* skyboxTex;
 
-			//shadow mapping things
-			OGLShader* shadowShader;
-			VulkanTexture* shadowTex;
-			VulkanTexture* shadowFBO;
-			Matrix4     shadowMatrix;
+			////shadow mapping things
+			//OGLShader* shadowShader;
+			//VulkanTexture* shadowTex;
+			//VulkanTexture* shadowFBO;
+			//Matrix4     shadowMatrix;
 
-			Vector4		lightColour;
-			float		lightRadius;
-			Vector3		lightPosition;
+			//Vector4		lightColour;
+			//float		lightRadius;
+			//Vector3		lightPosition;
 		};
 	}
 }

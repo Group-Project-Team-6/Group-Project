@@ -147,6 +147,16 @@ set_property(TARGET FMOD PROPERTY
 	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/FMOD/api/core/inc"
 )
 
+add_library(Audio
+	src/Audio/common.h
+	src/Audio/common_platform.h
+	src/Audio/AudioManager.h
+
+	src/Audio/common.cpp
+	src/Audio/common_platform.cpp
+	src/Audio/AudioManager.cpp
+)
+
 #Executable
 add_executable(Game
 	src/game/GameEntity.h
@@ -168,10 +178,11 @@ else()
 	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
 endif()
 
-target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
+target_link_libraries(Game Physics OpenGLRendering CSC8503 Common Audio)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
+target_link_libraries(Audio FMOD)
 
 print(PROJECT_NAME CMAKE_SOURCE_DIR)

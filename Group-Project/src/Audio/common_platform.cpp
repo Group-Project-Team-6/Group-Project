@@ -21,18 +21,20 @@ static bool gPaused = false;
 static std::vector<char *> gPathList;
 
 bool Common_Private_Test;
-int Common_Private_Argc;
-char** Common_Private_Argv;
+//int Common_Private_Argc;
+//char** Common_Private_Argv;
 void (*Common_Private_Update)(unsigned int*);
 void (*Common_Private_Print)(const char*);
 void (*Common_Private_Close)();
 
+/*
 int main(int argc, char** argv)
 {
     Common_Private_Argc = argc;
     Common_Private_Argv = argv;
     return FMOD_Main();
 }
+*/
 
 void Common_Init(void** /*extraDriverData*/)
 {
@@ -236,7 +238,7 @@ const char *Common_MediaPath(const char *fileName)
     if (!pathPrefix)
     {
         const char *emptyPrefix = "";
-        const char *mediaPrefix = "../media/";
+        const char *mediaPrefix = "../Assets/Sounds/";
         FILE *file = fopen(fileName, "r");
         if (file)
         {

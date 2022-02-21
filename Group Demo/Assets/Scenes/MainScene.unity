@@ -612,6 +612,50 @@ Transform:
   m_Father: {fileID: 538814344}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &496549477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 496549479}
+  - component: {fileID: 496549478}
+  m_Layer: 0
+  m_Name: CollectableGen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &496549478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496549477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a7c1e45de987444c87b1a2e505e94cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectable: {fileID: 249349272}
+--- !u!4 &496549479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496549477}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &538814343
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mazeGen: {fileID: 647825621}
+  collGen: {fileID: 496549478}
   mMap: {fileID: 1076133614}
   unitLength: 3
   width: 10
@@ -710,7 +755,6 @@ GameObject:
   m_Component:
   - component: {fileID: 647825620}
   - component: {fileID: 647825621}
-  - component: {fileID: 647825622}
   m_Layer: 0
   m_Name: MazeGen
   m_TagString: Untagged
@@ -746,19 +790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 10
   height: 10
---- !u!114 &647825622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 647825619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a7c1e45de987444c87b1a2e505e94cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collectable: {fileID: 249349272}
+  floors: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1239,9 +1271,9 @@ MonoBehaviour:
   - {fileID: 4724322947949776994, guid: 191941e75742de7498ebfed806ebc84c, type: 3}
   - {fileID: 3196099884898106603, guid: ded2dbfece626ae4d9c10c95609ed9cb, type: 3}
   - {fileID: 566793471547478826, guid: 55144c87369fac447887bb0a5aabab2d, type: 3}
-  - {fileID: 566793471547478826, guid: 55144c87369fac447887bb0a5aabab2d, type: 3}
-  - {fileID: 566793471547478826, guid: 55144c87369fac447887bb0a5aabab2d, type: 3}
-  - {fileID: 566793471547478826, guid: 55144c87369fac447887bb0a5aabab2d, type: 3}
+  - {fileID: 523733256187586029, guid: 39969980976d8654c89f0c262a03e299, type: 3}
+  - {fileID: 5921341523769960084, guid: f608aa14a84fd2c40ba823e7d476acc7, type: 3}
+  - {fileID: 1327244152648335947, guid: d4d29a684e842a44fbebdb5a5dee46dd, type: 3}
   - {fileID: 0}
   moduleMapList: 230050003e0041003c0056005300
   writeModuleMap: 0

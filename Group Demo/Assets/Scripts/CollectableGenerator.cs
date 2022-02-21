@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CollectableGenerator : MonoBehaviour
 {
-    char[] mapChars;
+    string mapChars;
     char[,] map2DArray;
     int[,] positions;
     public GameObject collectable;
@@ -21,23 +21,22 @@ public class CollectableGenerator : MonoBehaviour
         
     }
 
-    public void Collectables(int level, string map, int sizeX, int sizeY)
+    public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength)
     {
         findPositions(map, sizeX, sizeY);
-        spawnCollectables(level);
+        spawnCollectables(level, unitLength);
     }
 
     void findPositions(string map, int sizeX, int sizeY)
     {
         map2DArray = new char[sizeX, sizeY];
-        mapChars = map.ToCharArray();
         int i = 0;
 
         for (int y = 0; sizeY > y; y++)
         {
             for (int x = 0; sizeX > x; x++)
             {
-                map2DArray[x, y] = mapChars[i];
+                map2DArray[x, y] = map[i];
                 i++;
             }
         }
@@ -61,13 +60,13 @@ public class CollectableGenerator : MonoBehaviour
 
     }
 
-    void spawnCollectables(int level)
+    void spawnCollectables(int level, float unitLength)
     {
         float translate = 0;
 
         for (int i = 0; i < positions.GetLength(0); i++)
         {
-            Instantiate(collectable, new Vector3(positions[i, 0] * translate, level * translate, positions[i, 1] * translate), Quaternion.identity);
+            Instantiate(collectable, new Vector3(positions[i, 0] *  (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] *  (unitLength * 0.5f)), Quaternion.identity,this.transform);
         }
     }
 

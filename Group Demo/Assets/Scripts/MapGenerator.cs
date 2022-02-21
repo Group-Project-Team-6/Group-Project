@@ -8,6 +8,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public MazeGenerator mazeGen;
+    public CollectableGenerator collGen;
     public ModuleMap mMap;
     public int unitLength = 10;
     public int width;
@@ -50,7 +51,7 @@ public class MapGenerator : MonoBehaviour
     public void Generate()
     {
         mazeGen.Generate(length, width);
-        LoadMaze();
+        LoadMazeFromList();
         InitBackgrounds();
         for (int i = 0; i < 4; i++)
         {
@@ -63,6 +64,7 @@ public class MapGenerator : MonoBehaviour
                         AddChild(i,GetSymbol(level, l, w), level, l, w);
                     }
                 }
+                collGen.Collectables(level, maze[level], width, length, unitLength);
             }
         }
     }
@@ -87,7 +89,12 @@ public class MapGenerator : MonoBehaviour
         return maze[level][l * width + w];
     }
 
-    private void LoadMaze()
+    private void LoadMazeFromList()
+    {
+        maze = mazeGen.GetLevelStrings();
+    }
+
+    private void LoadMazeFromTxt()
     {
         maze = new List<string>();
         int index = 0;
@@ -131,7 +138,7 @@ public class MapGenerator : MonoBehaviour
             new Vector3(l * unitLength, level * unitLength, w * unitLength),
             new Quaternion(), Q[i].transform);
         g.transform.localScale = new Vector3(unitLength, unitLength, unitLength);
-        g.transform.localPosition = new Vector3(l * unitLength, level * unitLength, w * unitLength);
+        g.transform.localPosition = new Vector3(((float)l + 0.5f) * unitLength, level * unitLength, ((float)w + 0.5f) * unitLength);
     }
 
     private void DeleteChild()

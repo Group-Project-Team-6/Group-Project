@@ -531,6 +531,11 @@ MonoBehaviour:
   Team: 0
   Health: 0
   pc: {fileID: 0}
+--- !u!1 &249349272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  m_PrefabInstance: {fileID: 1828038626463526822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &339919219
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +710,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647825620}
   - component: {fileID: 647825621}
+  - component: {fileID: 647825622}
   m_Layer: 0
   m_Name: MazeGen
   m_TagString: Untagged
@@ -740,6 +746,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 10
   height: 10
+--- !u!114 &647825622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647825619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a7c1e45de987444c87b1a2e505e94cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectable: {fileID: 249349272}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,7 +1670,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1828038627731167136, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
       propertyPath: m_IsTrigger
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
       propertyPath: m_Name

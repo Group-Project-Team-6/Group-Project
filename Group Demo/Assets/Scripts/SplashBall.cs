@@ -50,7 +50,7 @@ public class SplashBall : MonoBehaviour
             Vector3 normal = collision.contacts[0].normal;
             Vector3 pt = transform.position + collision.contacts[0].separation * normal.normalized;
             Vector3 u = this.GetComponent<Rigidbody>().velocity;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 GameObject newSplash = Instantiate(
                     gameObject,
@@ -59,14 +59,14 @@ public class SplashBall : MonoBehaviour
                     this.transform.parent);
                 Vector3 dir = normal.normalized +
                     new Vector3(
-                        Random.Range(-1.0f, 1.0f),
-                        Random.Range(-1.0f, 1.0f),
-                        Random.Range(-1.0f, 1.0f)
+                        Random.Range(-0.2f, 0.2f),
+                        Random.Range(-0.2f, 0.2f),
+                        Random.Range(-0.2f, 0.2f)
                         );
                 
                 newSplash.GetComponent<Rigidbody>().velocity = 
                     (this.GetComponent<Rigidbody>().velocity.normalized + dir).normalized
-                    * this.GetComponent<Rigidbody>().velocity.magnitude * 0.5f;
+                    * this.GetComponent<Rigidbody>().velocity.magnitude * 0.05f;
                 SplashBall subSplashBall = newSplash.GetComponent<SplashBall>();
                 subSplashBall.radius = radius * 0.5f;
                 subSplashBall.mass = mass * 0.5f;

@@ -74,13 +74,13 @@ public class MapGenerator : MonoBehaviour
         floor.transform.localScale = new Vector3(length * unitLength * 0.2f, 1, width * unitLength * 0.2f);
 
         wall1.transform.localScale = new Vector3(length * unitLength * 2.0f, maze.Count * unitLength, 2);
-        wall1.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, width * unitLength);
+        wall1.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, width * unitLength + 1.0f);
         wall2.transform.localScale = new Vector3(length * unitLength * 2.0f, maze.Count * unitLength, 2);
-        wall2.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, -width * unitLength);
+        wall2.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, -width * unitLength - 1.0f);
         wall3.transform.localScale = new Vector3(2, maze.Count * unitLength, length * unitLength * 2.0f);
-        wall3.transform.localPosition = new Vector3(-length * unitLength, maze.Count * unitLength * 0.5f - 1.5f, 0);
+        wall3.transform.localPosition = new Vector3(-length * unitLength - 1.0f, maze.Count * unitLength * 0.5f - 1.5f, 0);
         wall4.transform.localScale = new Vector3(2, maze.Count * unitLength, length * unitLength * 2.0f);
-        wall4.transform.localPosition = new Vector3(length * unitLength, maze.Count * unitLength * 0.5f - 1.5f, 0);
+        wall4.transform.localPosition = new Vector3(length * unitLength + 1.0f, maze.Count * unitLength * 0.5f - 1.5f, 0);
     }
 
     private char GetSymbol(int level, int l, int w)

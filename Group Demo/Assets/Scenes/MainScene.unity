@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3819021}
   - component: {fileID: 3819023}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Splash Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 195290683}
   - component: {fileID: 195290680}
   - component: {fileID: 195290684}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +362,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195290674}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.58, y: 15.88, z: 0}
+  m_LocalPosition: {x: 12.58, y: 15.88, z: -3.79}
   m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -636,7 +636,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7c1e45de987444c87b1a2e505e94cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectable: {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  collectable:
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
+  - {fileID: 1828038627731167141, guid: 745b1d2bc5474d7499309ad4b01ac396, type: 3}
 --- !u!4 &496549479
 Transform:
   m_ObjectHideFlags: 0
@@ -1112,7 +1132,7 @@ GameObject:
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194226}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1508,7 +1528,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521388483}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23.15, y: 2.31, z: 0}
+  m_LocalPosition: {x: -23.15, y: -15.48, z: 28.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 195290675}
@@ -1670,10 +1690,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2fd9dae8149aa4facb85df509f120f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collectableGenerator: {fileID: 496549478}
+  collectableGen: {fileID: 496549477}
   gameTime: 0
   Team1Score: 0
   Team2Score: 0
-  team1Win: 0
+  team1Win: 1
+  scores: []
 --- !u!4 &2106238819
 Transform:
   m_ObjectHideFlags: 0

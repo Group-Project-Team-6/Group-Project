@@ -7,12 +7,13 @@ public class CollectableGenerator : MonoBehaviour
     string mapChars;
     char[,] map2DArray;
     int[,] positions;
-    public GameObject collectable;
+    public static int CollectableNumber = 20;
+    public GameObject[] collectable = new GameObject[CollectableNumber];
 
     // Start is called before the first frame update
     void Start()
     {
-              
+     
     }
 
     // Update is called once per frame
@@ -66,7 +67,7 @@ public class CollectableGenerator : MonoBehaviour
 
         for (int i = 0; i < positions.GetLength(0); i++)
         {
-            Instantiate(collectable, new Vector3(positions[i, 0] *  (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] *  (unitLength * 0.5f)), Quaternion.identity,this.transform);
+            //Instantiate(collectable, new Vector3(positions[i, 0] *  (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] *  (unitLength * 0.5f)), Quaternion.identity,this.transform);
         }
     }
 

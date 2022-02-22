@@ -9,21 +9,19 @@ public class Score : MonoBehaviour
     public int score = 1;
     public UnityEvent onCollect;
 
-    void Start()
+    void OnTriggerEnter(Collider other)
     {
-       
-    }
+        if(other.gameObject.layer == 10)
+        {
+            GameManager.gameManager.Team1Score++;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-       // if (Collsion)
-        //Invoke
-        //Destroy(gameObject);
-    }
-    void OnTriggerEnter()
-    {
-        Destroy(gameObject);
-        
+        else if (other.gameObject.layer == 11) 
+        { 
+            GameManager.gameManager.Team2Score++; 
+        }
+
+        onCollect.Invoke(); //Problems adding listeners
+        Destroy(gameObject);        
     }
 }

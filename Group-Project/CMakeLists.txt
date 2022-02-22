@@ -4,11 +4,15 @@ set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
 add_subdirectory(src/OpenGLRendering/KHR)
 add_compile_definitions(GLEW_STATIC)
 
+include(GNUInstallDirs)
+
 function(print)
 	foreach(var ${ARGN})
 		message("${var} = ${${var}}")
 	endforeach()
 endfunction()
+
+print(PROJECT_NAME CMAKE_SOURCE_DIR)
 
 #CSC8503 Component
 add_library(CSC8503
@@ -165,6 +169,7 @@ add_executable(Game
 	src/game/GameEntity.cpp
 )
 
+
 #Targeting Directories & Linking Libraries
 find_package(OpenGL REQUIRED)
 if(!OpenGL_FOUND)
@@ -178,6 +183,27 @@ else()
 	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
 endif()
 
+target_include_directories(Game
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
+		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+	PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}
+)
+
+install(TARGETS Game
+	EXPORT Game_Export
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		NAMELINK_SKIP
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(EXPORT Game_Export
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/game-${PROJECT_VERSION}
+)
+
 target_link_libraries(Game Physics OpenGLRendering CSC8503 Common Audio)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
@@ -185,4 +211,3 @@ target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
 target_link_libraries(Audio FMOD)
 
-print(PROJECT_NAME CMAKE_SOURCE_DIR)

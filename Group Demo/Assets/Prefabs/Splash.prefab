@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1959768347710300942}
   - component: {fileID: 230492613788011121}
   - component: {fileID: 7792705056578755434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Splash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

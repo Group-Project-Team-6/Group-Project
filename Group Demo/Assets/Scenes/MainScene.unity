@@ -706,9 +706,9 @@ MonoBehaviour:
   mazeGen: {fileID: 647825621}
   collGen: {fileID: 496549478}
   mMap: {fileID: 1076133614}
-  unitLength: 3
-  width: 10
-  length: 10
+  unitLength: 5
+  width: 7
+  length: 7
   tmpp: {fileID: 0}
 --- !u!1 &564822284
 GameObject:
@@ -1164,7 +1164,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 311
+    m_Bits: 439
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

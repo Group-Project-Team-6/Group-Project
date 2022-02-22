@@ -7,14 +7,25 @@ public class InputManager : MonoBehaviour
 {
 
     public GameObject g;
-
+    bool EscToggle = false;
     // Update is called once per frame
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
+            EscToggle = !EscToggle;
             Debug.Log("Escape button pressed");
-            g.SetActive(true);
+            if (EscToggle)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                g.SetActive(true);
+            }
+            else
+            {
+                ResumeGame();
+            }
+            
         }
 
 
@@ -22,6 +33,8 @@ public class InputManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         g.SetActive(false);
     }
 }

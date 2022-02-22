@@ -9,6 +9,7 @@ public class SplashBall : MonoBehaviour
     public float radius = 1.0f;
     public Color32 color = Color.black;
     public Texture2D tex;
+    GameObject self;
     // Start is called before the first frame update
     void Awake()
     {
@@ -18,7 +19,7 @@ public class SplashBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        life -= Time.deltaTime;
+        //life -= Time.deltaTime;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -28,7 +29,7 @@ public class SplashBall : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        Splash(collision);
+        //Splash(collision);
     }
 
     private void Splash(Collision collision)
@@ -45,16 +46,16 @@ public class SplashBall : MonoBehaviour
 
     private void SplashOut(Collision collision)
     {
-        if (radius > 0.25f)
+        if (radius > 0.6f)
         {
             Vector3 normal = collision.contacts[0].normal;
-            Vector3 pt = transform.position + collision.contacts[0].separation * normal.normalized;
+            Vector3 pt = transform.position + collision.contacts[0].separation* 2 * normal.normalized;
             Vector3 u = this.GetComponent<Rigidbody>().velocity;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 GameObject newSplash = Instantiate(
                     gameObject,
-                    pt,
+                    new Vector3(float.MaxValue, float.MaxValue, float.MaxValue),
                     new Quaternion(),
                     this.transform.parent);
                 Vector3 dir = normal.normalized +
@@ -63,15 +64,15 @@ public class SplashBall : MonoBehaviour
                         Random.Range(-0.2f, 0.2f),
                         Random.Range(-0.2f, 0.2f)
                         );
-                
                 newSplash.GetComponent<Rigidbody>().velocity = 
-                    (this.GetComponent<Rigidbody>().velocity.normalized + dir).normalized
-                    * this.GetComponent<Rigidbody>().velocity.magnitude * 0.05f;
+                    (u.normalized + dir).normalized
+                    * u.magnitude * 0.05f;
                 SplashBall subSplashBall = newSplash.GetComponent<SplashBall>();
                 subSplashBall.radius = radius * 0.5f;
                 subSplashBall.mass = mass * 0.5f;
                 subSplashBall.color = color;
                 subSplashBall.tex = tex;
+                subSplashBall.transform.position = pt;
 
             }
         }

@@ -248,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ps: {fileID: 3285327754564627923, guid: 51b8cfb7f1a273c40a6cbe85e57a2bd9, type: 3}
+  fromServer: 0
   sensitivity: 10
   fainted: 0
 --- !u!114 &361070960516126713
@@ -269,8 +270,8 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4278190335
   SplashTexs:
-  - {fileID: 2800000, guid: f2da6423a87788142b5ede7dc1fe7cd5, type: 3}
-  - {fileID: 2800000, guid: a1b669da2adedd947a93d54accc7ba83, type: 3}
+  - {fileID: 2800000, guid: e4b4044abe397c347b2937afd92d2b8f, type: 3}
+  - {fileID: 2800000, guid: a610a1aab7178834192ed09352705cfc, type: 3}
   index: 0
   shotHeight: 3
 --- !u!114 &361070960516126712

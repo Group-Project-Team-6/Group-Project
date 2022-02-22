@@ -14,6 +14,7 @@ public class PaintableWall : MonoBehaviour
     public List<Texture2D> texOri;
     public int Layer;
     Mesh mesh;
+    bool init = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -27,7 +28,12 @@ public class PaintableWall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!init) return;
+        for(int i = 0; i < mesh.subMeshCount; i++)
+        {
+            tex[i].Apply();
+        }
+       
     }
 
     void TexInit()
@@ -41,7 +47,7 @@ public class PaintableWall : MonoBehaviour
             //hitTex = new Texture2D(256, 256);
             for (int i = 0; i < mesh.subMeshCount; i++)
             {
-                tex.Add(new Texture2D((int)(128 * WidthRatio), (int)(128 * HeightRatio)));
+                tex.Add(new Texture2D((int)(64 * WidthRatio), (int)(64 * HeightRatio)));
                 transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
                 int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
                 transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);
@@ -50,6 +56,7 @@ public class PaintableWall : MonoBehaviour
                 tex[i].SetPixels32(0, 0, tex[i].width, tex[i].height, background);
                 tex[i].Apply();
             }
+            init = true;
         }
 
     }
@@ -85,7 +92,7 @@ public class PaintableWall : MonoBehaviour
                             int posX = u + halfX;
                             int posY = v + halfY;
                             if (posX > tex[mIndex].width - 1 || posX < 0 || posY > tex[mIndex].height - 1 || posY < 0) continue;
-                            if (c[i].a > 0.7)
+                            if (c[i].a > 0.7f)
                             {
                                 float factor = ((float)u / (float)SplashWidth) * ((float)v / (float)SplashHeight);
                                 tex[mIndex].SetPixel(posX, posY, new Color32(
@@ -97,7 +104,6 @@ public class PaintableWall : MonoBehaviour
 
                         }
                     }
-                    tex[mIndex].Apply();
                     //int w = tex.width - 1;
                     //int h = tex.height - 1;
                     //if (Mathf.Min(SplashWidth, w - (int)(uv.x * w)) != 0 && Mathf.Min(SplashHeight, h - (int)(uv.y * h)) != 0)

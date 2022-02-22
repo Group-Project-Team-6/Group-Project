@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 SPPPPP<###
 PPPPPPS###
 PPPPP#V###
@@ -8,3 +9,15 @@ PPPPPP#PPP
 P#PPPPPPPP
 P#PPPP#P#P
 PPP#PP#PPP
+=======
+####PPP#P<
+###PPPPPPP
+SPPPPP###P
+#PPP######
+SPPSPPPPPP
+##PPP####P
+##PPP<##VP
+##PPPP#PPP
+#####PPPP#
+##########
+>>>>>>> GUI

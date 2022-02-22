@@ -10,6 +10,10 @@ function(print)
 	endforeach()
 endfunction()
 
+add_library(GUI
+	src/GUI/gui.cpp
+)
+
 #CSC8503 Component
 add_library(CSC8503
 	src/CSC8503/GameTechRenderer.cpp
@@ -168,10 +172,14 @@ else()
 	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
 endif()
 
-target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
+target_link_libraries(Game Physics OpenGLRendering CSC8503 Common imgui)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
+<<<<<<< HEAD
 
 print(PROJECT_NAME CMAKE_SOURCE_DIR)
+=======
+target_link_libraries(GUI imgui)
+>>>>>>> GUI

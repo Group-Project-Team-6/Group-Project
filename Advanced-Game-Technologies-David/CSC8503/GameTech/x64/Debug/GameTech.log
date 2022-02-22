@@ -1,5 +1,6 @@
 ﻿  GameTechRenderer.cpp
   Main.cpp
+<<<<<<< HEAD
 H:\Git\Group-Project\Advanced-Game-Technologies-David\CSC8503\GameTech\Main.cpp(170,28): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
 H:\Git\Group-Project\Advanced-Game-Technologies-David\CSC8503\GameTech\Main.cpp(255,29): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
   TutorialGame.cpp
@@ -33,3 +34,11 @@ H:\Git\Group-Project\Advanced-Game-Technologies-David\CSC8503\GameTech\TutorialG
 H:\Git\Group-Project\Advanced-Game-Technologies-David\CSC8503\GameTech\TutorialGame.cpp(963,19): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
 H:\Git\Group-Project\Advanced-Game-Technologies-David\CSC8503\GameTech\Main.cpp(195): warning C4715:  '<lambda_216c4f6ae390cfe65338d3e6f7d58fa0>::operator()': not all control paths return a value
   GameTech.vcxproj -> H:\Git\Group-Project\Advanced-Game-Technologies-David\x64\Debug\GameTech.exe
+=======
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory
+  StateGameObject.cpp
+  TutorialGame.cpp
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory
+  Generating Code...
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Plugins\OpenGLRendering\OGLShader.h(11,10): error C1083:  Cannot open include file: 'glad\glad.h': No such file or directory
+>>>>>>> GUI

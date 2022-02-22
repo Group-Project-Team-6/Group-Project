@@ -28,5 +28,10 @@
   Win32Window.cpp
   Window.cpp
   Generating Code...
+<<<<<<< HEAD
 H:\Git\Group-Project\Advanced-Game-Technologies-David\Common\MeshMaterial.cpp(48,44): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
   Common.vcxproj -> H:\Git\Group-Project\Advanced-Game-Technologies-David\x64\Debug\Common.lib
+=======
+C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\Common\MeshMaterial.cpp(48,44): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Common.vcxproj -> C:\Users\c1022656\OneDrive - Newcastle University\Github\Team project\Group-Project\Advanced-Game-Technologies-David\x64\Debug\Common.lib
+>>>>>>> GUI

@@ -10,6 +10,10 @@ public class InputManager : MonoBehaviour
     static bool EscToggle = false;
 
     // Update is called once per frame
+    private void Awake()
+    {
+       
+    }
     void Update()
     {
         Debug.Log(Time.timeScale);

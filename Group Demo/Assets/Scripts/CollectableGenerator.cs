@@ -12,19 +12,19 @@ public class CollectableGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-              
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength)
+    public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength, Transform Q)
     {
         findPositions(map, sizeX, sizeY);
-        spawnCollectables(level, unitLength);
+        spawnCollectables(level, unitLength,Q);
     }
 
     void findPositions(string map, int sizeX, int sizeY)
@@ -41,7 +41,7 @@ public class CollectableGenerator : MonoBehaviour
             }
         }
 
-        int numCollectables = ((int)((sizeX * sizeY) * 0.2f));
+        int numCollectables = Mathf.Max(1, (int)((sizeX * sizeY) * 0.05f));
         positions = new int[numCollectables, 2];
         int placed = 0;
 
@@ -61,11 +61,18 @@ public class CollectableGenerator : MonoBehaviour
 
     }
 
-    void spawnCollectables(int level, float unitLength)
+    void spawnCollectables(int level, float unitLength, Transform t)
     {
         for (int i = 0; i < positions.GetLength(0); i++)
         {
-            Instantiate(collectable, new Vector3(positions[i, 0] *  (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] *  (unitLength * 0.5f)), Quaternion.identity,this.transform);
+            Instantiate(collectable,
+                new Vector3(0, 0, 0),
+                Quaternion.identity,
+                t)
+                .transform.localPosition = new Vector3(
+                    (0.5f + (float)positions[i, 1]) * unitLength,
+                    level * unitLength,
+                    (0.5f + (float)positions[i, 0]) * unitLength);
         }
     }
 

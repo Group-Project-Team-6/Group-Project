@@ -9,6 +9,8 @@ public class MapGenerator : MonoBehaviour
 {
     public MazeGenerator mazeGen;
     public CollectableGenerator collGen;
+    public PlayerSpawner pSpawner;
+    int[] playerCount = {0,0,0,0};
     public ModuleMap mMap;
     public int unitLength = 10;
     public int width;
@@ -61,10 +63,15 @@ public class MapGenerator : MonoBehaviour
                 {
                     for (int w = 0; w < width; w++)
                     {
-                        AddChild(i,GetSymbol(level, l, w), level, l, w);
+                        GameObject cell = AddChild(i, GetSymbol(level, l, w), level, l, w);
+                        if (playerCount[i] < 1 && l == length - 1 && level == 0 && i % 2 == 0 && GetSymbol(level, l, w) == 'P')
+                        {
+                            pSpawner.Spawn(i/2, cell.transform.position, Q[i].transform);
+                            playerCount[i]++;
+                        }
                     }
                 }
-                collGen.Collectables(level, maze[level], width, length, unitLength);
+                collGen.Collectables(level, maze[level], width, length, unitLength,Q[i].transform);
             }
         }
     }
@@ -130,15 +137,16 @@ public class MapGenerator : MonoBehaviour
        // Debug.Log("Leve: " + maze.Count);
     }
 
-    private void AddChild(int i, char symbol, int level, int l, int w)
+    private GameObject AddChild(int i, char symbol, int level, int l, int w)
     {
-        if (symbol == 'S' || !mMap.moduleMap.ContainsKey(symbol)) return;
+        if (symbol == 'S' || !mMap.moduleMap.ContainsKey(symbol)) return null;
         GameObject g = Instantiate(
             mMap.bank[mMap.moduleMap[symbol]],
-            new Vector3(l * unitLength, level * unitLength, w * unitLength),
+            new Vector3(0, 0,0),
             new Quaternion(), Q[i].transform);
         g.transform.localScale = new Vector3(unitLength, unitLength, unitLength);
         g.transform.localPosition = new Vector3(((float)l + 0.5f) * unitLength, level * unitLength, ((float)w + 0.5f) * unitLength);
+        return g;
     }
 
     private void DeleteChild()

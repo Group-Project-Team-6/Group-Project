@@ -6,9 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody rigBody;
     public ParticleSystem ps;
+    public bool fromServer;
     public float sensitivity;
     public bool fainted;
     private bool onGround;
+ 
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {   if (fainted)
+    {   if (fainted || fromServer)
         {
             return;
         }
@@ -51,11 +53,19 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (fainted || fromServer)
+        {
+            return;
+        }
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        if (fainted || fromServer)
+        {
+            return;
+        }
         //Debug.Log( collision.contacts[0].point);
         if (Vector3.Dot(collision.contacts[0].normal, Vector3.up) > 0.5f)
         {

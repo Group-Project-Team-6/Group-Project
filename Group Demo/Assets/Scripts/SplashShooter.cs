@@ -16,6 +16,7 @@ public class SplashShooter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!cam) return;
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             index++;

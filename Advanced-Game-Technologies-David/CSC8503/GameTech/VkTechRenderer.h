@@ -14,8 +14,11 @@ namespace NCL {
 
 		class VkTechRenderer : public VulkanRenderer {
 		public:
-			VkTechRenderer();
+			VkTechRenderer(GameWorld& gameWorld);
 			~VkTechRenderer();
+
+			void DrawString(const std::string& text, const Vector2& pos, const Vector4& colour = Vector4(0.75f, 0.75f, 0.75f, 1), float size = 20.0f);
+			void DrawLine(const Vector3& start, const Vector3& end, const Vector4& colour);
 
 		protected:
 			void	RenderFrame()	override;
@@ -29,7 +32,7 @@ namespace NCL {
 
 			//VulkanShader* defaultShader;
 
-			//GameWorld& gameWorld;
+			GameWorld& gameWorld;
 
 			//void BuildObjectList();
 			//void SortObjectList();
@@ -38,6 +41,7 @@ namespace NCL {
 			//void RenderSkybox();
 
 			//void LoadSkybox();
+			
 
 			//vector<const RenderObject*> activeObjects;
 
@@ -46,7 +50,7 @@ namespace NCL {
 			//VulkanTexture* skyboxTex;
 
 			////shadow mapping things
-			//OGLShader* shadowShader;
+			//VulkanShader* shadowShader;
 			//VulkanTexture* shadowTex;
 			//VulkanTexture* shadowFBO;
 			//Matrix4     shadowMatrix;

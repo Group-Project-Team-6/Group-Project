@@ -603,7 +603,7 @@ void	VulkanRenderer::InitDefaultDescriptorPool() {
 	defaultDescriptorPool = device.createDescriptorPool(poolCreate);
 }
 
-void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const string& debugName) {
+void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const std::string& debugName) {
 	std::cout << debugName << std::endl;
 	//device.setDebugUtilsObjectNameEXT(
 	//	vk::DebugUtilsObjectNameInfoEXT()

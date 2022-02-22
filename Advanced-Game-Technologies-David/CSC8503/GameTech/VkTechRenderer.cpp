@@ -3,7 +3,7 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
-VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()) {
+VkTechRenderer::VkTechRenderer(GameWorld& gameWorld) : VulkanRenderer(*Window::GetWindow()), gameWorld(gameWorld) {
 
 }
 

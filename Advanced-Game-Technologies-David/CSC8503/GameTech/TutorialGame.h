@@ -1,5 +1,6 @@
 #pragma once
 #include "GameTechRenderer.h"
+#include "VkTechRenderer.h"
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "StateGameObject.h"
 #include "../CSC8503Common/NavigationGrid.h"
@@ -124,7 +125,7 @@ namespace NCL {
 			StateGameObject* testStateObject;
 
 
-			GameTechRenderer*	renderer;
+			VkTechRenderer*	renderer;
 			PhysicsSystem*		physics;
 			GameWorld*			world;
 
@@ -137,17 +138,32 @@ namespace NCL {
 			GameObject* selectionObject = nullptr;
 			GameObject* lookedObject	= nullptr;
 
-			OGLMesh*	capsuleMesh = nullptr;
-			OGLMesh*	cubeMesh	= nullptr;
-			OGLMesh*	sphereMesh	= nullptr;
-			OGLTexture* basicTex	= nullptr;
-			OGLShader*	basicShader = nullptr;
+			//OGLMesh*	capsuleMesh = nullptr;
+			//OGLMesh*	cubeMesh	= nullptr;
+			//OGLMesh*	sphereMesh	= nullptr;
+			//OGLTexture* basicTex	= nullptr;
+			//OGLShader*	basicShader = nullptr;
+
+			////Coursework Meshes
+			//OGLMesh*	charMeshA	= nullptr;
+			//OGLMesh*	charMeshB	= nullptr;
+			//OGLMesh*	enemyMesh	= nullptr;
+			//OGLMesh*	bonusMesh	= nullptr;
+			VulkanMesh*	capsuleMesh = nullptr;
+			VulkanMesh*	cubeMesh	= nullptr;
+			VulkanMesh*	sphereMesh	= nullptr;
+			VulkanTexture* basicTex	= nullptr;
+			VulkanShader*	basicShader = nullptr;
 
 			//Coursework Meshes
-			OGLMesh*	charMeshA	= nullptr;
+			/*OGLMesh*	charMeshA	= nullptr;
 			OGLMesh*	charMeshB	= nullptr;
 			OGLMesh*	enemyMesh	= nullptr;
-			OGLMesh*	bonusMesh	= nullptr;
+			OGLMesh*	bonusMesh	= nullptr;*/
+			VulkanMesh* charMeshA = nullptr;
+			VulkanMesh* charMeshB = nullptr;
+			VulkanMesh* enemyMesh = nullptr;
+			VulkanMesh* bonusMesh = nullptr;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;

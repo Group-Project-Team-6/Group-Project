@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Plugins/VulkanRendering/VulkanRenderer.h"
 #include "../../Plugins/OpenGLRendering/OGLRenderer.h"
 #include <vector>
 #include <string>
@@ -12,7 +13,7 @@ namespace NCL {
 
 		static void DrawAxisLines(const Matrix4 &modelMatrix, float scaleBoost = 1.0f, float time = 0.0f);
 
-		static void SetRenderer(OGLRenderer* r) {
+		static void SetRenderer(VulkanRenderer* r) {
 			renderer = r;
 		}
 
@@ -50,7 +51,7 @@ namespace NCL {
 		static std::vector<DebugStringEntry>	stringEntries;
 		static std::vector<DebugLineEntry>	lineEntries;
 
-		static OGLRenderer* renderer;
+		static VulkanRenderer* renderer;
 	};
 }
 

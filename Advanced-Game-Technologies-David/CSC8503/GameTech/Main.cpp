@@ -287,8 +287,8 @@ int main() {
 
 	bool onGoing = true;
 	//TestBehaviourTree();
-	VkTechRenderer* renderer = new VkTechRenderer();
-	//TutorialGame* g = new TutorialGame();
+	//VkTechRenderer* renderer = new VkTechRenderer();
+	TutorialGame* g = new TutorialGame();
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE) && onGoing) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
@@ -308,8 +308,8 @@ int main() {
 		}
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
-		renderer->Render();
-		//onGoing = g->UpdateGame(dt);
+		//renderer->Render();
+		onGoing = g->UpdateGame(dt);
 		//DisplayPathfinding();
 	}
 	Window::DestroyGameWindow();

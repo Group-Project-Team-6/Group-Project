@@ -182,9 +182,6 @@
     <ClInclude Include="TextureWriter.h">
       <Filter>Asset Handling</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleFont.h">
-      <Filter>Asset Handling</Filter>
-    </ClInclude>
     <ClInclude Include="TextureLoader.h">
       <Filter>Asset Handling</Filter>
     </ClInclude>
@@ -193,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="MeshMaterial.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleFont.h">
+      <Filter>Asset Handling</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

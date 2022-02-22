@@ -31,10 +31,12 @@ _-_-_-_-_-_-_-""  ""
 #include "VulkanShader.h"
 #include "VulkanTexture.h"
 
+#include "../../Common/Vector2.h"
+#include "../../Common/Vector3.h"
+#include "../../Common/Vector4.h"
+
 #include <vector>
 #include <string>
-
-using std::string;
 
 namespace NCL {
 	namespace Rendering {
@@ -61,6 +63,10 @@ namespace NCL {
 			VulkanRenderer(Window& window);
 			~VulkanRenderer();
 
+			//Debug
+			void DrawString(const std::string& text, const Vector2& pos, const Vector4& colour = Vector4(0.75f, 0.75f, 0.75f, 1), float size = 20.0f){}
+			void DrawLine(const Vector3& start, const Vector3& end, const Vector4& colour) {}
+
 		protected:
 			void OnWindowResize(int w, int h)	override;
 			void BeginFrame()		override;
@@ -69,7 +75,7 @@ namespace NCL {
 
 			void SubmitDrawCall(VulkanMesh* m, vk::CommandBuffer& to);
 
-			void SetDebugName(vk::ObjectType t, uint64_t handle, const string& debugName);
+			void SetDebugName(vk::ObjectType t, uint64_t handle, const std::string& debugName);
 
 			virtual void	CompleteResize();
 

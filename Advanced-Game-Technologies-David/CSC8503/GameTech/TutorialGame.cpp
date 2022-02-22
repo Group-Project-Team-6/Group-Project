@@ -6,6 +6,7 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
+#include "../../Plugins/VulkanRendering/VulkanShaderBuilder.h"
 #include <iostream>
 
 using namespace NCL;
@@ -13,7 +14,7 @@ using namespace CSC8503;
 
 TutorialGame::TutorialGame()	{
 	world		= new GameWorld();
-	renderer	= new GameTechRenderer(*world);
+	renderer	= new VkTechRenderer(*world);
 	physics		= new PhysicsSystem(*world);
 
 	onGoing = true;
@@ -35,10 +36,10 @@ and the same texture and shader. There's no need to ever load in anything else
 for this module, even in the coursework, but you can add it if you like!
 */
 void TutorialGame::InitialiseAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
+	auto loadFunc = [&](const string& name, VulkanMesh** into) {
+		*into = new VulkanMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
+		(*into)->UploadToGPU(renderer);
 	};
 
 	loadFunc("cube.msh"		 , &cubeMesh);
@@ -49,8 +50,11 @@ void TutorialGame::InitialiseAssets() {
 	loadFunc("coin.msh"		 , &bonusMesh);
 	loadFunc("capsule.msh"	 , &capsuleMesh);
 
-	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicTex	= (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	VulkanShaderBuilder builder = VulkanShaderBuilder()
+		.WithVertexBinary("GameTechVert.spv")
+		.WithFragmentBinary("GameTechFrag.spv");
+	basicShader = builder.Build(*renderer);//new VulkanShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
 	InitCamera();
 	InitWorld();

@@ -166,11 +166,12 @@ VulkanTexture* VulkanTexture::GenerateTextureInternal(int width, int height, int
 		.setFormat(tex->format)
 		.setUsage(usage)
 		.setMipLevels(tex->mipCount)
-		.setArrayLayers(1)
-		.setImageType(vk::ImageType::e2D);
+		.setArrayLayers(1);
 
 	if (isCubemap) {
-		tex->createInfo.setArrayLayers(6).setFlags(vk::ImageCreateFlagBits::eCubeCompatible);
+		tex->createInfo
+			.setArrayLayers(6)
+			.setFlags(vk::ImageCreateFlagBits::eCubeCompatible);
 		tex->layerCount = 6;
 	}
 
@@ -178,7 +179,7 @@ VulkanTexture* VulkanTexture::GenerateTextureInternal(int width, int height, int
 
 	InitTextureDeviceMemory(*tex);
 
-	tex->defaultView = tex->GenerateDefaultView(tex->aspectType);
+	tex->defaultView = tex->GenerateDefaultView(tex->aspectType, isCubemap);
 
 	vkRenderer->SetDebugName(vk::ObjectType::eImage, (uint64_t)(VkImage)tex->image, debugName); // defaultView.operator VkImage()
 	vkRenderer->SetDebugName(vk::ObjectType::eImageView, (uint64_t)(VkImageView)tex->defaultView, debugName); //defaultView.operator VkImageView()
@@ -206,12 +207,17 @@ VulkanTexture* VulkanTexture::GenerateColourTexture(int width, int height, strin
 	return GenerateTextureInternal(width, height, 1, false, debugName, format, aspect, usage, layout, vk::PipelineStageFlagBits::eColorAttachmentOutput);
 }
 
-vk::ImageView  VulkanTexture::GenerateDefaultView(vk::ImageAspectFlags type) {
+vk::ImageView  VulkanTexture::GenerateDefaultView(vk::ImageAspectFlags type, bool isCubemap) {
 	vk::ImageViewCreateInfo createInfo =  vk::ImageViewCreateInfo()
 		.setViewType(vk::ImageViewType::e2D)
 		.setFormat(format)
-		.setSubresourceRange(vk::ImageSubresourceRange(type, 0, mipCount, 0, layerCount))
+		.setSubresourceRange(vk::ImageSubresourceRange(type, 0, mipCount, 0, 1))
 		.setImage(image);
+	if (isCubemap) {
+		createInfo
+			.setViewType(vk::ImageViewType::eCube)
+			.setSubresourceRange(vk::ImageSubresourceRange(type, 0, mipCount, 0, layerCount));
+	}
 	return vkRenderer->GetDevice().createImageView(createInfo);
 }
 

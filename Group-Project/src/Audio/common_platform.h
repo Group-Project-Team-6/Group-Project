@@ -4,7 +4,7 @@ Copyright (c), Firelight Technologies Pty, Ltd 2012-2021.
 ==============================================================================*/
 #include <windows.h>
 
-int FMOD_Main();
+//int FMOD_Main();
 
 #define COMMON_PLATFORM_SUPPORTS_FOPEN
 

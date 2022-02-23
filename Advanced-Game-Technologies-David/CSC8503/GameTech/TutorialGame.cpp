@@ -54,7 +54,7 @@ void TutorialGame::InitialiseAssets() {
 	VulkanShaderBuilder builder = VulkanShaderBuilder()
 		.WithVertexBinary("GameTechVert.spv")
 		.WithFragmentBinary("GameTechFrag.spv");
-	basicShader = builder.Build(*renderer);//new VulkanShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicShader = builder.Build(*renderer);
 
 	InitCamera();
 	InitWorld();

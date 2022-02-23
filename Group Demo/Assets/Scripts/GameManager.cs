@@ -56,21 +56,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GivePoints()
+    public void GivePoints(Object sender, ScoreArgs scoreArgs)
     {
         Debug.Log("Event Triggered");
 
-        if(Team1Score > (maxScore / 2 + 1))
+        if (scoreArgs.player.gameObject.layer == 10)
         {
-            team1Win = true;
-            EndGame(ref team1Win);
+            GameManager.gameManager.Team1Score++;
+            //Change HUD Data (Gokul)
+            if (Team1Score > (maxScore / 2 + 1))
+            {
+                team1Win = true;
+                EndGame(ref team1Win);
+            }            
         }
-        
-        if( Team2Score > (maxScore / 2 + 1))
+
+        else if (scoreArgs.player.gameObject.layer == 11)
         {
-            team1Win = false;
-            EndGame(ref team1Win);
-        }
+            GameManager.gameManager.Team2Score++;
+            //Change HUD Data (Gokul)
+            if (Team2Score > (maxScore / 2 + 1))
+            {
+                team1Win = false;
+                EndGame(ref team1Win);
+            }
+            
+        }            
     }
 
     void EndGame(ref bool gameResult)

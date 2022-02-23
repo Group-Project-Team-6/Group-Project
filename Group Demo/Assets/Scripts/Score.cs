@@ -14,14 +14,16 @@ public class Score : MonoBehaviour
         if(other.gameObject.layer == 10)
         {
             GameManager.gameManager.Team1Score++;
+            //Change HUD Data (Gokul)
         }
 
         else if (other.gameObject.layer == 11) 
         { 
-            GameManager.gameManager.Team2Score++; 
+            GameManager.gameManager.Team2Score++;
+            //Change HUD Data (Gokul)
         }
 
-        onCollect.Invoke(); //Problems adding listeners
+        onCollect.Invoke();
         Destroy(gameObject);        
     }
 }

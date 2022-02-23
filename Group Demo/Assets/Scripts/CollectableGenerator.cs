@@ -4,11 +4,28 @@ using UnityEngine;
 
 public class CollectableGenerator : MonoBehaviour
 {
+    public static CollectableGenerator collectableGenerator;
+
     string mapChars;
     char[,] map2DArray;
     int[,] positions;
-    public static int CollectableNumber = 20;
-    public GameObject[] collectable = new GameObject[CollectableNumber];
+    public GameObject collectable;
+    public static int numCollectables = 20;
+    public GameObject[] collectables = new GameObject[numCollectables];
+
+
+    void Awake()
+    {
+        if (collectableGenerator == null)
+        {
+            collectableGenerator = this;
+        }
+        else
+        {
+            print("Duplicated collectableGenerator");
+        }
+
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +59,7 @@ public class CollectableGenerator : MonoBehaviour
             }
         }
 
-        int numCollectables = ((sizeX * sizeY) / 50);
+        //int numCollectables = ((sizeX * sizeY) / 50);
         positions = new int[numCollectables, 2];
         int placed = 0;
 
@@ -51,7 +68,7 @@ public class CollectableGenerator : MonoBehaviour
             int y = Random.Range(0, sizeY);
             int x = Random.Range(0, sizeX);
 
-            if (map2DArray[x, y] == 'P')
+            if (map2DArray[x, y] != 'm')
             {
                 positions[placed, 0] = x;
                 positions[placed, 1] = y;
@@ -63,11 +80,11 @@ public class CollectableGenerator : MonoBehaviour
 
     void spawnCollectables(int level, float unitLength)
     {
-        float translate = 0;
 
-        for (int i = 0; i < positions.GetLength(0); i++)
+        for (int i = 0; i < numCollectables; ++i)
         {
-            //Instantiate(collectable, new Vector3(positions[i, 0] *  (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] *  (unitLength * 0.5f)), Quaternion.identity,this.transform);
+            collectables[i] = Instantiate(collectable, new Vector3(positions[i, 0] * (unitLength * 0.5f), level * (unitLength * 0.5f), positions[i, 1] * (unitLength * 0.5f)), Quaternion.identity, this.transform);
+            collectables[i].GetComponent<Score>().onCollect.AddListener(GameManager.gameManager.GivePoints);
         }
     }
 

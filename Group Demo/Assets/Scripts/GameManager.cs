@@ -7,16 +7,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
     public CollectableGenerator collectableGenerator;
-    public GameObject collectableGen;
 
     public float gameTime;
     public int Team1Score;
     public int Team2Score;
     public bool team1Win;
+    int maxScore;
+    const int size = 20;
+    public Score[] scores = new Score[size];
 
     int maxPoints; //Needs Gets Value from Collectable Script
-
-    public Score[] scores;
 
     void Awake()
     {
@@ -35,9 +35,7 @@ public class GameManager : MonoBehaviour
     {
         gameTime = 300;
 
-        //scores = GetComponents<Score>(collectableGenerator.);
-        scores[0].onCollect.AddListener(GivePoints);
-
+        maxScore = CollectableGenerator.numCollectables;
     }
 
     // Update is called once per frame
@@ -58,25 +56,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void GivePoints()
+    public void GivePoints()
     {
         Debug.Log("Event Triggered");
 
-        //if Team1 Layer Collision
-        Team1Score++;
-        //Change HUD Data (Gokul)
-
-        //else Team2 Layer Collision
-        Team2Score++;
-        //Change HUD Data (Gokul)
-
-        if(Team1Score > (maxPoints/2 + 1))
+        if(Team1Score > (maxScore / 2 + 1))
         {
             team1Win = true;
             EndGame(ref team1Win);
         }
         
-        if( Team2Score > (maxPoints / 2 + 1))
+        if( Team2Score > (maxScore / 2 + 1))
         {
             team1Win = false;
             EndGame(ref team1Win);

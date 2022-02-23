@@ -25,19 +25,20 @@ public class NetworkManager : MonoBehaviour
     static UdpClient client = new UdpClient(666);
     public byte[] ipAddress = { 0, 0, 0, 0 };
     static int port = 666;
-
+    public static List<IPEndPoint> mailingList;
     static uint currentFrame;
 
-    public static Queue<CommandMessage> cmdQueue;
+    static Queue<CommandMessage> cmdQueue;
 
     Task t = new Task(Listen);
-    static public event EventHandler<UDPMessageEventArgs> OnMessageRecieved;
+    public static event EventHandler<UDPMessageEventArgs> OnMessageRecieved;
 
-    static NetworkManager instance;
+    public static NetworkManager instance;
     static bool alive;
     void Awake()
     {
         cmdQueue = new Queue<CommandMessage>();
+        mailingList = new List<IPEndPoint>();
         if (!instance)
         {
             instance = this;
@@ -122,7 +123,7 @@ public class NetworkManager : MonoBehaviour
     {
         Connect(new IPEndPoint(IPAddress.Loopback, 666));
         Send(new byte[] { 3 });
-        Disconnect();
+        Close();
     }
 
     /// <summary>
@@ -140,9 +141,17 @@ public class NetworkManager : MonoBehaviour
         client.Connect(endPoint);
     }
 
-    public static void Disconnect()
+    public static void Close()
     {
-        if(client.Client.Connected)
         client.Close();
+    }
+
+    public static void SendData(byte[] data)
+    {
+        for(int i = 0; i < mailingList.Count; i++)
+        {
+            client.Connect(mailingList[i]);
+            Send(data);
+        }
     }
 }

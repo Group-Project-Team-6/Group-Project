@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 
 public class GameServer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    List<Vector3> playerSlost;
+    List<string> maze;
+    List<Vector3> collectablePos;
 }

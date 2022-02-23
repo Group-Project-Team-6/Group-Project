@@ -147,11 +147,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 1391312438
-      Data2: 1297137915
-      Data3: 1668873101
-      Data4: -741300163
-    Path: event:/Splash
+      Data1: 1592079225
+      Data2: 1134010884
+      Data3: -400692292
+      Data4: -511870362
+    Path: event:/Splash 2
   Event: 
   PlayEvent: 7
   StopEvent: 0

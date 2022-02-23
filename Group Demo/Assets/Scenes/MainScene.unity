@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 195290683}
   - component: {fileID: 195290680}
   - component: {fileID: 195290684}
+  - component: {fileID: 195290686}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -531,6 +532,26 @@ MonoBehaviour:
   Team: 0
   Health: 0
   pc: {fileID: 0}
+--- !u!114 &195290686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195290674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d63da06acfc28438f61bfbf2b659c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSound:
+    Guid:
+      Data1: -521250818
+      Data2: 1305983764
+      Data3: 632436128
+      Data4: -577877062
+    Path: event:/footStep
+  walkingspeed: 0.4
 --- !u!1 &339919219
 GameObject:
   m_ObjectHideFlags: 0

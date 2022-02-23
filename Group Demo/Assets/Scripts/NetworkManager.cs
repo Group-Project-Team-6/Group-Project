@@ -24,8 +24,9 @@ public class NetworkManager : MonoBehaviour
 {
     static UdpClient client = new UdpClient(666);
     public byte[] ipAddress = { 0, 0, 0, 0 };
-    static IPEndPoint endPoint;
-    static IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 666);
+    static int port = 666;
+
+    static uint currentFrame;
 
     public static Queue<CommandMessage> cmdQueue;
 
@@ -36,12 +37,13 @@ public class NetworkManager : MonoBehaviour
     static bool alive;
     void Awake()
     {
-        endPoint = new IPEndPoint(new IPAddress(ipAddress), 666);
+        cmdQueue = new Queue<CommandMessage>();
         if (!instance)
         {
             instance = this;
             alive = true;
             OnMessageRecieved += OnRecievedMsg;
+            currentFrame = 0;
         }
         else
         {
@@ -51,12 +53,15 @@ public class NetworkManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Connect(endPoint);
         t.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
+        currentFrame++;
+        //Send(new byte[] { 1, 2, 3 });
         for (int i = 0; i < cmdQueue.Count; i++)
         {
             byte[] bytes = ResovleCmd(cmdQueue.Dequeue());
@@ -70,13 +75,12 @@ public class NetworkManager : MonoBehaviour
     private void OnDestroy()
     {
         alive = false;
-        Disconnect();
+        DestroyClient();
     }
     static void Listen()
     {
         byte[] bytes = {0 };
-        client.Client.ReceiveTimeout = 2000;
-
+        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, port);
         while (alive)
         {
             Debug.Log("Start Listening");
@@ -114,6 +118,13 @@ public class NetworkManager : MonoBehaviour
 
     }
 
+    static void DestroyClient()
+    {
+        Connect(new IPEndPoint(IPAddress.Loopback, 666));
+        Send(new byte[] { 3 });
+        Disconnect();
+    }
+
     /// <summary>
     /// Pass game command here
     /// </summary>
@@ -131,6 +142,7 @@ public class NetworkManager : MonoBehaviour
 
     public static void Disconnect()
     {
+        if(client.Client.Connected)
         client.Close();
     }
 }

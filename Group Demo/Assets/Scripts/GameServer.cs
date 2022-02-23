@@ -9,4 +9,6 @@ public class GameServer : MonoBehaviour
     List<Vector3> playerSlost;
     List<string> maze;
     List<Vector3> collectablePos;
+
+
 }

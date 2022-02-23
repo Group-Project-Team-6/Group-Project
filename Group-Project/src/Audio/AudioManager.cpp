@@ -11,17 +11,8 @@ void AudioManager::InitSystem() {
 
     result = system->createSound(Common_MediaPath("Pickup.wav"), FMOD_DEFAULT, 0, &sound);
     ERRCHECK(result);
-
-    //AddSound("wave.mp3"); //0
 }
-/*
-void AudioManager::AddSound(const char *name_or_data) {
-    //sounds.push_back(sound);
-    //result = system->createSound(Common_MediaPath(name_or_data), FMOD_DEFAULT, 0, &sounds.back());
-    //ERRCHECK(result);
 
-}
-*/
 void AudioManager::AudioUpdate(NCL::Window* w) {
     Common_Update();
 
@@ -30,13 +21,6 @@ void AudioManager::AudioUpdate(NCL::Window* w) {
         ERRCHECK(result);
     }
 
-    /*
-    if (Common_BtnPress(BTN_ACTION1))
-    {
-            result = system->playSound(sound, 0, false, &channel);
-            ERRCHECK(result);
-    }
-    */
     result = system->update();
     ERRCHECK(result);
 

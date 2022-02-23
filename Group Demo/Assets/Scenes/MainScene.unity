@@ -1471,6 +1471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8c05ac48ac672445b28c6f8a195bff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ipAddress: 0a462195
 --- !u!1 &1266930118
 GameObject:
   m_ObjectHideFlags: 0
@@ -2397,10 +2398,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2fd9dae8149aa4facb85df509f120f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collectableGenerator: {fileID: 0}
   gameTime: 0
   Team1Score: 0
   Team2Score: 0
   team1Win: 0
+  scores:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &2106238819
 Transform:
   m_ObjectHideFlags: 0

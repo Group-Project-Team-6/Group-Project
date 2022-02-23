@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(Time.timeScale);
+        //Debug.Log(Time.timeScale);
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             ResumeGame();            

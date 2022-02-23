@@ -16,13 +16,13 @@ public class NetworkManager : MonoBehaviour
     static UdpClient client = new UdpClient(666);
     public byte[] ipAddress = { 0, 0, 0, 0 };
     static IPEndPoint endPoint;
-    static IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 5000);
+    static IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 666);
     Task t = new Task(Listen);
     static public event EventHandler<UDPMessageEventArgs> onMessageRecieved;
     static NetworkManager instance;
     void Awake()
     {
-        endPoint = new IPEndPoint(new IPAddress(ipAddress), 5000);
+        endPoint = new IPEndPoint(new IPAddress(ipAddress), 666);
         if (!instance)
         {
             instance = this;
@@ -35,36 +35,42 @@ public class NetworkManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(endPoint.Address.ToString() + endPoint.Port.ToString());
         client.Connect(endPoint);
+        t.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (t.IsCompleted)
-        {
-            Send();
-            t.Start();
-        }
+        //Debug.Log(t.IsCompleted);
+        Send(1);
     }
 
     private void OnDestroy()
     {
+        Send(3);
         client.Close();
     }
     static void Listen()
     {
-        byte[] bytes = client.Receive(ref RemoteIpEndPoint);
-        UDPMessageEventArgs args = new UDPMessageEventArgs();
-        args.num = bytes[0];
-        onMessageRecieved.Invoke(null,args);
+        byte[] bytes = {0 };
+        while (bytes[0] != 3)
+        {
+            Debug.Log("Start Listening");
+            bytes = client.Receive(ref RemoteIpEndPoint);
+            Debug.Log("Recieved: " + bytes[0]);
+            UDPMessageEventArgs args = new UDPMessageEventArgs();
+            args.num = bytes[0];
+            //onMessageRecieved.Invoke(null, args);
+        }
     }
 
-    static void Send()
+    static void Send(byte n)
     {
-        byte[] sendBytes = System.Text.Encoding.ASCII.GetBytes("Is anybody there?");
-        client.Send(sendBytes, sendBytes.Length, endPoint);
+        Debug.Log("Start Sending");
+        byte[] sendBytes = { n };//System.Text.Encoding.ASCII.GetBytes("Is anybody there?");
+        client.Send(sendBytes, sendBytes.Length);
     }
 
 

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public List<GameObject> players;
     public static GameManager gameManager;
     public CollectableGenerator collectableGenerator;
 

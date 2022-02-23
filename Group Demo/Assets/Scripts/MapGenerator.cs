@@ -66,7 +66,7 @@ public class MapGenerator : MonoBehaviour
                         GameObject cell = AddChild(i, GetSymbol(level, l, w), level, l, w);
                         if (playerCount[i] < 1 && l == length - 1 && level == 0 && i % 2 == 0 && GetSymbol(level, l, w) == 'P')
                         {
-                            pSpawner.Spawn(i/2, cell.transform.position, Q[i].transform);
+                            GameManager.gameManager.players.Add(pSpawner.Spawn(i/2, cell.transform.position, Q[i].transform));
                             playerCount[i]++;
                         }
                     }

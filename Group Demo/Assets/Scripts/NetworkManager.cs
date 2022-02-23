@@ -11,6 +11,14 @@ public class UDPMessageEventArgs : EventArgs
     public int num;
 }
 
+public class CommandMessage 
+{
+    byte from;
+    byte command;
+
+}
+
+
 public class NetworkManager : MonoBehaviour
 {
     static UdpClient client = new UdpClient(666);
@@ -44,12 +52,11 @@ public class NetworkManager : MonoBehaviour
     void Update()
     {
         //Debug.Log(t.IsCompleted);
-        Send(1);
+        Send(2);
     }
 
     private void OnDestroy()
     {
-        Send(3);
         client.Close();
     }
     static void Listen()
@@ -62,7 +69,7 @@ public class NetworkManager : MonoBehaviour
             Debug.Log("Recieved: " + bytes[0]);
             UDPMessageEventArgs args = new UDPMessageEventArgs();
             args.num = bytes[0];
-            //onMessageRecieved.Invoke(null, args);
+            if(onMessageRecieved != null) onMessageRecieved.Invoke(null, args);
         }
     }
 
@@ -73,5 +80,13 @@ public class NetworkManager : MonoBehaviour
         client.Send(sendBytes, sendBytes.Length);
     }
 
+    static void StartServer()
+    {
 
+    }
+
+    static void JoinServer()
+    {
+
+    }
 }

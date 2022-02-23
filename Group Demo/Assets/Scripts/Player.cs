@@ -6,38 +6,53 @@ public class Player : MonoBehaviour
 {
     public int Team;
     public int Health;
-    public PlayerController pc;
+    PlayerController pc;
     Renderer render;
 
     void Awake()
     {
-       // pc = this.GetComponent<PlayerController>();
+        //pc = this.GetComponent<PlayerController>();
         render = this.GetComponent<Renderer>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         Health = 3; 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Health == 0) {
-           // pc.fainted = true;
+            //pc.fainted = true;
             render.materials[0].color = new Color(1,0,1,1);
+        }
+        else 
+        {
+            //pc.fainted = false;
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<SplashBall>())
-        {
-            if (Health > 0)
+        {   
+            if (collision.gameObject.GetComponent<SplashBall>().Team != Team)
             {
-                Health--;
+                if (Health > 0)
+                {
+                    Health--;
+                }
             }
+            else if (collision.gameObject.GetComponent<SplashBall>().Team == Team)
+            {
+                
+                if (Health < 3)
+                {
+                    Health++;
+                }
+                
+            }
+            
         }
     }
 }

@@ -11,7 +11,13 @@ public class SplashShooter : MonoBehaviour
     public List<Texture2D> SplashTexs;
     public int index = 0;
     public float shotHeight;
+    Player player;
+
     // Start is called before the first frame update
+    void Start()
+    {
+        player = this.GetComponent<Player>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -28,6 +34,7 @@ public class SplashShooter : MonoBehaviour
                 sb.mass = 1;
                 sb.radius = 1;
                 sb.tex = SplashTexs[index];
+                sb.Team = player.Team;
             }
         }
     }

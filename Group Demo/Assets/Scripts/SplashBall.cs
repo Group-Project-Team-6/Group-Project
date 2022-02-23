@@ -8,6 +8,7 @@ public class SplashBall : MonoBehaviour
     public float radius = 1.0f;
     public Color32 color = Color.black;
     public Texture2D tex;
+    public int Team;
     // Start is called before the first frame update
     void Start()
     {

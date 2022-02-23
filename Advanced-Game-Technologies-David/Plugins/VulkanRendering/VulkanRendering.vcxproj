@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="VulkanDebugger.h" />
     <ClInclude Include="VulkanDescriptorSetLayoutBuilder.h" />
     <ClInclude Include="VulkanMesh.h" />
     <ClInclude Include="VulkanPipelineBuilder.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="VulkanUtility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="VulkanDebugger.cpp" />
     <ClCompile Include="VulkanDescriptorSetLayoutBuilder.cpp" />
     <ClCompile Include="VulkanMesh.cpp" />
     <ClCompile Include="VulkanPipelineBuilder.cpp" />

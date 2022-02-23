@@ -42,6 +42,9 @@
     <ClInclude Include="VulkanUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanDebugger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VulkanMesh.cpp">
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VulkanRenderPassBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanDebugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,29 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public class ScoreArgs : EventArgs
+{
+    public GameObject player;
+}
+
 
 public class Score : MonoBehaviour
 {
-    public int score = 1;
-    public UnityEvent onCollect;
+    public event EventHandler<ScoreArgs> OnCollect;
 
-    void Start()
-    {
-       
-    }
+    //public UnityEvent onCollect;
 
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
-       // if (Collsion)
-        //Invoke
-        //Destroy(gameObject);
+        OnCollect += GameManager.gameManager.GivePoints;
     }
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
-        
+        if(other.gameObject.layer == 10)
+        {
+            GameManager.gameManager.Team1Score++;
+            //Change HUD Data (Gokul)
+        }
+
+        else if (other.gameObject.layer == 11) 
+        { 
+            GameManager.gameManager.Team2Score++;
+            //Change HUD Data (Gokul)
+        }
+
+        ScoreArgs scoreArgs = new ScoreArgs();
+        scoreArgs.player = other.gameObject;
+        OnCollect.Invoke(this, scoreArgs);
+        Destroy(gameObject);        
     }
 }

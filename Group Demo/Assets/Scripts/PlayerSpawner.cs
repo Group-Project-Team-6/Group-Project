@@ -10,6 +10,7 @@ public class PlayerSpawner : MonoBehaviour
     public void Spawn(int i, Vector3 pos, Transform t)
     {
         if (i >= player.Count || i < 0) return;
-        Instantiate(player[i], pos, new Quaternion(), t);
+        Instantiate(player[i], pos, new Quaternion(), t)
+            .layer = 10 + i;
     }
 }

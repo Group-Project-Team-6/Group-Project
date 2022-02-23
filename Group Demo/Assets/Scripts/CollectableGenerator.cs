@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class CollectableGenerator : MonoBehaviour
 {
+    static CollectableGenerator instance;
     string mapChars;
     char[,] map2DArray;
     int[,] positions;
+    public static int numCollectables = 5;
     public GameObject collectable;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            print("Duplicated collectableGenerator");
+        }
     }
 
     // Update is called once per frame
@@ -24,7 +33,7 @@ public class CollectableGenerator : MonoBehaviour
     public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength, Transform Q)
     {
         findPositions(map, sizeX, sizeY);
-        spawnCollectables(level, unitLength,Q);
+        spawnCollectables(level, unitLength, Q);
     }
 
     void findPositions(string map, int sizeX, int sizeY)
@@ -41,7 +50,7 @@ public class CollectableGenerator : MonoBehaviour
             }
         }
 
-        int numCollectables = Mathf.Max(1, (int)((sizeX * sizeY) * 0.05f));
+        //int numCollectables = Mathf.Max(1, (int)((sizeX * sizeY) * 0.05f));
         positions = new int[numCollectables, 2];
         int placed = 0;
 
@@ -63,7 +72,7 @@ public class CollectableGenerator : MonoBehaviour
 
     void spawnCollectables(int level, float unitLength, Transform t)
     {
-        for (int i = 0; i < positions.GetLength(0); i++)
+        for (int i = 0; i < numCollectables; i++)
         {
             Instantiate(collectable,
                 new Vector3(0, 0, 0),
@@ -73,6 +82,15 @@ public class CollectableGenerator : MonoBehaviour
                     (0.5f + (float)positions[i, 1]) * unitLength,
                     level * unitLength,
                     (0.5f + (float)positions[i, 0]) * unitLength);
+            Instantiate(
+                collectable,
+                new Vector3(
+                    positions[i, 0] * (unitLength * 0.5f),
+                    level * (unitLength * 0.5f),
+                    positions[i, 1] * (unitLength * 0.5f)),
+                Quaternion.identity,
+                this.transform);
+  
         }
     }
 

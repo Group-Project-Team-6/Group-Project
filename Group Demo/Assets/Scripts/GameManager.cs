@@ -5,73 +5,96 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager gameManager;
+    public CollectableGenerator collectableGenerator;
+
     public float gameTime;
     public int Team1Score;
     public int Team2Score;
-
     public bool team1Win;
+    int maxScore;
+    const int size = 20;
+    public Score[] scores = new Score[size];
 
-    int maxPoints;
+    int maxPoints; //Needs Gets Value from Collectable Script
 
     void Awake()
     {
-        if (instance == null)
+        if (gameManager == null)
         {
-            instance = this;
+            gameManager = this;
         }
         else
         {
             print("Duplicated GameManager");
         }
+
     }
 
     void Start()
     {
         gameTime = 300;
 
-        var score = GetComponent<Score>();
-        score.onCollect.AddListener(GivePoints);
+        maxScore = CollectableGenerator.numCollectables;
     }
 
     // Update is called once per frame
     void Update()
     {
         gameTime -= Time.deltaTime;
-        print("GameTime " + gameTime); 
 
         if (gameTime <= 0)
         {
-            //Team1Score > Team2Score
-            //Bool Team1Win = true;
-            //else Team1Win = false
-            EndGame();
+            if (Team1Score > Team2Score)
+            {
+                team1Win = true;
+            }
+
+            else team1Win = false;
+
+            EndGame(ref team1Win);
         }
     }
 
-    void GivePoints()
+    public void GivePoints(object sender, ScoreArgs scoreArgs)
     {
-        //if Team1 Layer Collision
-        Team1Score++;
-        //Change HUD Data
+        Debug.Log("Event Triggered");
 
-        //else Team2 Layer Collision
-        Team2Score++;
-        //Change HUD Data
+        if (scoreArgs.player.gameObject.layer == 10)
+        {
+            gameManager.Team1Score++;
+            //Change HUD Data (Gokul)
+            if (Team1Score > (maxScore / 2 + 1))
+            {
+                team1Win = true;
+                EndGame(ref team1Win);
+            }            
+        }
 
-        if(Team1Score > (maxPoints/2 + 1))
+        else if (scoreArgs.player.gameObject.layer == 11)
         {
-            EndGame(); //Pass Bool  True
-        }
-        
-        if( Team2Score > (maxPoints / 2 + 1))
-        {
-            EndGame(); //Pass Bool False
-        }
+            gameManager.Team2Score++;
+            //Change HUD Data (Gokul)
+            if (Team2Score > (maxScore / 2 + 1))
+            {
+                team1Win = false;
+                EndGame(ref team1Win);
+            }
+            
+        }            
     }
 
-    void EndGame()
+    void EndGame(ref bool gameResult)
     {
-        //Load End Scene
+
+        if (gameResult)
+        {
+            //team1Win Result Code (Gokul) 
+        }
+
+        if (!gameResult)
+        {
+            //team2Win Result Code (Gokul)
+        }
     }
 }

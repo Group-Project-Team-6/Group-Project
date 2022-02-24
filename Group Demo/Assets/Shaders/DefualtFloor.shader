@@ -16,7 +16,7 @@ Shader "Custom/DefualtFloor"
     SubShader{
         Tags{"Queue" = "Geometry"}
         pass {
-            Tags{"LightMode" = "ForwardBase"}
+            Tags{"LightMode" = "ForwardAdd"}
 
             CGPROGRAM
 
@@ -69,7 +69,7 @@ Shader "Custom/DefualtFloor"
                 float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + diffuseReflection + specularReflection;
 
                 fixed4 color = tex2D(_Tex,i.texcoord);
-                if (color.a > 0.7) i.color = color;
+                if (color.a > 0.7) i.color = color * Luminance(i.color.xyz);
                 return i.color * float4(lightFinal,1); //(1 - i.pos.z + 0.07)
             }
 

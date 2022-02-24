@@ -86,7 +86,7 @@ Shader "Custom/DefaultWall" {
                 
                 fixed4 color = tex2D(_Tex,i.texcoord);
                 if (color.a > 0.7) {
-                    i.color = tex2D(_TexOri, i.texcoord);
+                    i.color = tex2D(_TexOri, i.texcoord) * Luminance(i.color.xyz);
                     i.color.a = 1;
                 }
                 if(i.pos.z + 0.0235 < playPos.z) return i.color * float4(lightFinal, 1); //(1 - i.pos.z + 0.07) playPos.z < 0.0298

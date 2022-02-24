@@ -67,7 +67,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4023
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 8400000, guid: 1b5ffba5a16161840a3cd7cb14359ec6, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: c0493a6eae37fce4196c19b64d5b9b59, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -91,6 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splitScreen: 1
   player: {fileID: 9106306642543012042}
+  pController: {fileID: 9106306642543012033}
   height: 3
   sensitivity: 3
   renderTex: {fileID: 8400000, guid: c0493a6eae37fce4196c19b64d5b9b59, type: 2}
@@ -250,9 +251,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ps: {fileID: 3285327754564627923, guid: 51b8cfb7f1a273c40a6cbe85e57a2bd9, type: 3}
-  fromServer: 1
+  fromServer: 0
   sensitivity: 10
   fainted: 0
+  useMouse: 1
+  kforward: 273
+  kback: 274
+  kleft: 276
+  kright: 275
+  kjump: 305
+  krLeft: 0
+  krRight: 0
+  krUp: 0
+  krDown: 0
+  kshoot: 0
+  rotateX: 0
+  rotateY: 0
+  shoot: 0
 --- !u!114 &9106306642543012034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,16 +281,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 1745023771357995761, guid: 6c65263dc7c18784f8fc77789b081923, type: 3}
+  pController: {fileID: 9106306642543012033}
   dist: 1
-  cam: {fileID: 0}
+  cam: {fileID: 2391245087775199815}
   color:
     serializedVersion: 2
-    rgba: 4278190335
+    rgba: 4278255360
   SplashTexs:
   - {fileID: 2800000, guid: e4b4044abe397c347b2937afd92d2b8f, type: 3}
   - {fileID: 2800000, guid: a610a1aab7178834192ed09352705cfc, type: 3}
   index: 0
   shotHeight: 3
+  shoot: 0
 --- !u!114 &9106306642543012035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76595abb4456f53428dc3a0a521f7c8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 2391245087775199815}
   Team: 0
   Health: 0
-  pc: {fileID: 0}
+  pc: {fileID: 9106306642543012033}

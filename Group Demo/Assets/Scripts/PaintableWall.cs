@@ -94,10 +94,6 @@ public class PaintableWall : MonoBehaviour
                             if (posX > tex[mIndex].width - 1 || posX < 0 || posY > tex[mIndex].height - 1 || posY < 0) continue;
                             if (c[i].a > 0.7f)
                             {
-                                if(ball.team + 9 != GameManager.gameManager.players[0].layer)
-                                {
-                                    baseColor.a = 0;
-                                }
                                 float factor = ((float)u / (float)SplashWidth) * ((float)v / (float)SplashHeight);
                                 tex[mIndex].SetPixel(posX, posY, new Color32(
                                     (byte)(factor * (float)baseColor.r),
@@ -125,12 +121,12 @@ public class PaintableWall : MonoBehaviour
                 }
                 else if (SplashManager.approach == 2)
                 {
-                    Splash s = new Splash();
-                    s.mass = collision.gameObject.GetComponent<Rigidbody>().mass;
-                    s.position = collision.contacts[0].point;
-                    s.halfSize = collision.gameObject.GetComponent<Collider>().bounds.size.magnitude;
+                    //Splash s = new Splash();
+                    //s.mass = collision.gameObject.GetComponent<Rigidbody>().mass;
+                    //s.position = collision.contacts[0].point;
+                    //s.halfSize = collision.gameObject.GetComponent<Collider>().bounds.size.magnitude;
 
-                    SplashManager.splashes.Add(s);
+                    //SplashManager.splashes.Add(s);
                 }
             }
         }

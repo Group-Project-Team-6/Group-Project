@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public List<GameObject> players;
     public static GameManager gameManager;
     public CollectableGenerator collectableGenerator;
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
         if (gameManager == null)
         {
             gameManager = this;
+            players = new List<GameObject>();
         }
         else
         {
@@ -69,7 +71,7 @@ public class GameManager : MonoBehaviour
             {
                 team1Win = true;
                 EndGame(ref team1Win);
-            }            
+            }
         }
 
         else if (scoreArgs.player.gameObject.layer == 11)
@@ -81,8 +83,8 @@ public class GameManager : MonoBehaviour
                 team1Win = false;
                 EndGame(ref team1Win);
             }
-            
-        }            
+
+        }
     }
 
     void EndGame(ref bool gameResult)

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Camera cam;
     public int Team;
     public int Health;
     public PlayerController pc;
@@ -11,22 +12,23 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-       // pc = this.GetComponent<PlayerController>();
+        // pc = this.GetComponent<PlayerController>();
         render = this.GetComponent<Renderer>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        Health = 3; 
+        Health = 3;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Health == 0) {
-           // pc.fainted = true;
-            render.materials[0].color = new Color(1,0,1,1);
+        if (Health == 0)
+        {
+            // pc.fainted = true;
+            render.materials[0].color = new Color(1, 0, 1, 1);
         }
     }
 

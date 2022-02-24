@@ -41,6 +41,7 @@ Shader "Custom/DefaultWall" {
             float _Shininess;
             float _CullingFactor;
             float _CullingDistance;
+            int _Team;
             float4 _PlayerPos;
             //sampler2D _MainTex;
             sampler2D _Tex;

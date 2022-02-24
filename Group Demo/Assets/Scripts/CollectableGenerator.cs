@@ -9,9 +9,8 @@ public class CollectableGenerator : MonoBehaviour
     char[,] map2DArray;
     int[,] positions;
     public static int numCollectables = 5;
-    public GameObject collectable;
-    public static int numCollectables = 20;
-    public GameObject[] collectables = new GameObject[numCollectables];
+    public const int size = 3;
+    public GameObject[] collectables = new GameObject[size];
 
 
     void Awake()
@@ -66,7 +65,7 @@ public class CollectableGenerator : MonoBehaviour
             int y = Random.Range(0, sizeY);
             int x = Random.Range(0, sizeX);
 
-            if (map2DArray[x, y] != 'm')
+            if (map2DArray[x, y] == 'P')
             {
                 positions[placed, 0] = x;
                 positions[placed, 1] = y;
@@ -81,15 +80,16 @@ public class CollectableGenerator : MonoBehaviour
     {
         for (int i = 0; i < numCollectables; ++i)
         {
-            collectables[i] = Instantiate(
-                    collectable,
-                    new Vector3(
-                        (0.5f + (float)positions[i, 1]) * unitLength,
-                        level * unitLength,
-                        (0.5f + (float)positions[i, 0]) * unitLength),
+            GameObject g = Instantiate(
+                    collectables[i % 3],
+                    new Vector3(0, 0, 0),
                     Quaternion.identity,
-                    this.transform);
-            collectables[i].GetComponent<Score>().onCollect.AddListener(GameManager.gameManager.GivePoints);
+                    t);
+            g.transform.localPosition = new Vector3(
+                    (0.5f + (float)positions[i, 1]) * unitLength,
+                    level * unitLength,
+                    (0.5f + (float)positions[i, 0]) * unitLength);
+            g.GetComponent<Score>().OnCollect += GameManager.gameManager.GivePoints;
         }
     }
 

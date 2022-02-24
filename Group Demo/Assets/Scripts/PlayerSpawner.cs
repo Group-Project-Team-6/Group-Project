@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerSpawner : MonoBehaviour
 {
     public List<GameObject> player;
-    public GameObject playerManager;
     // Start is called before the first frame update
     public GameObject Spawn(int i, Vector3 pos, Transform t)
     {

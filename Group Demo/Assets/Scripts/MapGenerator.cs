@@ -67,6 +67,7 @@ public class MapGenerator : MonoBehaviour
                         if (playerCount[i] < 1 && l == length - 1 && level == 0 && i % 2 == 0 && GetSymbol(level, l, w) == 'P')
                         {
                             GameManager.gameManager.players.Add(pSpawner.Spawn(i/2, cell.transform.position, Q[i].transform));
+                            //pSpawner.Spawn(i / 2, cell.transform.position, Q[i].transform);
                             playerCount[i]++;
                         }
                     }

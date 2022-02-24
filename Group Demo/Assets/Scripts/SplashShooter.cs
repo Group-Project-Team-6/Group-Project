@@ -5,20 +5,29 @@ using UnityEngine;
 public class SplashShooter : MonoBehaviour
 {
     public GameObject obj;
+    public PlayerController pController;
     public float dist;
     public Camera cam;
     public Color32 color;
     public List<Texture2D> SplashTexs;
     public int index = 0;
     public float shotHeight;
-    // Start is called before the first frame update
+    public bool shoot;
 
+    float delay = 0;
+    // Start is called before the first frame update
+    private void Awake()
+    {
+        pController.OnMouseEvent += OnMouseEvent;
+    }
     // Update is called once per frame
     void Update()
     {
+        delay += Time.deltaTime;
         if (!cam) return;
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (shoot && (delay > 0.3f))
         {
+
             index++;
             if (index >= SplashTexs.Count) index = 0;
             GameObject g = Instantiate(obj, transform.position + transform.forward * dist, new Quaternion());
@@ -31,6 +40,12 @@ public class SplashShooter : MonoBehaviour
                 sb.radius = 1;
                 sb.tex = SplashTexs[index];
             }
+            delay = 0;
         }
+    }
+
+    public void OnMouseEvent(object sender, MouseArgs args)
+    {
+        shoot = args.shoot;
     }
 }

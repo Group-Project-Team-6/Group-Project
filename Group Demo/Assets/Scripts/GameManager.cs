@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public List<GameObject> players;
     public static GameManager gameManager;
     public CollectableGenerator collectableGenerator;
 
@@ -63,7 +62,8 @@ public class GameManager : MonoBehaviour
 
         if (scoreArgs.player.gameObject.layer == 10)
         {
-            gameManager.Team1Score++;
+
+            GameManager.gameManager.Team1Score++;
             //Change HUD Data (Gokul)
             if (Team1Score > (maxScore / 2 + 1))
             {
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
 
         else if (scoreArgs.player.gameObject.layer == 11)
         {
-            gameManager.Team2Score++;
+            GameManager.gameManager.Team2Score++;
             //Change HUD Data (Gokul)
             if (Team2Score > (maxScore / 2 + 1))
             {

@@ -16,10 +16,10 @@ public class Score : MonoBehaviour
 
     //public UnityEvent onCollect;
 
-    void Awake()
-    {
-        OnCollect += GameManager.gameManager.GivePoints;
-    }
+    //void Awake()
+    //{
+    //    OnCollect += GameManager.gameManager.GivePoints;
+    //}
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == 10)
@@ -36,7 +36,9 @@ public class Score : MonoBehaviour
 
         ScoreArgs scoreArgs = new ScoreArgs();
         scoreArgs.player = other.gameObject;
+
         OnCollect.Invoke(this, scoreArgs);
+
         Destroy(gameObject);        
     }
 }

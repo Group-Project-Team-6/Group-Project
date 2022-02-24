@@ -6,7 +6,7 @@ public class SplashBall : MonoBehaviour
 {
     public float mass = 1.0f;
     public float radius = 1.0f;
-    public int team;
+    public int Team;
     public Color32 color = Color.black;
     public Texture2D tex;
     // Start is called before the first frame update
@@ -67,7 +67,7 @@ public class SplashBall : MonoBehaviour
                     (u.normalized + dir).normalized
                     * u.magnitude * 0.05f;
                 SplashBall subSplashBall = newSplash.GetComponent<SplashBall>();
-                subSplashBall.team = team;
+                subSplashBall.Team = Team;
                 subSplashBall.radius = radius * 0.5f;
                 subSplashBall.mass = mass * 0.5f;
                 subSplashBall.color = color;

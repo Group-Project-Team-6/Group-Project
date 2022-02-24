@@ -61,7 +61,7 @@ Shader "Custom/DefualtFloor"
                 float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.pos.xyz);
                 float3 fragmentToLightSource = _WorldSpaceLightPos0.xyz - i.posWorld.xyz;
                 float distance = length(fragmentToLightSource);
-                float atten = 1;
+                float atten = 0.7;
                 float3 lightDir = normalize(fragmentToLightSource);
                 float3 diffuseReflection = atten * _LightColor0.xyz * saturate(dot(normal, lightDir));
                 float3 specularReflection = diffuseReflection * _SpecColor.xyz * pow(saturate(dot(reflect(-lightDir, normal), viewDir)), _Shininess);

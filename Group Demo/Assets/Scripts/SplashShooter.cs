@@ -46,7 +46,7 @@ public class SplashShooter : MonoBehaviour
                 if (g.GetComponent<SplashBall>())
                 {
                     SplashBall sb = g.GetComponent<SplashBall>();
-                    sb.team = player.Team;
+                    sb.Team = player.Team;
                     sb.color = this.color;
                     sb.mass = 1;
                     sb.radius = 1;

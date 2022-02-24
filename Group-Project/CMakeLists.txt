@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
 project(Group-Game-Project)
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
+#set(ENV{VULKAN_SDK} "C:/VulkanSDK/1.3.204.0")
+
+function(print)
+	foreach(var ${ARGN})
+		message("${var} = ${${var}}")
+	endforeach()
+endfunction()
+
+print(PROJECT_NAME CMAKE_SOURCE_DIR)
 
 #CSC8503 Component
 add_library(CSC8503
@@ -36,6 +45,30 @@ add_library(OpenGLRendering
 	src/OpenGLRendering/OGLShader.h
 	src/OpenGLRendering/OGLTexture.h
 )
+
+add_library(VulkanRendering
+    src/VulkanRendering/VulkanTexture.cpp
+    src/VulkanRendering/VulkanShaderBuilder.cpp
+    src/VulkanRendering/VulkanShader.cpp
+    src/VulkanRendering/VulkanRenderPassBuilder.cpp
+    src/VulkanRendering/VulkanRenderer.cpp
+    src/VulkanRendering/VulkanPipelineBuilder.cpp
+    src/VulkanRendering/VulkanMesh.cpp
+    src/VulkanRendering/VulkanDescriptorSetLayoutBuilder.cpp
+    src/VulkanRendering/VulkanDebugger.cpp
+    
+    src/VulkanRendering/VulkanUtility.h
+    src/VulkanRendering/VulkanTexture.h
+    src/VulkanRendering/VulkanShaderBuilder.h
+    src/VulkanRendering/VulkanShader.h
+    src/VulkanRendering/VulkanRenderPassBuilder.h
+    src/VulkanRendering/VulkanRenderer.h
+    src/VulkanRendering/VulkanPipelineBuilder.h
+    src/VulkanRendering/VulkanMesh.h
+    src/VulkanRendering/VulkanDescriptorSetLayoutBuilder.h
+    src/VulkanRendering/VulkanDebugger.h
+)
+
 #GUI Component
 add_library(imgui SHARED IMPORTED
 	src/imgui/imgui_demo.cpp
@@ -145,15 +178,30 @@ add_executable(Game
 )
 
 #Targeting Directories & Linking Libraries
-find_package(Bullet CONFIG REQUIRED)
+find_package(Bullet CONFIG)
 if(Bullet_FOUND)
 	target_include_directories(Physics PRIVATE ${BULLET_INCLUDE_DIRS})
 else()
-	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
+	message(FATAL_ERROR "Could not find Bullet Physics Engine!")
+endif()
+
+if (DEFINED VULKAN_SDK_PATH)
+  set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include") # 1.1 Make sure this include path is correct
+  set(Vulkan_LIBRARIES "${VULKAN_SDK_PATH}/Lib") # 1.2 Make sure lib path is correct
+  set(Vulkan_FOUND "True")
+else()
+  find_package(Vulkan REQUIRED) # throws error if could not find Vulkan
+  message(STATUS "Found Vulkan: $ENV{VULKAN_SDK}")
+endif()
+if (NOT Vulkan_FOUND)
+    message(FATAL_ERROR "Could not find Vulkan library!")
+else()
+    message(STATUS "Using vulkan lib at: ${Vulkan_LIBRARIES}")
 endif()
 
 target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering)
 target_link_libraries(OpenGLRendering Common)
+target_link_libraries(VulkanRendering Vulkan::Headers Common)
 target_link_libraries(Common ${BULLET_LIBRARIES})

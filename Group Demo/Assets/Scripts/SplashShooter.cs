@@ -16,6 +16,13 @@ public class SplashShooter : MonoBehaviour
     public bool shoot;
     public float spread;
     int count = 0;
+    Player player;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        player = this.GetComponent<Player>();
+    }
 
     float delay = 0;
     // Start is called before the first frame update
@@ -39,7 +46,7 @@ public class SplashShooter : MonoBehaviour
                 if (g.GetComponent<SplashBall>())
                 {
                     SplashBall sb = g.GetComponent<SplashBall>();
-                    sb.team = gameObject.layer - 9;
+                    sb.team = player.Team;
                     sb.color = this.color;
                     sb.mass = 1;
                     sb.radius = 1;

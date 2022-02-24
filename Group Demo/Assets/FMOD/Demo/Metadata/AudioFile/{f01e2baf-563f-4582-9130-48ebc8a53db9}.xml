@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{f01e2baf-563f-4582-9130-48ebc8a53db9}">
+		<property name="assetPath">
+			<value>398032__swordofkings128__splash.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.3312925170068026</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{f85e2f27-009f-44da-9856-d4f0dc5b2f7d}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -9,7 +9,6 @@ public class SplashBall : MonoBehaviour
     public int team;
     public Color32 color = Color.black;
     public Texture2D tex;
-    GameObject self;
     // Start is called before the first frame update
     void Awake()
     {

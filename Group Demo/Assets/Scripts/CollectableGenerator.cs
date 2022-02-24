@@ -82,15 +82,6 @@ public class CollectableGenerator : MonoBehaviour
                     (0.5f + (float)positions[i, 1]) * unitLength,
                     level * unitLength,
                     (0.5f + (float)positions[i, 0]) * unitLength);
-            Instantiate(
-                collectable,
-                new Vector3(
-                    positions[i, 0] * (unitLength * 0.5f),
-                    level * (unitLength * 0.5f),
-                    positions[i, 1] * (unitLength * 0.5f)),
-                Quaternion.identity,
-                this.transform);
-  
         }
     }
 

@@ -10,16 +10,24 @@ public class GameServer : MonoBehaviour
     List<string> maze;
     List<Vector3> collectablePos;
     List<IPEndPoint> clients;
+
+    void Init()
+    {
+        //GenMaze / grab generated maze
+        //Assign position slot
+        
+    }
+
     void SyncResourses()
     {
-        CommandMessage m = new CommandMessage();
-        m.command = 7;
-        NetworkManager.PassCmd(m);
+        //Maze 
+        //player slots
+        //
     }
 
     void AddUser()
     {
-        NetworkManager.SendData(ExportMaze());
+
     }
 
     byte[] ExportMaze()

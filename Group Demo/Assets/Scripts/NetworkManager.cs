@@ -16,9 +16,9 @@ public class UDPMessageEventArgs : EventArgs
 
 public class NetworkManager : MonoBehaviour
 {
-    static UdpClient client = new UdpClient(666);
+    static UdpClient client;
     public byte[] ipAddress = { 0, 0, 0, 0 };
-    static int port = 666;
+    public static int port = 666;
 
     Task t = new Task(Listen);
     public static event EventHandler<UDPMessageEventArgs> OnMessageRecieved;
@@ -27,19 +27,19 @@ public class NetworkManager : MonoBehaviour
     static bool alive;
     void Awake()
     {
-        cmdQueue = new Queue<CommandMessage>();
         if (!instance)
         {
             instance = this;
             alive = true;
+            client = new UdpClient(port);
             OnMessageRecieved += OnRecievedMsg;
-            currentFrame = 0;
         }
         else
         {
             Destroy(this);
         }
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,12 +78,6 @@ public class NetworkManager : MonoBehaviour
         client.Send(sendBytes, sendBytes.Length);
     }
 
-    byte[] ResovleCmd(CommandMessage e)
-    {
-        byte[] bytes = { e.command };
-        return bytes;
-    }
-
     /// <summary>
     /// Operation to do when message recieved
     /// </summary>
@@ -104,7 +98,15 @@ public class NetworkManager : MonoBehaviour
 
     public static void Connect(IPEndPoint endPoint)
     {
+        endPoint.Port = port;
         Debug.Log(endPoint.Address.ToString() + endPoint.Port.ToString());
         client.Connect(endPoint);
+    }
+
+    public static void Reset(int newPort)
+    {
+        client.Close();
+        client = new UdpClient(newPort);
+        port = newPort;
     }
 }

@@ -11,6 +11,7 @@ using UnityEngine;
 /// </summary>
 public class UDPMessageEventArgs : EventArgs
 {
+    public IPEndPoint endPoint;
     public byte[] bytes;
 }
 
@@ -56,9 +57,9 @@ public class NetworkManager : MonoBehaviour
     static void Listen()
     {
         byte[] bytes = {0 };
-        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, port);
         while (alive)
         {
+            IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, port);
             Debug.Log("Start Listening");
             bytes = client.Receive(ref RemoteIpEndPoint);
             Debug.Log("Recieved: " + bytes[0]);
@@ -67,7 +68,8 @@ public class NetworkManager : MonoBehaviour
 
             UDPMessageEventArgs args = new UDPMessageEventArgs();
             args.bytes = bytes;
-            if(OnMessageRecieved != null) OnMessageRecieved.Invoke(null, args);
+            args.endPoint = RemoteIpEndPoint;
+            if (OnMessageRecieved != null) OnMessageRecieved.Invoke(null, args);
         }
     }
 
@@ -98,7 +100,6 @@ public class NetworkManager : MonoBehaviour
 
     public static void Connect(IPEndPoint endPoint)
     {
-        endPoint.Port = port;
         Debug.Log(endPoint.Address.ToString() + endPoint.Port.ToString());
         client.Connect(endPoint);
     }

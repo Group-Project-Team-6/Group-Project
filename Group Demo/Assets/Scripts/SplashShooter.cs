@@ -25,6 +25,7 @@ public class SplashShooter : MonoBehaviour
             if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position + transform.up * shotHeight).normalized * dist * 1000);
             if (g.GetComponent<SplashBall>()) { 
                 SplashBall sb = g.GetComponent<SplashBall>();
+                sb.team = gameObject.layer - 9;
                 sb.color = this.color;
                 sb.mass = 1;
                 sb.radius = 1;

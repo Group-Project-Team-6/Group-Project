@@ -149,8 +149,8 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4278190335
   SplashTexs:
-  - {fileID: 2800000, guid: f2da6423a87788142b5ede7dc1fe7cd5, type: 3}
-  - {fileID: 2800000, guid: a1b669da2adedd947a93d54accc7ba83, type: 3}
+  - {fileID: 2800000, guid: e4b4044abe397c347b2937afd92d2b8f, type: 3}
+  - {fileID: 2800000, guid: a610a1aab7178834192ed09352705cfc, type: 3}
   index: 0
   shotHeight: 3
 --- !u!114 &9106306642543012035
@@ -169,7 +169,8 @@ MonoBehaviour:
   PlaneHeight: 10
   PlaneWidth: 10
   tex: []
-  texOri: []
+  texOri:
+  - {fileID: 2800000, guid: 72e23c4eecb0b0e4a98444eba7a898d9, type: 3}
   Layer: 0
 --- !u!54 &9106306642543012032
 Rigidbody:

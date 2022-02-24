@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SplashBall : MonoBehaviour
 {
-    public float life = 1.0f;
     public float mass = 1.0f;
     public float radius = 1.0f;
+    public int team;
     public Color32 color = Color.black;
     public Texture2D tex;
     GameObject self;
@@ -68,6 +68,7 @@ public class SplashBall : MonoBehaviour
                     (u.normalized + dir).normalized
                     * u.magnitude * 0.05f;
                 SplashBall subSplashBall = newSplash.GetComponent<SplashBall>();
+                subSplashBall.team = team;
                 subSplashBall.radius = radius * 0.5f;
                 subSplashBall.mass = mass * 0.5f;
                 subSplashBall.color = color;

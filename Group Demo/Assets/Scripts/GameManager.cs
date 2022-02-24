@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public float gameTime;
     public int Team1Score;
     public int Team2Score;
-    public bool team1Win;
+    public static bool team1Win;
     int maxScore;
     const int size = 20;
     public Score[] scores = new Score[size];
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        gameTime = 300;
+        gameTime = 30;
 
         maxScore = CollectableGenerator.numCollectables;
     }
@@ -47,14 +47,7 @@ public class GameManager : MonoBehaviour
 
         if (gameTime <= 0)
         {
-            if (Team1Score > Team2Score)
-            {
-                team1Win = true;
-            }
-
-            else team1Win = false;
-
-            EndGame(ref team1Win);
+            EndGame();
         }
     }
 
@@ -64,40 +57,32 @@ public class GameManager : MonoBehaviour
 
         if (scoreArgs.player.gameObject.layer == 10)
         {
-
             GameManager.gameManager.Team1Score++;
             //Change HUD Data (Gokul)
-            if (Team1Score > (maxScore / 2 + 1))
-            {
-                team1Win = true;
-                EndGame(ref team1Win);
-            }
         }
 
         else if (scoreArgs.player.gameObject.layer == 11)
         {
             GameManager.gameManager.Team2Score++;
             //Change HUD Data (Gokul)
-            if (Team2Score > (maxScore / 2 + 1))
-            {
-                team1Win = false;
-                EndGame(ref team1Win);
-            }
-
         }
+
+        if (Team1Score > ((maxScore / 2) + 1) || Team2Score > ((maxScore / 2) + 1))
+        {
+            EndGame();
+        }
+
     }
 
-    void EndGame(ref bool gameResult)
+    void EndGame()
     {
-
-        if (gameResult)
+        if (Team1Score > Team2Score)
         {
-            //team1Win Result Code (Gokul) 
+            team1Win = true;
         }
+        else team1Win = false;
 
-        if (!gameResult)
-        {
-            //team2Win Result Code (Gokul)
-        }
+        SceneManager.LoadScene("EndScene");
+
     }
 }

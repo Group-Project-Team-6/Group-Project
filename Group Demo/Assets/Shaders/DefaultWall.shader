@@ -41,7 +41,6 @@ Shader "Custom/DefaultWall" {
             float _Shininess;
             float _CullingFactor;
             float _CullingDistance;
-            int _Team;
             float4 _PlayerPos;
             //sampler2D _MainTex;
             sampler2D _Tex;
@@ -87,7 +86,7 @@ Shader "Custom/DefaultWall" {
                 
                 fixed4 color = tex2D(_Tex,i.texcoord);
                 if (color.a > 0.7) {
-                    i.color = tex2D(_TexOri, i.texcoord) * Luminance(i.color.xyz);
+                    i.color = tex2D(_TexOri, i.texcoord) * max(color.z,max(color.x,color.y));
                     i.color.a = 1;
                 }
                 if(i.pos.z + 0.0235 < playPos.z) return i.color * float4(lightFinal, 1); //(1 - i.pos.z + 0.07) playPos.z < 0.0298

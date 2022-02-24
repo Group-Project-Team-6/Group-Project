@@ -48,8 +48,9 @@ Shader "Custom/DefaultSplash"
 
                 v2f vert(a2v v) {
                     v2f o;
-                    o.posWorld = mul(unity_ObjectToWorld, v.vertex);
-                    o.pos = UnityObjectToClipPos(v.vertex);
+                    float4 p = v.vertex;// +float4(sin(_Time.z) * v.vertex.x, sin(_Time.z) * v.vertex.y, sin(_Time.z) * v.vertex.z, 1);
+                    o.posWorld = mul(unity_ObjectToWorld,p);
+                    o.pos = UnityObjectToClipPos(p);
                     o.normalDir = normalize(mul(float4(v.normal, 0.0), unity_WorldToObject).xyz);
                     o.texcoord = v.texcoord;
                     o.color = _Color;
@@ -57,7 +58,8 @@ Shader "Custom/DefaultSplash"
                 }
 
                 fixed4 frag(v2f i) : SV_Target{
-                    float3 normal = i.normalDir;
+                    float3 normal = float3(sin(_Time.y + i.posWorld.x),sin(_Time.y + i.posWorld.y),sin(_Time.y + i.posWorld.z));
+                    normal = normalize(normal);
                     float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.pos.xyz);
                     float3 fragmentToLightSource = _WorldSpaceLightPos0.xyz - i.posWorld.xyz;
                     float distance = length(fragmentToLightSource);
@@ -70,7 +72,7 @@ Shader "Custom/DefaultSplash"
                     //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
 
         
-                    return  i.color * float4(lightFinal, 0.3); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
+                    return  i.color * float4(lightFinal, 0.7); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
                 }
 
                 ENDCG

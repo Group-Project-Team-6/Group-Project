@@ -5,6 +5,7 @@ using UnityEngine;
 public class SplashShooter : MonoBehaviour
 {
     public GameObject obj;
+    public GameObject splashes;
     public PlayerController pController;
     public float dist;
     public Camera cam;
@@ -13,6 +14,8 @@ public class SplashShooter : MonoBehaviour
     public int index = 0;
     public float shotHeight;
     public bool shoot;
+    public float spread;
+    int count = 0;
 
     float delay = 0;
     // Start is called before the first frame update
@@ -25,22 +28,39 @@ public class SplashShooter : MonoBehaviour
     {
         delay += Time.deltaTime;
         if (!cam) return;
-        if (shoot && (delay > 0.3f))
+        if (shoot)
         {
-
-            index++;
-            if (index >= SplashTexs.Count) index = 0;
-            GameObject g = Instantiate(obj, transform.position + transform.forward * dist, new Quaternion());
-            if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position + transform.up * shotHeight).normalized * dist * 1000);
-            if (g.GetComponent<SplashBall>()) { 
-                SplashBall sb = g.GetComponent<SplashBall>();
-                sb.team = gameObject.layer - 9;
-                sb.color = this.color;
-                sb.mass = 1;
-                sb.radius = 1;
-                sb.tex = SplashTexs[index];
+            if (delay > 0.3f)
+            {
+                index++;
+                if (index >= SplashTexs.Count) index = 0;
+                GameObject g = Instantiate(obj, transform.position + transform.forward * dist, new Quaternion());
+                if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position + transform.up * shotHeight).normalized * dist * 1000);
+                if (g.GetComponent<SplashBall>())
+                {
+                    SplashBall sb = g.GetComponent<SplashBall>();
+                    sb.team = gameObject.layer - 9;
+                    sb.color = this.color;
+                    sb.mass = 1;
+                    sb.radius = 1;
+                    sb.tex = SplashTexs[index];
+                }
+                delay = 0;
+                count = 0;
             }
-            delay = 0;
+
+            if(count < 3)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Vector3 bias = new Vector3(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread));
+                    GameObject s = Instantiate(splashes, transform.position + transform.forward * dist, new Quaternion());
+                    Vector3 v = (transform.position - cam.transform.position + transform.up * shotHeight).normalized;
+                    float ss = spread * 0.1f;
+                    if (s.GetComponent<Rigidbody>()) s.GetComponent<Rigidbody>().AddForce(new Vector3(v.x + Random.Range(-ss, ss), v.y + Random.Range(-ss, ss), v.z + Random.Range(-ss, ss)).normalized * dist * 1000);
+                }
+            }
+            count++;
         }
     }
 

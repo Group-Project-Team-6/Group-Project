@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 1745023771357995761, guid: 6c65263dc7c18784f8fc77789b081923, type: 3}
+  splashes: {fileID: 4303037337571959623, guid: 70ae318fee03c92458f5dff546ea42ff, type: 3}
   pController: {fileID: 361070960516126714}
   dist: 1
   cam: {fileID: 361070960286047408}
@@ -293,6 +294,7 @@ MonoBehaviour:
   index: 0
   shotHeight: 3
   shoot: 0
+  spread: 0.5
 --- !u!114 &361070960516126712
 MonoBehaviour:
   m_ObjectHideFlags: 0

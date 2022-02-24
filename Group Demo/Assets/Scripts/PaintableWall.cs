@@ -47,7 +47,7 @@ public class PaintableWall : MonoBehaviour
             //hitTex = new Texture2D(256, 256);
             for (int i = 0; i < mesh.subMeshCount; i++)
             {
-                tex.Add(new Texture2D((int)(64 * WidthRatio), (int)(64 * HeightRatio)));
+                tex.Add(new Texture2D((int)(32 * WidthRatio), (int)(32 * HeightRatio)));
                 transform.GetComponent<Renderer>().materials[i].SetTexture("_Tex", tex[i]);
                 int index = (i >= texOri.Count ? i = texOri.Count - 1 : i);
                 transform.GetComponent<Renderer>().materials[i].SetTexture("_TexOri", texOri[index]);

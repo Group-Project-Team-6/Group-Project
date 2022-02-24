@@ -71,7 +71,8 @@ Shader "Custom/DefaultWall" {
             }
 
             fixed4 frag(v2f i) : SV_Target{
-                float3 normal = i.normalDir;
+                float3 normal = i.normalDir + float3(0.01,0.01,0.01) * float3(sin(_Time.z + i.posWorld.x),sin(_Time.z + i.posWorld.y),sin(_Time.z + i.posWorld.z));
+                normal = normalize(normal);
                 float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.pos.xyz);
                 float3 fragmentToLightSource = _WorldSpaceLightPos0.xyz - i.posWorld.xyz;
                 float distance = length(fragmentToLightSource);

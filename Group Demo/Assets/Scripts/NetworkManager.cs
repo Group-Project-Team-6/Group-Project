@@ -14,21 +14,11 @@ public class UDPMessageEventArgs : EventArgs
     public byte[] bytes;
 }
 
-public class CommandMessage 
-{
-    public byte command;
-}
-
-
 public class NetworkManager : MonoBehaviour
 {
     static UdpClient client = new UdpClient(666);
     public byte[] ipAddress = { 0, 0, 0, 0 };
     static int port = 666;
-    public static List<IPEndPoint> mailingList;
-    static uint currentFrame;
-
-    static Queue<CommandMessage> cmdQueue;
 
     Task t = new Task(Listen);
     public static event EventHandler<UDPMessageEventArgs> OnMessageRecieved;
@@ -38,7 +28,6 @@ public class NetworkManager : MonoBehaviour
     void Awake()
     {
         cmdQueue = new Queue<CommandMessage>();
-        mailingList = new List<IPEndPoint>();
         if (!instance)
         {
             instance = this;
@@ -58,26 +47,12 @@ public class NetworkManager : MonoBehaviour
         t.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        currentFrame++;
-        //Send(new byte[] { 1, 2, 3 });
-        for (int i = 0; i < cmdQueue.Count; i++)
-        {
-            byte[] bytes = ResovleCmd(cmdQueue.Dequeue());
-            if(bytes.Length > 0)
-            {
-                Send(bytes);
-            }
-        }
-    }
-
     private void OnDestroy()
     {
         alive = false;
         DestroyClient();
     }
+
     static void Listen()
     {
         byte[] bytes = {0 };
@@ -96,7 +71,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    static void Send(byte[] n)
+    public static void Send(byte[] n)
     {
         Debug.Log("Start Sending");
         byte[] sendBytes = n;//System.Text.Encoding.ASCII.GetBytes("Is anybody there?");
@@ -123,35 +98,13 @@ public class NetworkManager : MonoBehaviour
     {
         Connect(new IPEndPoint(IPAddress.Loopback, 666));
         Send(new byte[] { 3 });
-        Close();
+        client.Close();
     }
 
-    /// <summary>
-    /// Pass game command here
-    /// </summary>
-    /// <param name="n"></param>
-    public static void PassCmd(CommandMessage n)
-    {
-        cmdQueue.Enqueue(n);
-    }
 
     public static void Connect(IPEndPoint endPoint)
     {
         Debug.Log(endPoint.Address.ToString() + endPoint.Port.ToString());
         client.Connect(endPoint);
-    }
-
-    public static void Close()
-    {
-        client.Close();
-    }
-
-    public static void SendData(byte[] data)
-    {
-        for(int i = 0; i < mailingList.Count; i++)
-        {
-            client.Connect(mailingList[i]);
-            Send(data);
-        }
     }
 }

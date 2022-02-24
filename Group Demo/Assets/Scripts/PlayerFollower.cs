@@ -7,16 +7,28 @@ using UnityEngine;
 
 public class PlayerFollower : MonoBehaviour
 {
+    public bool splitScreen;
     public GameObject player;
     public float height;
     public float sensitivity;
     CapsuleCollider cCol;
     float angle;
+    public RenderTexture renderTex;
+    public int screenNum;
     // Start is called before the first frame update
     void Start()
     {
         cCol = player.transform.GetComponent<CapsuleCollider>();
         angle = 0;
+        if (splitScreen)
+        {
+            gameObject.GetComponent<Camera>().targetTexture = renderTex;
+        }
+        else
+        {
+            gameObject.GetComponent<Camera>().targetTexture = null;
+            gameObject.GetComponent<Camera>().targetDisplay = screenNum;
+        }
     }
 
     // Update is called once per frame

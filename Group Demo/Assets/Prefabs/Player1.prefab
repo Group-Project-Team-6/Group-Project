@@ -67,7 +67,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4023
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 1b5ffba5a16161840a3cd7cb14359ec6, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -89,9 +89,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d8e66084bde484788889055718d956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  splitScreen: 0
   player: {fileID: 361070960516126705}
   height: 3
   sensitivity: 3
+  renderTex: {fileID: 8400000, guid: 1b5ffba5a16161840a3cd7cb14359ec6, type: 2}
+  screenNum: 1
 --- !u!114 &361070960286047413
 MonoBehaviour:
   m_ObjectHideFlags: 0

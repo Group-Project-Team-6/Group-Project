@@ -1,23 +1,7 @@
-<<<<<<< HEAD
-PPPP#PSPP#
-PP#P#P#PPP
-P##P#PSPPP
-PPPPPPPPPP
-PP##PPP##P
-PPP#PPPPPP
-PPPPP###P#
-PPP#P###PP
-#P#PPPPPPP
-#PPPP#PP##
-=======
-######PPPS
-#####PPP#P
-#####PP##P
-PPP#PP#PPP
-P#PPPPPP#P
-PP#P##PPPP
-PPPP#SPPSP
-##PP##PPPP
-###P######
-###PPPPPPP
->>>>>>> GUI
+##PPPPP
+##P###P
+#PP#PPP
+PPPPP##
+PPPPPPP
+PPP#PPP
+PPP####

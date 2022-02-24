@@ -42,7 +42,7 @@ public class MazeGenerator : MonoBehaviour
         levelString = new List<string>(floors);
 
         int h = floors;
-
+        /*
         if (h > 0)
         {
             numberOfStairs = 0;
@@ -69,7 +69,7 @@ public class MazeGenerator : MonoBehaviour
             LevelTextFile("/map" + g + ".txt");
             LevelToString(g);
         }
-
+        */
     }
 
     // Update is called once per frame
@@ -89,19 +89,19 @@ public class MazeGenerator : MonoBehaviour
         numberOfStairs = 0;
         MazeGenCheck();
         AddStairs();
-        //LevelTextFile("/map.txt");
+        LevelTextFile("/map.txt");
         LevelToString(0);
 
         MazeGenCheck();
         numberOfStairs = 0;
         AddStairs();
         PathToStairs();
-        //LevelTextFile("/map1.txt"); // layered maps
+        LevelTextFile("/map1.txt"); // layered maps
         LevelToString(1);
 
         MazeGenCheck();
         PathToStairs();
-        //LevelTextFile("/map2.txt");
+        LevelTextFile("/map2.txt");
         LevelToString(2);
     }
 

@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.22)
-project(Group-Game-Project)
+cmake_minimum_required(VERSION 3.22.1)
+project(Group-Project)
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Lib)
+set(CMAKE_CONFIGURATION_TYPES Debug;Release)
 add_subdirectory(src/OpenGLRendering/KHR)
 add_compile_definitions(GLEW_STATIC)
-
-include(GNUInstallDirs)
 
 function(print)
 	foreach(var ${ARGN})
@@ -12,7 +13,7 @@ function(print)
 	endforeach()
 endfunction()
 
-print(PROJECT_NAME CMAKE_SOURCE_DIR)
+print(PROJECT_NAME CMAKE_SOURCE_DIR PROJECT_BINARY_DIR CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
 
 #CSC8503 Component
 add_library(CSC8503
@@ -162,13 +163,12 @@ add_library(Audio
 )
 
 #Executable
-add_executable(Game
+add_executable(Splatooth_2042
 	src/game/GameEntity.h
 
 	src/game/main.cpp
 	src/game/GameEntity.cpp
 )
-
 
 #Targeting Directories & Linking Libraries
 find_package(OpenGL REQUIRED)
@@ -183,31 +183,14 @@ else()
 	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
 endif()
 
-target_include_directories(Game
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/..>
-		$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
-		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-	PRIVATE
-		${CMAKE_CURRENT_LIST_DIR}
-)
-
-install(TARGETS Game
-	EXPORT Game_Export
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		NAMELINK_SKIP
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-install(EXPORT Game_Export
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/game-${PROJECT_VERSION}
-)
-
-target_link_libraries(Game Physics OpenGLRendering CSC8503 Common Audio)
+target_link_libraries(Splatooth_2042 Physics OpenGLRendering CSC8503 Common Audio)
 target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
-target_link_libraries(OpenGLRendering Common KHR_LIB ${OPENGL_gl_LIBRARY})
+target_link_libraries(OpenGLRendering KHR_LIB Common ${OPENGL_gl_LIBRARY})
 target_link_libraries(Common ${BULLET_LIBRARIES})
 target_link_libraries(Audio FMOD)
 
+#Copy fmod.dll to Output Directory
+get_property(FMOD_DLL TARGET FMOD PROPERTY IMPORTED_LOCATION)
+file(COPY ${FMOD_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug)
+file(COPY ${FMOD_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release)

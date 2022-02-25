@@ -191,7 +191,7 @@ MonoBehaviour:
   - {fileID: 7168414522453584471}
   StringsBanks:
   - {fileID: 5105774890825797046}
-  cacheTime: 637813858186850630
+  cacheTime: 637813588716639928
   cacheVersion: 10
 --- !u!114 &422165484958625591
 MonoBehaviour:
@@ -262,7 +262,7 @@ MonoBehaviour:
   Path: Assets/FMOD/Demo/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637813858186850630
+  lastModified: 637813588716639928
   FileSizes:
   - Name: Desktop
     Value: 1050
@@ -282,7 +282,7 @@ MonoBehaviour:
   Path: Assets/FMOD/Demo/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637813858186354960
+  lastModified: 637813588716619922
   FileSizes:
   - Name: Desktop
     Value: 1321920

@@ -52,6 +52,7 @@ public class MapGenerator : MonoBehaviour
 
     public void Generate()
     {
+        collGen.ResetCollectable();
         mazeGen.Generate(length, width);
         LoadMazeFromList();
         InitBackgrounds();

@@ -11,11 +11,16 @@ public class WinText : MonoBehaviour
     {
         text = GetComponent<Text>();
 
-        if (GameManager.team1Win)
+        if (GameManager.twinningState == GameManager.WinningState.TEAM1)
         {
             text.text = "Team 1 Win";
+        }else if (GameManager.twinningState == GameManager.WinningState.TEAM2)
+        {
+            text.text = "Team 2 Win";
         }
-
-        else text.text = "Team 2 Win";
+        else
+        {
+            text.text = "Draw";
+        }
     }
 }

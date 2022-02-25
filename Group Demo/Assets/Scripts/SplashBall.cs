@@ -66,6 +66,7 @@ public class SplashBall : MonoBehaviour
                 newSplash.GetComponent<Rigidbody>().velocity = 
                     (u.normalized + dir).normalized
                     * u.magnitude * 0.05f;
+                newSplash.GetComponent<Renderer>().material.SetColor("_Color", this.color);
                 SplashBall subSplashBall = newSplash.GetComponent<SplashBall>();
                 subSplashBall.Team = Team;
                 subSplashBall.radius = radius * 0.5f;

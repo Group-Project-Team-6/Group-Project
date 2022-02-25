@@ -71,7 +71,7 @@ Shader "Custom/DefaultCollectable"
                     //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
 
 
-                    return  i.color * float4(lightFinal * 10, 1); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
+                    return  i.color * float4(lightFinal * 5, 1); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
                 }
 
                 ENDCG

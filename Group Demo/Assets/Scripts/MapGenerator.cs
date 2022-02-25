@@ -79,7 +79,8 @@ public class MapGenerator : MonoBehaviour
 
     void InitBackgrounds()
     {
-        floor.transform.localScale = new Vector3(length * unitLength * 0.2f, -unitLength * 0.5f, width * unitLength * 0.2f);
+        floor.transform.localScale = new Vector3(length * unitLength * 0.2f, 1, width * unitLength * 0.2f);
+        floor.transform.localPosition = new Vector3(0, -unitLength * 0.5f, 0);
 
         wall1.transform.localScale = new Vector3(length * unitLength * 2.0f, maze.Count * unitLength, 2);
         wall1.transform.localPosition = new Vector3(0, maze.Count * unitLength * 0.5f - 1.5f, width * unitLength + 1.0f);

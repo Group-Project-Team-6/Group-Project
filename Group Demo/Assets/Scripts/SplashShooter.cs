@@ -43,6 +43,7 @@ public class SplashShooter : MonoBehaviour
                 if (index >= SplashTexs.Count) index = 0;
                 GameObject g = Instantiate(obj, transform.position + transform.forward * dist, new Quaternion());
                 if (g.GetComponent<Rigidbody>()) g.GetComponent<Rigidbody>().AddForce((transform.position - cam.transform.position + transform.up * shotHeight).normalized * dist * 1000);
+                g.GetComponent<Renderer>().material.SetColor("_Color", this.color);
                 if (g.GetComponent<SplashBall>())
                 {
                     SplashBall sb = g.GetComponent<SplashBall>();
@@ -62,6 +63,8 @@ public class SplashShooter : MonoBehaviour
                 {
                     Vector3 bias = new Vector3(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread));
                     GameObject s = Instantiate(splashes, transform.position + transform.forward * dist + bias, new Quaternion());
+                    s.GetComponent<Renderer>().material.SetColor("_Color", this.color);
+                    s.GetComponent<SplashParticle>().color = this.color;
                     Vector3 v = (transform.position - cam.transform.position + transform.up * shotHeight).normalized;
                     float ss = spread * 0.02f;
                     if (s.GetComponent<Rigidbody>()) s.GetComponent<Rigidbody>().AddForce(new Vector3(v.x + Random.Range(-ss, ss), v.y + Random.Range(-ss, ss), v.z + Random.Range(-ss, ss)).normalized * dist * 1000);

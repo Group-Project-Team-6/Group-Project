@@ -8,7 +8,7 @@ public class CollectableGenerator : MonoBehaviour
     string mapChars;
     char[,] map2DArray;
     int[,] positions;
-    public static int numCollectables = 5;
+    public static int numCollectables = 3;
     public const int size = 3;
     public GameObject[] collectables = new GameObject[size];
 

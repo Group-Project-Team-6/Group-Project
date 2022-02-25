@@ -4,33 +4,47 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Camera cam;
     public int Team;
-    public int Health;
+    public int Health = 3;
+    public int maxHealth = 3;
     PlayerController pc;
     Renderer render;
-
+    float counter;
     void Awake()
     {
         render = this.GetComponent<Renderer>();
+        pc = GetComponent<PlayerController>();
     }
 
     void Start()
     {
-        Health = 3;
+        Revive();
     }
 
     void Update()
     {
-        if (Health == 0)
+        if (Health <= 0)
         {
-            // pc.fainted = true;
-            render.materials[0].color = new Color(1, 0, 1, 1);
+            if(pc.fainted == false)
+            {
+                pc.fainted = true;
+                render.materials[0].color = new Color(1, 0, 1, 0.3f);
+                counter = 5.0f;
+            }
+            if (counter < 0.0f)
+            {
+                Revive();
+            }
+            counter -= Time.deltaTime;
         }
-        else 
-        {
-            //pc.fainted = false;
-        }
+    }
+
+    public void Revive()
+    {
+        Health = maxHealth;
+        pc.fainted = false;
+        render.materials[0].color = new Color(1, 1, 1, 1.0f);
+        counter = 0;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -47,7 +61,7 @@ public class Player : MonoBehaviour
             else if (collision.gameObject.GetComponent<SplashBall>().Team == Team)
             {
                 
-                if (Health < 3)
+                if (Health < maxHealth)
                 {
                     Health++;
                 }

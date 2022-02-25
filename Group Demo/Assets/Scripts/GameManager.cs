@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class GameManager : MonoBehaviour
 {
+    public enum WinningState
+    {
+        TEAM1,
+        TEAM2,
+        DRAW
+    };
     public List<GameObject> players;
     public static GameManager gameManager;
     public CollectableGenerator collectableGenerator;
@@ -12,7 +19,7 @@ public class GameManager : MonoBehaviour
     public float gameTime;
     public int Team1Score;
     public int Team2Score;
-    public static bool team1Win;
+    public static WinningState twinningState;
     int maxScore;
     const int size = 20;
     public Score[] scores = new Score[size];
@@ -35,9 +42,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        gameTime = 30;
-
-        maxScore = CollectableGenerator.numCollectables;
+        ResetDefault(300);
     }
 
     // Update is called once per frame
@@ -49,6 +54,15 @@ public class GameManager : MonoBehaviour
         {
             EndGame();
         }
+    }
+
+    public void ResetDefault(float gameTime)
+    {
+        this.gameTime = gameTime;
+        maxScore = CollectableGenerator.numCollectables;
+        Team1Score = 0;
+        Team2Score = 0;
+        twinningState = WinningState.DRAW;
     }
 
     public void GivePoints(object sender, ScoreArgs scoreArgs)
@@ -78,10 +92,18 @@ public class GameManager : MonoBehaviour
     {
         if (Team1Score > Team2Score)
         {
-            team1Win = true;
+            twinningState = WinningState.TEAM1;
         }
-        else team1Win = false;
-
+        else if (Team1Score < Team2Score)
+        {
+            twinningState = WinningState.TEAM2;
+        }
+        else
+        {
+            twinningState = WinningState.DRAW;
+        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene("EndScene");
 
     }

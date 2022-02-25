@@ -7,6 +7,6 @@ public class WinningState : MonoBehaviour
 {
     public void OnWinButtonClick()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(0);
     }
 }

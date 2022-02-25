@@ -80,7 +80,7 @@ Shader "Custom/DefaultSplash"
 					float3 diffuseReflection = atten * _LightColor0.xyz * saturate(dot(normal, lightDir));
 					float3 specularReflection = diffuseReflection * _SpecColor.xyz * pow(saturate(dot(reflect(-lightDir, normal), viewDir)), _Shininess);
 
-					float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + diffuseReflection + specularReflection;
+					float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + diffuseReflection + specularReflection * 10;
 					//float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
 
 

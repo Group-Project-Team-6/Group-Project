@@ -21,7 +21,7 @@ public class SplashShooter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = this.GetComponent<Player>();
+        player = gameObject.GetComponent<Player>();
     }
 
     float delay = 0;

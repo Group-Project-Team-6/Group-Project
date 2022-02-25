@@ -10,7 +10,8 @@ public class PlayerSpawner : MonoBehaviour
     {
         if (i >= player.Count || i < 0) return null;
         GameObject p = Instantiate(player[i], pos, new Quaternion(), t);
-        p.layer = 10 + i;
+        //p.layer = 10 + i;
+        p.GetComponent<Player>().Team = i + 1;
         return p;
     }
 }

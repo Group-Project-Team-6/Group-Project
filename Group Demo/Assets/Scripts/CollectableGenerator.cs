@@ -10,6 +10,7 @@ public class CollectableGenerator : MonoBehaviour
     int[,] positions;
     public static int numCollectables = 3;
     public const int size = 3;
+    static public int totalScore;
     public GameObject[] collectables = new GameObject[size];
 
 
@@ -38,8 +39,13 @@ public class CollectableGenerator : MonoBehaviour
 
     }
 
-    public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength, Transform Q)
+    public void ResetCollectable()
     {
+        totalScore = 0;
+    }
+
+    public void Collectables(int level, string map, int sizeX, int sizeY, float unitLength, Transform Q)
+    { 
         findPositions(map, sizeX, sizeY);
         spawnCollectables(level, unitLength, Q);
     }
@@ -85,11 +91,11 @@ public class CollectableGenerator : MonoBehaviour
                     new Vector3(0, 0, 0),
                     Quaternion.identity,
                     t);
+            totalScore += g.GetComponent<Score>().score;
             g.transform.localPosition = new Vector3(
                     (0.5f + (float)positions[i, 1]) * unitLength,
                     level * unitLength,
                     (0.5f + (float)positions[i, 0]) * unitLength);
-            g.GetComponent<Score>().OnCollect += GameManager.gameManager.GivePoints;
         }
     }
 

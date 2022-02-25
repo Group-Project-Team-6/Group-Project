@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (fainted || fromServer || collision.gameObject.layer == LayerMask.NameToLayer("Splash"))
+        if ( collision.gameObject.layer == LayerMask.NameToLayer("Splash"))
         {
             return;
         }

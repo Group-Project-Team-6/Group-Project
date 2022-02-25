@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
     public void ResetDefault(float gameTime)
     {
         this.gameTime = gameTime;
-        maxScore = CollectableGenerator.numCollectables;
+        maxScore = CollectableGenerator.totalScore;
         Team1Score = 0;
         Team2Score = 0;
         twinningState = WinningState.DRAW;
@@ -69,20 +69,21 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Event Triggered");
 
-        if (scoreArgs.player.gameObject.layer == 10)
+        if (scoreArgs.player.GetComponent<Player>().Team == 1)
         {
-            GameManager.gameManager.Team1Score++;
+            GameManager.gameManager.Team1Score += scoreArgs.eventScore;
             //Change HUD Data (Gokul)
         }
 
-        else if (scoreArgs.player.gameObject.layer == 11)
+        else if (scoreArgs.player.GetComponent<Player>().Team == 2)
         {
-            GameManager.gameManager.Team2Score++;
+            GameManager.gameManager.Team2Score += scoreArgs.eventScore;
             //Change HUD Data (Gokul)
         }
 
-        if (Team1Score > ((maxScore / 2) + 1) || Team2Score > ((maxScore / 2) + 1))
+        if (Team1Score > (maxScore /2 + 1) || Team2Score > (maxScore / 2 + 1))
         {
+            Debug.Log(Team1Score + "- " + Team2Score);
             EndGame();
         }
 

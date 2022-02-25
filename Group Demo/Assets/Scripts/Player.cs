@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     public int Team;
     public int Health = 3;
     public int maxHealth = 3;
-    PlayerController pc;
+    public PlayerController pc;
     Renderer render;
     float counter;
     void Awake()
@@ -50,7 +50,8 @@ public class Player : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<SplashBall>())
-        {   
+        {
+            Debug.Log("Team: " + collision.gameObject.GetComponent<SplashBall>().Team + " - " + Team);
             if (collision.gameObject.GetComponent<SplashBall>().Team != Team)
             {
                 if (Health > 0)

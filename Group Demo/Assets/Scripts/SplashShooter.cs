@@ -58,12 +58,12 @@ public class SplashShooter : MonoBehaviour
 
             if(count < 3)
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     Vector3 bias = new Vector3(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread));
-                    GameObject s = Instantiate(splashes, transform.position + transform.forward * dist, new Quaternion());
+                    GameObject s = Instantiate(splashes, transform.position + transform.forward * dist + bias, new Quaternion());
                     Vector3 v = (transform.position - cam.transform.position + transform.up * shotHeight).normalized;
-                    float ss = spread * 0.1f;
+                    float ss = spread * 0.02f;
                     if (s.GetComponent<Rigidbody>()) s.GetComponent<Rigidbody>().AddForce(new Vector3(v.x + Random.Range(-ss, ss), v.y + Random.Range(-ss, ss), v.z + Random.Range(-ss, ss)).normalized * dist * 1000);
                 }
             }

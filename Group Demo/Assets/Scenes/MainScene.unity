@@ -25,12 +25,12 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1.28
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.627451, g: 0.5550792, b: 0.41960785, a: 1}
+  m_SubtractiveShadowColor: {r: 0.8018868, g: 0.7342303, b: 0.6026759, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 5c2a26bf88fdada439c18dc4a7ebaf76, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
-  m_HaloTexture: {fileID: 0}
+  m_HaloTexture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
@@ -224,7 +224,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -480, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &110638211
 MonoBehaviour:
@@ -823,7 +823,7 @@ MonoBehaviour:
   collGen: {fileID: 886598123}
   pSpawner: {fileID: 1508787299}
   mMap: {fileID: 1076133614}
-  unitLength: 5
+  unitLength: 6
   width: 10
   length: 10
   tmpp: {fileID: 0}
@@ -994,7 +994,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 8
+      scalar: 10
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -1047,7 +1047,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -1163,7 +1163,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.2
+      scalar: 0.1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -1744,7 +1744,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 50
+      scalar: 200
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4489,7 +4489,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
     type: 0
     collisionMode: 0
@@ -4497,7 +4497,8 @@ ParticleSystem:
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    m_Planes: []
+    m_Planes:
+    - {fileID: 1386499196}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -4554,7 +4555,7 @@ ParticleSystem:
     m_Bounce:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.01
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -4657,7 +4658,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    minKillSpeed: 0
+    minKillSpeed: 5
     maxKillSpeed: 10000
     radiusScale: 1
     collidesWith:
@@ -6022,8 +6023,8 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 10
+  m_Color: {r: 0.7830189, g: 0.57296854, b: 0.25608158, a: 1}
+  m_Intensity: 3
   m_Range: 3000
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -6775,7 +6776,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 480, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1302354988
 MonoBehaviour:
@@ -6827,7 +6828,6 @@ GameObject:
   - component: {fileID: 1386499199}
   - component: {fileID: 1386499198}
   - component: {fileID: 1386499197}
-  - component: {fileID: 1386499200}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -6912,25 +6912,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386499195}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1386499200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1386499195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3720658a09ad39b4583480bce67456cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LoadOnAwake: 1
-  PlaneHeight: 10
-  PlaneWidth: 10
-  tex:
-  - {fileID: 0}
-  texOri: []
-  Layer: 0
 --- !u!1 &1412064411
 GameObject:
   m_ObjectHideFlags: 0

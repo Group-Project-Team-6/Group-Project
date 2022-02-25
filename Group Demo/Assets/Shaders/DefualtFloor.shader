@@ -29,7 +29,7 @@ Shader "Custom/DefualtFloor"
             float _Shininess;
             //sampler2D _MainTex;
             sampler2D _Tex;
-
+            sampler2D _TexOri;
 
             struct a2v {
                 float4 vertex : POSITION;
@@ -38,6 +38,7 @@ Shader "Custom/DefualtFloor"
             };
 
             struct v2f {
+                float4 vert : TEXCOORD3;
                 float4 posWorld : TEXCOORD1;
                 float4 pos : SV_POSITION;
                 float4 texcoord : TEXCOORD0;
@@ -47,6 +48,7 @@ Shader "Custom/DefualtFloor"
 
             v2f vert(a2v v) {
                 v2f o;
+                o.vert = v.vertex;
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.normalDir = normalize(mul(float4(v.normal, 0.0), unity_WorldToObject).xyz);
@@ -57,7 +59,8 @@ Shader "Custom/DefualtFloor"
 
             fixed4 frag(v2f i) : SV_Target{
                 //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
-                float3 normal = i.normalDir;
+                float3 normal = i.normalDir + float3(0.1,0.1,0.1) * sin(_Time.y * 2 + sin(i.vert.z) * 6) * sin(_Time.z + sin(i.vert.x) * 14) * sin(_Time.w + sin(i.vert.y) * 20);
+                normal = normalize(normal);
                 float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.pos.xyz);
                 float3 fragmentToLightSource = _WorldSpaceLightPos0.xyz - i.posWorld.xyz;
                 float distance = length(fragmentToLightSource);
@@ -69,7 +72,10 @@ Shader "Custom/DefualtFloor"
                 float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + diffuseReflection + specularReflection;
 
                 fixed4 color = tex2D(_Tex,i.texcoord);
-                if (color.a > 0.7) i.color = color * Luminance(i.color.xyz);
+                if (color.a > 0.7) {
+                    i.color = tex2D(_TexOri, i.texcoord) * max(color.z, max(color.x, color.y));
+                    i.color.a = 1;
+                }
                 return i.color * float4(lightFinal,1); //(1 - i.pos.z + 0.07)
             }
 

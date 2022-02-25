@@ -53,6 +53,7 @@ Shader "Custom/DefaultWall" {
             };
 
             struct v2f {
+                float4 vert : TEXCOORD3;
                 float4 posWorld : TEXCOORD1;
                 float4 pos : SV_POSITION;
                 float4 texcoord : TEXCOORD0;
@@ -62,6 +63,7 @@ Shader "Custom/DefaultWall" {
 
             v2f vert(a2v v){
                 v2f o;
+                o.vert = v.vertex;
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.normalDir = normalize(mul(float4(v.normal, 0.0), unity_WorldToObject).xyz);
@@ -71,7 +73,7 @@ Shader "Custom/DefaultWall" {
             }
 
             fixed4 frag(v2f i) : SV_Target{
-                float3 normal = i.normalDir + float3(0.05,0.05,0.05) * float3(sin(_Time.z + i.posWorld.x),sin(_Time.z + i.posWorld.y),sin(_Time.z + i.posWorld.z));
+                float3 normal = i.normalDir + float3(0.1,0.1,0.1) * sin(_Time.y * 2 + sin(i.vert.z) * 6) * sin(_Time.z + sin(i.vert.x) * 14) * sin(_Time.w + sin(i.vert.y) * 20);
                 normal = normalize(normal);
                 float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.pos.xyz);
                 float3 fragmentToLightSource = _WorldSpaceLightPos0.xyz - i.posWorld.xyz;
@@ -81,7 +83,7 @@ Shader "Custom/DefaultWall" {
                 float3 diffuseReflection = atten * _LightColor0.xyz * saturate(dot(normal, lightDir));
                 float3 specularReflection = diffuseReflection * _SpecColor.xyz * pow(saturate(dot(reflect(-lightDir, normal), viewDir)), _Shininess);
 
-                float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz * 1.2 + diffuseReflection + specularReflection;
+                float3 lightFinal = UNITY_LIGHTMODEL_AMBIENT.xyz + diffuseReflection + specularReflection * 10;
                 //float3 wcoord = (i.srcPos.xyz / i.srcPos.w);
                 float4 playPos = mul(UNITY_MATRIX_P,mul(UNITY_MATRIX_V,_PlayerPos));
                 
@@ -91,8 +93,8 @@ Shader "Custom/DefaultWall" {
                     i.color.a = 1;
                 }
                 if(i.pos.z + 0.023 < playPos.z) return i.color * float4(lightFinal, 1); //(1 - i.pos.z + 0.07) playPos.z < 0.0298
-                float factor = 1.0 - (i.pos.z + 0.023);
-                return  i.color * float4(lightFinal, factor); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
+                float factor = 1.0 - (i.pos.z + 0.023 - playPos.z);
+                return  i.color * float4(lightFinal, pow(factor, _CullingFactor)); //(abs(wcoord.x-0.5) + abs(wcoord.y - 0.5)) *clamp(pow(factor, _CullingFactor), 0.0, 1.0)+ 0.0235 ;
             }
 
             ENDCG            

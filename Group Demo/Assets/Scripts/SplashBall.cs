@@ -45,12 +45,12 @@ public class SplashBall : MonoBehaviour
 
     private void SplashOut(Collision collision)
     {
-        if (radius > 0.6f)
+        if (radius > 0.25f)
         {
             Vector3 normal = collision.contacts[0].normal;
             Vector3 pt = transform.position + collision.contacts[0].separation* 2 * normal.normalized;
             Vector3 u = this.GetComponent<Rigidbody>().velocity;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 1; i++)
             {
                 GameObject newSplash = Instantiate(
                     gameObject,

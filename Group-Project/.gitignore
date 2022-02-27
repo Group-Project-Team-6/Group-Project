@@ -1,4 +1,10 @@
 /build/
+**/*.vcxproj
+**/*.sln
+**/*.filters
+**/*.dir
+**/Debug/
+**/x64/
 
 # Prerequisites
 *.d

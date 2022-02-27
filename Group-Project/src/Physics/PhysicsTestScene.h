@@ -8,7 +8,7 @@
 
 class PhysicsTestScene {
 	public:
-		PhysicsTestScene();
+		PhysicsTestScene(RendererBase* renderer);
 
 		~PhysicsTestScene();
 
@@ -31,8 +31,10 @@ class PhysicsTestScene {
 		GameEntity* sphere;
 		GameEntity* ground;
 
-		OGLMesh* sphereMesh = nullptr;
-		OGLTexture* basicTex = nullptr;
-		OGLShader* basicShader = nullptr;
+		MeshGeometry* sphereMesh = nullptr;
+		TextureBase* basicTex = nullptr;
+		ShaderBase* basicShader = nullptr;
+
+		RendererBase* renderer = nullptr;
 };
 

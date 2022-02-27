@@ -1,12 +1,14 @@
 #include "PhysicsTestScene.h"
-#include "../OpenGLRendering/OGLMesh.h"
-#include "../OpenGLRendering/OGLTexture.h"
-#include "../OpenGLRendering/OGLShader.h"
+#include "../VulkanRendering/VulkanMesh.h"
+#include "../VulkanRendering/VulkanTexture.h"
+#include "../VulkanRendering/VulkanShader.h"
+#include "../VulkanRendering/VulkanShaderBuilder.h"
+#include "../common/TextureLoader.cpp"
 
 //using namespace NCL;
 //using namespace CSC8503;
 
-PhysicsTestScene::PhysicsTestScene() {
+PhysicsTestScene::PhysicsTestScene(RendererBase* renderer) : renderer(renderer) {
 
 	//Default Broadphase
 	maxProxies = 1024;
@@ -34,14 +36,23 @@ PhysicsTestScene::~PhysicsTestScene() {
 }
 
 void PhysicsTestScene::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
+	//TODO : Change to virtual function of meshGeometry
+	auto loadFunc = [&](const string& name, MeshGeometry** into) {
+		*into = new VulkanMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
+		(*into)->UploadToGPU(renderer);
 	};
 
 	loadFunc("cube.msh", &sphereMesh);
 
+	//TODO : Change to virtual function of meshGeometry
+	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	VulkanShaderBuilder builder = VulkanShaderBuilder()
+		.WithVertexBinary("GameTechVert.spv")
+		.WithFragmentBinary("GameTechFrag.spv");
+
+	//TODO : Change to virtual function of meshGeometry
+	basicShader = builder.Build(*renderer);
 }
 
 void PhysicsTestScene::InitScene() {

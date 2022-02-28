@@ -25,8 +25,10 @@ add_library(CSC8503
 #Physics Component
 add_library(Physics
 	src/Physics/PhysicsTestScene.cpp
+	src/Physics/VkTechRenderer.cpp
 
 	src/Physics/PhysicsTestScene.h
+	src/Physics/VkTechRenderer.h
 	src/Physics/btNCLmotionState.h
 )
 
@@ -199,9 +201,9 @@ else()
     message(STATUS "Using vulkan lib at: ${Vulkan_LIBRARIES}")
 endif()
 
-target_link_libraries(Game Physics OpenGLRendering CSC8503 Common)
-target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
+target_link_libraries(Game VulkanRendering Physics OpenGLRendering CSC8503 Common)
+target_link_libraries(Physics VulkanRendering ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering)
 target_link_libraries(OpenGLRendering Common)
-target_link_libraries(VulkanRendering Vulkan::Headers Common)
+target_link_libraries(VulkanRendering Vulkan::Vulkan Common)
 target_link_libraries(Common ${BULLET_LIBRARIES})

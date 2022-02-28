@@ -40,8 +40,8 @@ void PhysicsTestScene::InitAssets() {
 	auto loadFunc = [&](const string& name, MeshGeometry** into) {
 		*into = new VulkanMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU(renderer);
-	};
+		(*into)->UploadToGPU(dynamic_cast<VulkanRenderer*>(renderer));
+	}; 
 
 	loadFunc("cube.msh", &sphereMesh);
 
@@ -52,7 +52,7 @@ void PhysicsTestScene::InitAssets() {
 		.WithFragmentBinary("GameTechFrag.spv");
 
 	//TODO : Change to virtual function of meshGeometry
-	basicShader = builder.Build(*renderer);
+	basicShader = builder.Build(*dynamic_cast<VulkanRenderer*>(renderer));
 }
 
 void PhysicsTestScene::InitScene() {

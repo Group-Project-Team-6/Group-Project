@@ -78,5 +78,5 @@ void PhysicsTestScene::InitScene() {
 }
 
 void PhysicsTestScene::UpdateGame(float dt) {
-
+	renderer->Render();
 }

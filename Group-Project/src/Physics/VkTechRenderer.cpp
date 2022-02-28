@@ -12,5 +12,6 @@ VkTechRenderer::~VkTechRenderer() {
 }
 
 void VkTechRenderer::RenderFrame() {
+	std::cout << "Render" << std::endl;
 
 }

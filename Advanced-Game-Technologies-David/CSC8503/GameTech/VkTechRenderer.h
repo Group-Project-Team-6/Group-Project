@@ -3,6 +3,9 @@
 #include "../../Plugins/VulkanRendering/VulkanShader.h"
 #include "../../Plugins/VulkanRendering/VulkanTexture.h"
 #include "../../Plugins/VulkanRendering/VulkanMesh.h"
+#include "../../Plugins/VulkanRendering/VulkanPipelineBuilder.h"
+#include "../../Plugins/VulkanRendering/VulkanDescriptorSetLayoutBuilder.h"
+#include "../../Plugins/VulkanRendering/VulkanRenderPassBuilder.h"
 
 #include "../CSC8503Common/GameWorld.h"
 
@@ -40,7 +43,7 @@ namespace NCL {
 			//void LoadSkybox();
 			
 
-			//vector<const RenderObject*> activeObjects;
+			vector<const RenderObject*> activeObjects;
 
 			//VulkanShader* skyboxShader;
 			//VulkanMesh* skyboxMesh;

@@ -1,4 +1,7 @@
 #pragma once
+#include "../common/Camera.h"
+#include "../game/TransformConverter.h"
+
 #include <vector>
 #include <functional>
 

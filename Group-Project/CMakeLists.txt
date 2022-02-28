@@ -164,11 +164,16 @@ add_library(Audio
 #Executable
 add_executable(Game
 	src/game/GameEntity.h
+	src/game/Game.h
+	src/game/TransformConverter.h
+	src/game/PlayerInput.h
 
 	src/game/main.cpp
 	src/game/GameEntity.cpp
+	src/game/Game.cpp
+	src/game/TransformConverter.cpp
+	src/game/PlayerInput.cpp
 )
-
 
 #Targeting Directories & Linking Libraries
 find_package(OpenGL REQUIRED)

@@ -5,6 +5,7 @@
 **/*.dir
 **/Debug/
 **/x64/
+**/*.gfxr
 
 # Prerequisites
 *.d

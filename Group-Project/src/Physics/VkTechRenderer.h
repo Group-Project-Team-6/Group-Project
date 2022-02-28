@@ -4,8 +4,12 @@
 #include "../VulkanRendering/VulkanShader.h"
 #include "../VulkanRendering/VulkanTexture.h"
 #include "../VulkanRendering/VulkanMesh.h"
+#include "../VulkanRendering/VulkanPipelineBuilder.h"
+#include "../VulkanRendering/VulkanDescriptorSetLayoutBuilder.h"
+#include "../VulkanRendering/VulkanRenderPassBuilder.h"
+#include "../VulkanRendering/VulkanShaderBuilder.h"
 
-#include "../CSC8503/GameWorld.h"
+//#include "../CSC8503/GameWorld.h"
 
 namespace NCL {
 	class Maths::Vector3;
@@ -43,7 +47,7 @@ namespace NCL {
 
 			//vector<const RenderObject*> activeObjects;
 
-			//VulkanShader* skyboxShader;
+			VulkanShader* skyboxShader;
 			VulkanMesh* skyboxMesh;
 			//VulkanTexture* skyboxTex;
 

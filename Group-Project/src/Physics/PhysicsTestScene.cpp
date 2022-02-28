@@ -43,7 +43,7 @@ void PhysicsTestScene::InitAssets() {
 		(*into)->UploadToGPU(dynamic_cast<VulkanRenderer*>(renderer));
 	}; 
 
-	loadFunc("cube.msh", &sphereMesh);
+	loadFunc("Cube.msh", &sphereMesh);
 
 	//TODO : Change to virtual function of meshGeometry
 	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");

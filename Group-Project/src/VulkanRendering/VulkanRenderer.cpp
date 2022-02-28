@@ -15,6 +15,8 @@ using namespace Rendering;
 
 VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	
+	currentSwap = 0;
+
 	depthBuffer		= nullptr;
 	frameBuffers	= nullptr;
 
@@ -113,6 +115,8 @@ bool VulkanRenderer::InitGPUDevice() {
 	const char* extensionNames[]	= { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	float queuePriority = 0.0f;
+	InitSurface();
+	InitDeviceQueue();
 	vk::DeviceQueueCreateInfo queueInfo = vk::DeviceQueueCreateInfo()
 		.setQueueCount(1)
 		.setQueueFamilyIndex(gfxQueueIndex)
@@ -133,9 +137,7 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setEnabledExtensionCount(sizeof(extensionNames) / sizeof(char*))
 		.setPpEnabledExtensionNames(extensionNames);
 	
-	InitSurface();
 	device = gpu.createDevice(createInfo);
-	InitDeviceQueue();
 	//device		= gpu.createDevice(createInfo);
 	deviceQueue = device.getQueue(gfxQueueIndex, 0);
 	deviceMemoryProperties = gpu.getMemoryProperties();

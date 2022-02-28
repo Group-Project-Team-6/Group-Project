@@ -44,7 +44,7 @@ namespace NCL {
 			//vector<const RenderObject*> activeObjects;
 
 			//VulkanShader* skyboxShader;
-			//VulkanMesh* skyboxMesh;
+			VulkanMesh* skyboxMesh;
 			//VulkanTexture* skyboxTex;
 
 			////shadow mapping things

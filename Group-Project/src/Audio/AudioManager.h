@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fmod.hpp"
+#include "../FMOD/api/core/inc/fmod.hpp"
 #include "common.h"
 #include "../Common/Window.h"
 #include <Vector>

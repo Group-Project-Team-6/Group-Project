@@ -7,15 +7,16 @@ layout(binding = 0) uniform UniformBufferObject{
 	mat4 shadowMatrix;
 } ubo;
 
+layout(binding = 0) uniform ColourUniformBufferObject {
+	vec4 objectColour;
+	bool hasVertexColours;
+} colourBuff;
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in vec3 normal;
 
-layout(binding = 0) uniform ColourUniformBufferObject {
-	vec4 objectColour;
-	bool hasVertexColours;
-} colourBuff;
 
 layout(location = 0) out Vertex
 {

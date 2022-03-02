@@ -295,7 +295,7 @@ void	VulkanRenderer::ImageTransitionBarrier(vk::CommandBuffer* buffer, VulkanTex
 	t->layout = newLayout;
 }
 
-void	VulkanRenderer::InitCommandPool() {
+void	VulkanRenderer:: InitCommandPool() {
 	commandPool = device.createCommandPool(vk::CommandPoolCreateInfo(
 		vk::CommandPoolCreateFlagBits::eResetCommandBuffer, gfxQueueIndex));
 

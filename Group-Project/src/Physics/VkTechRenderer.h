@@ -49,6 +49,7 @@ namespace NCL {
 
 			VulkanShader* skyboxShader;
 			VulkanMesh* skyboxMesh;
+			UniformData* matrixDataObject;
 			//VulkanTexture* skyboxTex;
 
 			////shadow mapping things

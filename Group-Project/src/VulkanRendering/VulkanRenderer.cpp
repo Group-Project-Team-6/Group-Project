@@ -397,7 +397,6 @@ bool VulkanRenderer::InitDeviceQueue() {
 	if (gfxQueueIndex == -1 || gfxPresentIndex == -1) {
 		return false;
 	}
-
 	return true;
 }
 

@@ -40,6 +40,9 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
 
 	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
+
+	device.destroySemaphore(presentSempaphore);
+	device.destroy(fence);
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -436,8 +439,6 @@ void VulkanRenderer::CompleteResize() {
 }
 
 void	VulkanRenderer::BeginFrame() {
-	vk::Fence fence = device.createFence(vk::FenceCreateInfo());
-
 	vk::CommandBufferInheritanceInfo inheritance;
 	vk::CommandBufferBeginInfo bufferBegin = vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags(), &inheritance);
 	frameCmdBuffer.begin(bufferBegin);

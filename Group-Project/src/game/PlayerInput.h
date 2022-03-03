@@ -1,9 +1,20 @@
 #pragma once
-#include "../game/GameEntity.h"
+#include "ControlsCommand.h"
+#include "Controls.h"
+#include "../common/Window.h"
 
 class PlayerInput {
 public:
-	virtual ~PlayerInput();
+	ControlsCommand* handleInput() {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
+			return spaceBar;
+		}
 
-	virtual void execute(GameEntity& player) = 0;
+
+
+		return NULL;
+	}
+
+private:
+	ControlsCommand* spaceBar;
 };

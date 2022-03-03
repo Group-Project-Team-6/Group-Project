@@ -1,9 +1,12 @@
 #pragma once
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+//#include "btBulletCollisionCommon.h"
+//#include "btBulletDynamicsCommon.h"
 #include "../game/GameEntity.h"
 #include "../CSC8503/GameTechRenderer.h"
+#include "../game/TransformConverter.h"
+#include "ControlsCommand.h"
+#include "PlayerInput.h"
 
 //Encapsulate in namespace?
 
@@ -13,7 +16,7 @@ public:
 	Game();
 	~Game();
 
-	void Update(float dt);
+	void UpdateGame(float dt);
 
 protected:
 	void InitWorld();
@@ -26,6 +29,9 @@ protected:
 	void InitCharacter();
 	//void InitHUD
 	//InitNetworking?
+
+	//Tools
+	TransformConverter transformConverter;
 
 	//World
 	GameTechRenderer* renderer;
@@ -54,4 +60,8 @@ protected:
 
 	OGLTexture* basicTex;
 	OGLShader* basicShader;
+
+	//Controls
+	PlayerInput playerInput;
+	ControlsCommand* command;
 };

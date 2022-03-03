@@ -167,6 +167,8 @@ add_executable(Game
 	src/game/Game.h
 	src/game/TransformConverter.h
 	src/game/PlayerInput.h
+	src/game/ControlsCommand.h
+	src/game/Controls.h
 
 	src/game/main.cpp
 	src/game/GameEntity.cpp

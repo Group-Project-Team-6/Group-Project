@@ -6,44 +6,34 @@
 
 class TransformConverter {
 public:
-	TransformConverter();
-	~TransformConverter();
 
-protected:
-	Transform* NCLBTConvert(btTransform& newTransform) {
+	void NCLBTConvert(btTransform& newbtTransform, Transform& newNCLTransform) {
 
-		btTransform = newTransform;
-		btRot = btTransform.getRotation();
-		btPos = btTransform.getOrigin();
+		btRot = newbtTransform.getRotation();
+		btPos = newbtTransform.getOrigin();
 
 		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
 		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
 
-		nclTransform.SetOrientation(nclRot);
-		nclTransform.SetPosition(nclPos);
-
-		return &nclTransform;
+		newNCLTransform.SetOrientation(nclRot);
+		newNCLTransform.SetPosition(nclPos);
 	}
-	btTransform* BTNCLConvert(Transform& newTransform) {
-		nclTransform = newTransform;
-		nclRot = nclTransform.GetOrientation();
-		nclPos = nclTransform.GetPosition();
+
+	 void BTNCLConvert(Transform& newNCLTransform, btTransform& newbtTransform) {
+		nclRot = newNCLTransform.GetOrientation();
+		nclPos = newNCLTransform.GetPosition();
 		
 		btRot = { nclRot.x, nclRot.y, nclRot.z, nclRot.w };
 		btPos = { nclPos.x, nclPos.y, nclPos.z };
 
-		btTransform.setRotation(btRot);
-		btTransform.setOrigin(btPos);
-
-		return &btTransform;
+		newbtTransform.setRotation(btRot);
+		newbtTransform.setOrigin(btPos);
 	}
 
-	btTransform& btTransform;
-	Transform& nclTransform;
+private:
+	 btVector3 btPos;
+	 btQuaternion btRot;
 
-	btVector3 btPos;
-	btQuaternion btRot;
-
-	Vector3 nclPos;
-	Quaternion nclRot;
+	 Vector3 nclPos;
+	 Quaternion nclRot;
 };

@@ -1,20 +1,28 @@
 #include "Game.h"
-
 #include "../common/TextureLoader.h"
+#include "PlayerInput.h"
 
 //Namespaces?
 
 Game::Game() {
-	void InitWorld();
-	void InitPhysics();
+	InitWorld();
+	InitPhysics();
 	//void InitAudio();
-	void InitAssets();
-	void InitScene();
+	InitAssets();
+	InitScene();
 	//void LevelGeneration();
-	void InitCharacter();
+	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
 }
+
+/*Game::Game() {
+	InitWorld();
+	InitPhysics();
+	InitAssets();
+	InitScene();
+	InitCharacter();
+}*/
 
 Game::~Game() {
 
@@ -75,24 +83,76 @@ void Game::InitPhysics() {
 void Game::InitScene() {
 	world->ClearAndErase();
 	dynamicsWorld->clearForces();
+
+	//ground
+	ground = new GameEntity("Ground");
+	ground->GetTransform()
+		.SetPosition(Vector3(0, 0, 0))
+		.SetScale(Vector3(100, 1, 100))
+		.SetOrientation(Quaternion(0, 0, 0, 1));
+
+	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
+
+	btTransform btpos;
+	transformConverter.BTNCLConvert(ground->GetTransform(), btpos);
+
+	int groundMass = 0;
+
+	btDefaultMotionState* groundMotion = new btDefaultMotionState(btpos);
+	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
+	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
+	ground->SetRigidBody(new btRigidBody(groundCI));
+
+	world->AddGameObject(ground);
+	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 }
 
 void Game::InitCharacter() {
 	character = new GameEntity();
 	character->GetTransform()
-		.SetPosition({0, 5, -0})
+		.SetPosition({0, 2, 0})
 		.SetScale({ 1, 1, 1 }) //Check Scale
 		.SetOrientation({ 0, 0, 0, 1 }); 
 
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), capsuleMesh, basicTex, basicShader));
+	//Set all values with a strut
+	//Tidy up variables
 
+	character->SetRenderObject(new RenderObject(&character->GetTransform(), capsuleMesh, basicTex, basicShader));
+	btTransform btpos;
+
+	transformConverter.BTNCLConvert(character->GetTransform(), btpos);
+
+	btDefaultMotionState* characterMotion = new btDefaultMotionState(btpos);
+	btCollisionShape* characterShape = new btCapsuleShape(0.5, 1);
+	int characterMass = 80;
+	btVector3 characterIntertia = { 1, 1, 1 };
+
+	characterShape->calculateLocalInertia(characterMass, characterIntertia);
+
+	btRigidBody::btRigidBodyConstructionInfo sphereCI(80, characterMotion, characterShape, {1, 1, 1});
+	character->SetRigidBody(new btRigidBody(sphereCI));
+
+	//Constraints
+	
+
+
+	world->AddGameObject(character);
+	dynamicsWorld->addRigidBody(character->GetRigidBody());
+
+	//Build From Classes
+	//Scene Graph?
 
 }
 
-void Game::Update(float dt) {
+void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(1 / 60.0f, 10);
 	world->GetMainCamera()->UpdateCamera(dt);
-	//Player Controls
+
+	command = playerInput.handleInput();
+
+	if (command) {
+		command->execute(*character);
+	}
 
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();

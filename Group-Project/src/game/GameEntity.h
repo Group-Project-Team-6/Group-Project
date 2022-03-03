@@ -81,6 +81,10 @@ public:
 
 	}
 
+	void Jump() {
+		this->GetRigidBody()->applyCentralForce({ 0, 100, 0 });
+	}
+
 protected:
 	RenderObject* renderObject;
 	btRigidBody* rigidBody;

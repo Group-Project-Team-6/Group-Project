@@ -1,7 +1,9 @@
 #include "../Common/Window.h"
-#include "../Physics/PhysicsTestScene.h"
 #include "../Audio/AudioManager.h"
 #include "../Audio/common.h"
+
+#include "../Physics/PhysicsTestScene.h"
+#include "../game/Game.h"
 
 #include <iostream>
 
@@ -19,7 +21,9 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	PhysicsTestScene* g = new PhysicsTestScene();
+	//PhysicsTestScene* g = new PhysicsTestScene();
+	Game* g = new Game();
+
 	w->GetTimer()->GetTimeDeltaSeconds();
 
 	AudioManager* a = new AudioManager();

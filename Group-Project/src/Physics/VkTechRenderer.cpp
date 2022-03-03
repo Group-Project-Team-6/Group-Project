@@ -4,45 +4,77 @@ using namespace Rendering;
 using namespace CSC8503;
 
 VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
+	count = 0.0f;
+
 	skyboxMesh = new VulkanMesh("CharacterM.msh");
 	skyboxMesh->SetPrimitiveType(GeometryPrimitive::Triangles);
 	skyboxMesh->UploadToGPU(this);
 
-	VulkanShaderBuilder builder = VulkanShaderBuilder()
+	builder = VulkanShaderBuilder()
 		.WithVertexBinary("SimpleVert.spv")
 		.WithFragmentBinary("SimpleFrag.spv");
 	skyboxShader = builder.Build(*this);
-	//InitUniformBuffer(*matrixDataObject, );
-}
 
-VkTechRenderer::~VkTechRenderer() {
+	matrix = Matrix4();
+	matrix.SetPositionVector(Vector3(0.2f, 0.2f, 0.2f));
+	InitUniformBuffer(matrixDataObject,matrix.array,sizeof(matrix.array));
 
-}
-
-void VkTechRenderer::RenderFrame() {
-	
-	std::cout << "Render" << std::endl;
-	VulkanPipelineBuilder pipelineBuilder;
-	/*VulkanRenderPassBuilder passBuilder;
-	passBuilder
-		.WithDebugName("pass builder");*/
-	/*vk::RenderPass renderPass = passBuilder.Build(*this);*/
-
-	/*VulkanDescriptorSetLayoutBuilder desSetLayoutBuilder;
 	desSetLayoutBuilder
 		.WithDebugName("desSetLayoutBuilder")
-		.WithSamplers(1, vk::ShaderStageFlagBits::eAllGraphics);*/
+		.WithUniformBuffers(1, vk::ShaderStageFlagBits::eVertex);
+	desSetLayout = desSetLayoutBuilder.Build(*this);
+
+	set.push_back(BuildDescriptorSet(desSetLayout));
+
+	bufferInfo
+		.setBuffer(matrixDataObject.buffer)
+		.setOffset(0)
+		.setRange(sizeof(matrix.array));
+
+	desWrite
+		.setDstSet(set[0])
+		.setDstBinding(0)
+		.setDstArrayElement(0)
+		.setDescriptorType(vk::DescriptorType::eUniformBuffer)
+		.setDescriptorCount(1)
+		.setPBufferInfo(&bufferInfo)
+		.setPImageInfo(nullptr)
+		.setPTexelBufferView(nullptr);
+
+	device.updateDescriptorSets(1, &desWrite, 0, nullptr);
+
 	pipelineBuilder
 		.WithDebugName("Pipeline")
 		.WithDepthState(vk::CompareOp::eLess, true, true)
 		.WithPass(defaultRenderPass)
 		.WithShaderState(skyboxShader)
-		.WithVertexSpecification(skyboxMesh->GetVertexSpecification(),vk::PrimitiveTopology::eTriangleList);
-	VulkanPipeline pipeline = pipelineBuilder.Build(*this);
+		.WithVertexSpecification(skyboxMesh->GetVertexSpecification(), vk::PrimitiveTopology::eTriangleList)
+		.WithDescriptorSetLayout(desSetLayout);
+	pipeline = pipelineBuilder.Build(*this);
+}
+
+VkTechRenderer::~VkTechRenderer() {
+	device.destroy(desSetLayout);
+	device.destroy(pipeline.pipeline);
+	device.destroy(pipeline.layout);
+}
+
+void VkTechRenderer::RenderFrame() {
+	count += 0.001f;
+	if (count > 0.8f) count = 0.0f;
+
+	std::cout << "Render" << std::endl;
+
+	//Create pipeline
+	matrix.SetPositionVector(Vector3(0.2f + count, 0.2f, 0.2f));
+	UpdateUniformBuffer(matrixDataObject,matrix.array, sizeof(matrix.array));
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
+
 	frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
+	frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
 
 	SubmitDrawCall(skyboxMesh,frameCmdBuffer);
-	frameCmdBuffer.endRenderPass();
+
+	frameCmdBuffer.endRenderPass();	
 }

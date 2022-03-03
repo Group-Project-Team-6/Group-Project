@@ -9,6 +9,7 @@
 #include "../VulkanRendering/VulkanRenderPassBuilder.h"
 #include "../VulkanRendering/VulkanShaderBuilder.h"
 
+#include "../common/Matrix4.h"
 //#include "../CSC8503/GameWorld.h"
 
 namespace NCL {
@@ -49,7 +50,8 @@ namespace NCL {
 
 			VulkanShader* skyboxShader;
 			VulkanMesh* skyboxMesh;
-			UniformData* matrixDataObject;
+			UniformData matrixDataObject;
+			Matrix4 matrix;
 			//VulkanTexture* skyboxTex;
 
 			////shadow mapping things
@@ -61,6 +63,19 @@ namespace NCL {
 			//Vector4		lightColour;
 			//float		lightRadius;
 			//Vector3		lightPosition;
+
+			vk::DescriptorBufferInfo bufferInfo;
+			vk::WriteDescriptorSet desWrite;
+			VulkanDescriptorSetLayoutBuilder desSetLayoutBuilder;
+			vk::DescriptorSetLayout desSetLayout;
+			std::vector<vk::DescriptorSet> set;
+
+			VulkanPipelineBuilder pipelineBuilder;
+			VulkanPipeline pipeline;
+			
+			VulkanShaderBuilder builder;
+
+			float count;
 		};
 	}
 }

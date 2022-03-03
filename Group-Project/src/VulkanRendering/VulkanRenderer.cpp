@@ -437,6 +437,8 @@ void VulkanRenderer::CompleteResize() {
 }
 
 void	VulkanRenderer::BeginFrame() {
+	vk::Fence fence = device.createFence(vk::FenceCreateInfo());
+
 	vk::CommandBufferInheritanceInfo inheritance;
 	vk::CommandBufferBeginInfo bufferBegin = vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags(), &inheritance);
 	frameCmdBuffer.begin(bufferBegin);
@@ -461,14 +463,12 @@ void	VulkanRenderer::EndFrame() {
 
 void VulkanRenderer::SwapBuffers() {
 	PresentScreenImage();
-
 	deviceQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChain, &currentSwap, nullptr));
 
 	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
 	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
 
 	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
-
 	defaultBeginInfo = vk::RenderPassBeginInfo()
 		.setRenderPass(defaultRenderPass)
 		.setFramebuffer(frameBuffers[currentSwap])

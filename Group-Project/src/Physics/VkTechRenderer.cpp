@@ -6,6 +6,8 @@ using namespace CSC8503;
 VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 	count = 0.0f;
 
+	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+
 	skyboxMesh = new VulkanMesh("CharacterM.msh");
 	skyboxMesh->SetPrimitiveType(GeometryPrimitive::Triangles);
 	skyboxMesh->UploadToGPU(this);
@@ -22,6 +24,7 @@ VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 	desSetLayoutBuilder
 		.WithDebugName("desSetLayoutBuilder")
 		.WithUniformBuffers(1, vk::ShaderStageFlagBits::eVertex);
+		//.WithSamplers(1, vk::ShaderStageFlagBits::eFragment);
 	desSetLayout = desSetLayoutBuilder.Build(*this);
 
 	set.push_back(BuildDescriptorSet(desSetLayout));

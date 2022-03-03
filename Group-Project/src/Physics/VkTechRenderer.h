@@ -8,6 +8,7 @@
 #include "../VulkanRendering/VulkanDescriptorSetLayoutBuilder.h"
 #include "../VulkanRendering/VulkanRenderPassBuilder.h"
 #include "../VulkanRendering/VulkanShaderBuilder.h"
+#include "../Common/TextureLoader.h"
 
 #include "../common/Matrix4.h"
 //#include "../CSC8503/GameWorld.h"
@@ -48,6 +49,7 @@ namespace NCL {
 
 			//vector<const RenderObject*> activeObjects;
 
+			VulkanTexture* basicTex;
 			VulkanShader* skyboxShader;
 			VulkanMesh* skyboxMesh;
 			UniformData matrixDataObject;

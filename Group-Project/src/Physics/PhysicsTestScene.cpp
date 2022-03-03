@@ -47,6 +47,7 @@ void PhysicsTestScene::InitAssets() {
 
 	//TODO : Change to virtual function of meshGeometry
 	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+
 	VulkanShaderBuilder builder = VulkanShaderBuilder()
 		.WithVertexBinary("GameTechVert.spv")
 		.WithFragmentBinary("GameTechFrag.spv");

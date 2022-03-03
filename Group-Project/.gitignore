@@ -3,7 +3,7 @@
 **/*.sln
 **/*.filters
 **/*.dir
-**/Debug/
+**/Build/Debug/
 **/x64/
 **/*.gfxr
 

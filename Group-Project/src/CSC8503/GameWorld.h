@@ -7,7 +7,6 @@ namespace NCL {
 		class Camera;
 	namespace CSC8503 {
 		
-
 		typedef std::function<void(GameEntity*)> GameObjectFunc;
 		typedef std::vector<GameEntity*>::const_iterator GameObjectIterator;
 

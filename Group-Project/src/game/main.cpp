@@ -1,7 +1,5 @@
 #include "../Common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
-#include "../Audio/AudioManager.h"
-#include "../Audio/common.h"
 
 #include <iostream>
 
@@ -22,10 +20,6 @@ int main() {
 	PhysicsTestScene* g = new PhysicsTestScene();
 	w->GetTimer()->GetTimeDeltaSeconds();
 
-	AudioManager* a = new AudioManager();
-	a->InitSystem();
-
-
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		if (dt > 0.1f) {
@@ -42,9 +36,7 @@ int main() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T)) {
 			w->SetWindowPosition(0, 0);
 		}
-
 		g->UpdateGame(dt);
-		a->AudioUpdate(w);
 	}
 
 	Window::DestroyGameWindow();

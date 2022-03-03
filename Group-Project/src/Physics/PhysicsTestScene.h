@@ -8,6 +8,8 @@
 #include "../game/GameEntity.h"
 #include "../Physics/btNClmotionState.h"
 
+#include "../Audio/AudioManager.h"
+
 class PhysicsTestScene {
 	public:
 		PhysicsTestScene();
@@ -45,5 +47,6 @@ class PhysicsTestScene {
 
 		GameTechRenderer* renderer;
 		GameWorld* world;
+		AudioManager* audioManager;
 };
 

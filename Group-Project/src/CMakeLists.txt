@@ -31,7 +31,7 @@ target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common)
 target_link_libraries(Common ${BULLET_LIBRARIES})
-target_link_libraries(Audio FMOD)
+target_link_libraries(Audio FMOD CSC8503)
 
 #Copy fmod.dll to Output Directory
 get_property(FMOD_DLL TARGET FMOD PROPERTY IMPORTED_LOCATION)

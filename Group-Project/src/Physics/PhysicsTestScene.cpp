@@ -7,7 +7,9 @@
 
 #include "../CSC8503/GameWorld.h"
 #include "../Common/Camera.h"
-//#include "../CSC8503/Transform.h"
+#include "../CSC8503/Transform.h"
+
+#include "../Audio/AudioManager.h"
 
 #include <iomanip>
 
@@ -18,6 +20,7 @@ using namespace Maths;
 PhysicsTestScene::PhysicsTestScene() {
 
 	world = new GameWorld();
+	audioManager = new AudioManager();
 	renderer = new GameTechRenderer(*world);
 
 	//Default Broadphase
@@ -35,6 +38,7 @@ PhysicsTestScene::PhysicsTestScene() {
 	InitAssets();
 	InitCamera();
 	InitScene();
+	audioManager->InitSystem();
 }
 
 PhysicsTestScene::~PhysicsTestScene() {
@@ -135,9 +139,9 @@ void PhysicsTestScene::InitScene() {
 }
 
 void PhysicsTestScene::UpdateGame(float dt) {
-
+	audioManager->AudioUpdate(world, dt);
 	dynamicsWorld->stepSimulation(1 / 60.f, 10);
-
+	
 	world->GetMainCamera()->UpdateCamera(dt);
 	UpdateKeys();
 	renderer->Render();

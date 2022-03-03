@@ -3,7 +3,7 @@
 
 class ControlsCommand {
 public:
-	virtual ~ControlsCommand();
+	virtual ~ControlsCommand() {}
 
 	virtual void execute(GameEntity& player) = 0;
 };

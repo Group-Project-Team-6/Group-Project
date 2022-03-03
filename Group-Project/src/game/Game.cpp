@@ -5,6 +5,7 @@
 //Namespaces?
 
 Game::Game() {
+	command = nullptr;
 	InitWorld();
 	InitPhysics();
 	//void InitAudio();
@@ -14,15 +15,8 @@ Game::Game() {
 	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
-}
 
-/*Game::Game() {
-	InitWorld();
-	InitPhysics();
-	InitAssets();
-	InitScene();
-	InitCharacter();
-}*/
+}
 
 Game::~Game() {
 
@@ -65,6 +59,8 @@ void Game::InitAssets() {
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+
+	//Replace with loadAsset Class
 }
 
 void Game::InitPhysics() {
@@ -93,12 +89,11 @@ void Game::InitScene() {
 
 	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
 
-	btTransform btpos;
-	transformConverter.BTNCLConvert(ground->GetTransform(), btpos);
+	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 
 	int groundMass = 0;
 
-	btDefaultMotionState* groundMotion = new btDefaultMotionState(btpos);
+	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
@@ -110,7 +105,7 @@ void Game::InitScene() {
 void Game::InitCharacter() {
 	character = new GameEntity();
 	character->GetTransform()
-		.SetPosition({0, 2, 0})
+		.SetPosition({25, 50, -25})
 		.SetScale({ 1, 1, 1 }) //Check Scale
 		.SetOrientation({ 0, 0, 0, 1 }); 
 
@@ -118,11 +113,10 @@ void Game::InitCharacter() {
 	//Tidy up variables
 
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), capsuleMesh, basicTex, basicShader));
-	btTransform btpos;
 
-	transformConverter.BTNCLConvert(character->GetTransform(), btpos);
+	transformConverter.BTNCLConvert(character->GetTransform(), character->GetbtTransform());
 
-	btDefaultMotionState* characterMotion = new btDefaultMotionState(btpos);
+	btDefaultMotionState* characterMotion = new btDefaultMotionState(character->GetbtTransform());
 	btCollisionShape* characterShape = new btCapsuleShape(0.5, 1);
 	int characterMass = 80;
 	btVector3 characterIntertia = { 1, 1, 1 };
@@ -149,7 +143,6 @@ void Game::UpdateGame(float dt) {
 	world->GetMainCamera()->UpdateCamera(dt);
 
 	command = playerInput.handleInput();
-
 	if (command) {
 		command->execute(*character);
 	}

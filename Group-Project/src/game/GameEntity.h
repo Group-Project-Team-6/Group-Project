@@ -67,7 +67,7 @@ public:
 	}
 
 	void UpdateRenderPositions() {
-
+		
 		bttransform = rigidBody->getWorldTransform();
 
 		btRot = bttransform.getRotation();
@@ -82,7 +82,7 @@ public:
 	}
 
 	void Jump() {
-		this->GetRigidBody()->applyCentralForce({ 0, 100, 0 });
+		this->GetRigidBody()->applyCentralImpulse({ 0, 1000, 0 });
 	}
 
 protected:

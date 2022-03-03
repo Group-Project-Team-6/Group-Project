@@ -3,7 +3,36 @@
 
 class JumpCommand : ControlsCommand {
 public:
-	virtual void execute(GameEntity& player) {
-		player.Jump();
+	virtual void execute(GameEntity& player) override {
+		//player.Jump(); //Chnage to directly doing there
+		player.GetRigidBody()->applyCentralImpulse({ 0, 1000, 0});
+	}
+};
+
+class moveForwardCommand : ControlsCommand {
+public:
+	virtual void execute(GameEntity& player) override {
+		player.GetRigidBody()->applyCentralImpulse({ 0, 0, 100 });
+	}
+};
+
+class moveBackwardCommand : ControlsCommand {
+public:
+	virtual void execute(GameEntity& player) override {
+		player.GetRigidBody()->applyCentralImpulse({ 0, 0, -100 });
+	}
+};
+
+class moveLeftCommand : ControlsCommand {
+public:
+	virtual void execute(GameEntity& player) override {
+		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
+	}
+};
+
+class moveRightCommand : ControlsCommand {
+public:
+	virtual void execute(GameEntity& player) override {
+		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
 	}
 };

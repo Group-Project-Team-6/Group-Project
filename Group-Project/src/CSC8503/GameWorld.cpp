@@ -64,5 +64,7 @@ void GameWorld::UpdateWorld(float dt) {
 void GameWorld::UpdatePositions() {
 	for (GameEntity* g : gameObjects) {
 		g->UpdateRenderPositions();
+
+		//transformConverter.NCLBTConvert(g->GetRigidBody().getWorldTransform(), g->GetTransform()); needs rigid body data
 	}
 }

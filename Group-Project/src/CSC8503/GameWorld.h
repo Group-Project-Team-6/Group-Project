@@ -1,6 +1,7 @@
 #pragma once
 #include "../common/Camera.h"
 #include "../game/TransformConverter.h"
+#include "../game/TransformConverter.h"
 
 #include <vector>
 #include <functional>
@@ -55,6 +56,8 @@ namespace NCL {
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
 			int		worldIDCounter;
+
+			TransformConverter transformConverter;
 		};
 	}
 }

@@ -1,5 +1,4 @@
 #include "VkTechRenderer.h"
-
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
@@ -58,8 +57,6 @@ VkTechRenderer::~VkTechRenderer() {
 	device.destroy(desSetLayout);
 	device.destroy(pipeline.pipeline);
 	device.destroy(pipeline.layout);
-	delete skyboxShader;
-	delete skyboxMesh;
 }
 
 void VkTechRenderer::RenderFrame() {

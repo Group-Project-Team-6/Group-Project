@@ -2,6 +2,8 @@
 #include "VulkanMesh.h"
 #include "VulkanTexture.h"
 
+#include "VulkanUtility.h"
+
 #include "../Common/TextureLoader.h"
 #include "VulkanUtility.h"
 
@@ -40,6 +42,9 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
 
 	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
+	device.destroyFence(fence);
+	device.destroy(presentSempaphore);
+
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -71,24 +76,26 @@ VulkanRenderer::~VulkanRenderer() {
 bool VulkanRenderer::InitInstance() {
 	vk::ApplicationInfo appInfo = vk::ApplicationInfo(this->hostWindow.GetTitle().c_str());
 
-	appInfo.apiVersion = VK_MAKE_VERSION(1, 2, 0);
+	appInfo.apiVersion = VK_MAKE_VERSION(1, 3, 0);
 
 	const char* usedExtensions[] =	{
 		VK_KHR_SURFACE_EXTENSION_NAME,
-		VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+		VK_KHR_WIN32_SURFACE_EXTENSION_NAME/*,
 		VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
-		VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+		VK_EXT_DEBUG_UTILS_EXTENSION_NAME*/
 	};
 
-	const char* usedLayers[] = {
-		"VK_LAYER_KHRONOS_validation"
-	};
+	//const char* usedLayers[] = {
+	//	"VK_LAYER_KHRONOS_validation"
+	//};
 
 	vk::InstanceCreateInfo instanceInfo = vk::InstanceCreateInfo(vk::InstanceCreateFlags(), &appInfo)
 		.setEnabledExtensionCount(sizeof(usedExtensions) / sizeof(char*))
 		.setPpEnabledExtensionNames(usedExtensions)
-		.setEnabledLayerCount(sizeof(usedLayers) / sizeof(char*))
-		.setPpEnabledLayerNames(usedLayers);
+		.setEnabledLayerCount(0)
+		.setPpEnabledLayerNames(nullptr);
+		/*.setEnabledLayerCount(sizeof(usedLayers) / sizeof(char*))
+		.setPpEnabledLayerNames(usedLayers);*/
 
 	instance = vk::createInstance(instanceInfo);
 
@@ -111,7 +118,7 @@ bool VulkanRenderer::InitGPUDevice() {
 
 	std::cout << "Vulkan using physical device " << gpu.getProperties().deviceName << std::endl;
 
-	const char* layerNames[]		= { "VK_LAYER_KHRONOS_validation" };
+	/*const char* layerNames[]		= { "VK_LAYER_KHRONOS_validation" };*/
 	const char* extensionNames[]	= { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	float queuePriority = 0.0f;
@@ -132,8 +139,8 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setQueueCreateInfoCount(1)
 		.setPQueueCreateInfos(&queueInfo)
 		.setPEnabledFeatures(&features)
-		.setEnabledLayerCount(sizeof(layerNames) / sizeof(char*))
-		.setPpEnabledLayerNames(layerNames)
+		/*.setEnabledLayerCount(sizeof(layerNames) / sizeof(char*))
+		.setPpEnabledLayerNames(layerNames)*/
 		.setEnabledExtensionCount(sizeof(extensionNames) / sizeof(char*))
 		.setPpEnabledExtensionNames(extensionNames);
 	
@@ -437,7 +444,6 @@ void VulkanRenderer::CompleteResize() {
 }
 
 void	VulkanRenderer::BeginFrame() {
-	vk::Fence fence = device.createFence(vk::FenceCreateInfo());
 
 	vk::CommandBufferInheritanceInfo inheritance;
 	vk::CommandBufferBeginInfo bufferBegin = vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlags(), &inheritance);
@@ -607,12 +613,14 @@ void	VulkanRenderer::InitDefaultDescriptorPool() {
 
 void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const std::string& debugName) {
 	std::cout << debugName << std::endl;
-	//device.setDebugUtilsObjectNameEXT(
-	//	vk::DebugUtilsObjectNameInfoEXT()
-	//	.setObjectType(t)
-	//	//.setObjectHandle(handle)
-	//	.setPObjectName(debugName.c_str()), *dispatcher
-	//);
+	/*
+	device.setDebugUtilsObjectNameEXT(
+		vk::DebugUtilsObjectNameInfoEXT()
+		.setObjectType(t)
+		.setObjectHandle(handle)
+		.setPObjectName(debugName.c_str()), *dispatcher
+	);
+	*/
 };
 
 void	VulkanRenderer::UpdateImageDescriptor(vk::DescriptorSet& set, VulkanTexture* tex, vk::Sampler sampler, vk::ImageView forceView, vk::ImageLayout forceLayout, int bindingNum) {

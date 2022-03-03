@@ -35,7 +35,6 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
     }
 
     {
-            static float t = 0;
             static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
             FMOD_VECTOR forward        = { 0.0f, 0.0f, 1.0f };
             FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };

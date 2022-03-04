@@ -34,13 +34,15 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
         ERRCHECK(result);
     }
 
-    {
+    {       
             static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
             FMOD_VECTOR forward        = { 0.0f, 0.0f, 1.0f };
             FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
             FMOD_VECTOR vel;
-            
+
             NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
+            float yaw = world->GetMainCamera()->GetYaw();
+
             listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
 
             vel.x = (listenerpos.x - lastpos.x) * dt;

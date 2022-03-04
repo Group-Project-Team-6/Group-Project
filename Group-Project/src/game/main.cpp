@@ -9,7 +9,7 @@ using namespace NCL;
 
 int main() {
 	Assets::FetchDirConfig("dir.txt");
-	std::cout << Assets::TEXTUREDIR << std::endl;
+
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 
 	if (!w->HasInitialised()) {

@@ -28,10 +28,9 @@ namespace NCL {
 			std::ifstream dirFile(config);
 			if (dirFile.is_open())
 			{
-				std::cout << "File Opened" << std::endl;
 				while (std::getline(dirFile, line))
 				{
-					std::cout << line << std::endl;
+					
 				}
 				dirFile.close();
 				return line;

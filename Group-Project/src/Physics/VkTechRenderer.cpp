@@ -1,12 +1,12 @@
 #include "VkTechRenderer.h"
 #include "../common/TextureLoader.h"
+
 using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
 VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 	count = 0.0f;
-
 	skyboxTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 
 	skyboxMesh = new VulkanMesh("CharacterM.msh");

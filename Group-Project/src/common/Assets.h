@@ -8,16 +8,52 @@ https://research.ncl.ac.uk/game/
 */
 #pragma once
 #include <string>
+#include <fstream>
+#include <iostream>
 
 namespace NCL {
-	namespace Assets {
-		const std::string SHADERDIR("../../../Assets/Shaders/");
-		const std::string MESHDIR("../../../Assets/Meshes/");
-		const std::string TEXTUREDIR("../../../Assets/Textures/");
-		const std::string SOUNDSDIR("../../../Assets/Sounds/");
-		const std::string FONTSSDIR("../../../Assets/Fonts/");
-		const std::string DATADIR("../../../Assets/Data/");
-		extern bool ReadTextFile(const std::string &filepath, std::string& result);
-		extern bool ReadBinaryFile(const std::string &filepath, char** into, size_t& size);
-	}
+	class Assets {
+	public:
+		static std::string SHADERDIR;
+		static std::string MESHDIR;
+		static std::string TEXTUREDIR;
+		static std::string SOUNDSDIR;
+		static std::string FONTSSDIR;
+		static std::string DATADIR;
+		static bool ReadTextFile(const std::string& filepath, std::string& result);
+		static bool ReadBinaryFile(const std::string& filepath, char** into, size_t& size);
+
+		static std::string RetrieveAssetDirectory(std::string config = "dir.config") {
+			std::string line;
+			std::ifstream dirFile(config);
+			if (dirFile.is_open())
+			{
+				std::cout << "File Opened" << std::endl;
+				while (std::getline(dirFile, line))
+				{
+					std::cout << line << std::endl;
+				}
+				dirFile.close();
+				return line;
+			}
+			return "##";
+		}
+
+		static void FetchDirConfig(std::string config = "dir.config") {
+			std::string dir = "";
+			dir = RetrieveAssetDirectory(config);
+			if (dir == "##") return;
+			SHADERDIR = dir + "Shaders/";
+			MESHDIR = dir + "Meshes/";
+			TEXTUREDIR = dir + "Textures/";
+			SOUNDSDIR = dir + "Sounds/";
+			FONTSSDIR = dir + "Fonts/";
+			DATADIR = dir + "Data/";
+		}
+	private:
+		Assets() {
+
+		};
+		~Assets() {};
+	};
 }

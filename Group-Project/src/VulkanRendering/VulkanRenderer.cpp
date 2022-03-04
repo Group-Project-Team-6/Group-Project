@@ -5,6 +5,8 @@
 #include "../Common/TextureLoader.h"
 #include "VulkanUtility.h"
 
+#include <stdexcept>
+
 #ifdef WIN32
 #include "../Common/Win32Window.h"
 using namespace NCL::Win32Code;
@@ -20,8 +22,8 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	depthBuffer		= nullptr;
 	frameBuffers	= nullptr;
 
-	InitInstance();
-	InitGPUDevice();
+	if (!InitInstance()) { throw; };
+	if (!InitGPUDevice()) { throw; };
 	dispatcher = new vk::DispatchLoaderDynamic(instance, vkGetInstanceProcAddr, device);
 
 	InitCommandPool();
@@ -105,13 +107,13 @@ bool VulkanRenderer::InitGPUDevice() {
 	}
 
 	std::cout << "Vulkan using physical device " << gpu.getProperties().deviceName << std::endl;
-
 	const char* layerNames[]		= { "VK_LAYER_KHRONOS_validation" };
 	const char* extensionNames[]	= { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	float queuePriority = 0.0f;
 	InitSurface();
 	InitDeviceQueue();
+	std::cout << gfxQueueIndex << std::endl;
 	vk::DeviceQueueCreateInfo queueInfo = vk::DeviceQueueCreateInfo()
 		.setQueueCount(1)
 		.setQueueFamilyIndex(gfxQueueIndex)
@@ -293,7 +295,7 @@ void	VulkanRenderer::ImageTransitionBarrier(vk::CommandBuffer* buffer, VulkanTex
 
 void	VulkanRenderer:: InitCommandPool() {
 	commandPool = device.createCommandPool(vk::CommandPoolCreateInfo(
-		vk::CommandPoolCreateFlagBits::eResetCommandBuffer, gfxQueueIndex));
+		vk::CommandPoolCreateFlagBits::eResetCommandBuffer, gfxQueueIndex));//gfxQueueIndex
 
 	auto buffers = device.allocateCommandBuffers(vk::CommandBufferAllocateInfo(
 		commandPool, vk::CommandBufferLevel::ePrimary, 1));

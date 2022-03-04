@@ -1,14 +1,15 @@
 #include "../common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
 #include "../Physics/VkTechRenderer.h"
-
+#include "../common/Assets.h"
 #include <iostream>
 
 using namespace NCL;
 //using namespace CSC8503;
 
 int main() {
-
+	Assets::FetchDirConfig("dir.txt");
+	std::cout << Assets::TEXTUREDIR << std::endl;
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 
 	if (!w->HasInitialised()) {

@@ -65,8 +65,8 @@ void PhysicsTestScene::InitScene() {
 	btRigidBody* sphereBody = new btRigidBody(sphereCI);
 
 
-	sphere->SetMotionState(sphereMotion);
-	sphere->SetCollisionShape(sphereShape);
+	//sphere->SetMotionState(sphereMotion);
+	//sphere->SetCollisionShape(sphereShape);
 	sphere->SetRigidBody(sphereBody);
 	//sphere->SetRenderObject(new RenderObject(&sphere->ConvertbtTransform(), sphereMesh, basicTex, basicShader));
 	

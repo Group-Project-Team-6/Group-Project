@@ -40,7 +40,7 @@ void Player::AddPlayer(const Vector3& position, string name) {
 	playerMass = 80;
 	playerInertia = { 1, 1, 1 };
 	playerShape->calculateLocalInertia(playerMass, playerInertia);
-	btRigidBody::btRigidBodyConstructionInfo()
+	//btRigidBody::btRigidBodyConstructionInfo()
 
 	//player->SetRigidBody()
 }

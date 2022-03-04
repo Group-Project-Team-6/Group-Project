@@ -35,15 +35,6 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	window.SetRenderer(this);	
 	
 	pipelineCache = device.createPipelineCache(vk::PipelineCacheCreateInfo());
-
-	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
-	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
-
-	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
-
-	device.waitForFences(fence, true, ~0);
-	device.destroySemaphore(presentSempaphore);
-	device.destroy(fence);
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -434,6 +425,15 @@ void VulkanRenderer::OnWindowResize(int width, int height) {
 	CompleteResize();
 
 	EndSetupCmdBuffer();
+
+	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
+	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
+
+	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
+
+	device.waitForFences(fence, true, ~0);
+	device.destroySemaphore(presentSempaphore);
+	device.destroy(fence);
 }
 
 void VulkanRenderer::CompleteResize() {

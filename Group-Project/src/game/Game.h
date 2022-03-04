@@ -7,6 +7,7 @@
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
+#include "Player.h"
 
 //Encapsulate in namespace?
 

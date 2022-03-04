@@ -169,12 +169,14 @@ add_executable(Game
 	src/game/PlayerInput.h
 	src/game/ControlsCommand.h
 	src/game/Controls.h
+	src/game/Player.h
 
 	src/game/main.cpp
 	src/game/GameEntity.cpp
 	src/game/Game.cpp
 	src/game/TransformConverter.cpp
 	src/game/PlayerInput.cpp
+	src/game/Player.cpp
 )
 
 #Targeting Directories & Linking Libraries

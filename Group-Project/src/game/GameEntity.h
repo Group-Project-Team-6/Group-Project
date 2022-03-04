@@ -48,6 +48,7 @@ public:
 
 	btTransform& GetbtTransform() {
 		return bttransform;
+		//return this->GetRigidBody()->getWorldTransform();
 	}
 
 	void SetbtTransform(btTransform newbtTransform) {

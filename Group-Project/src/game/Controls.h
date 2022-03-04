@@ -4,7 +4,7 @@
 class JumpCommand : ControlsCommand {
 public:
 	virtual void execute(GameEntity& player) override {
-		//player.Jump(); //Chnage to directly doing there
+		//Needs on Ground Bool
 		player.GetRigidBody()->applyCentralImpulse({ 0, 1000, 0});
 	}
 };
@@ -26,13 +26,13 @@ public:
 class moveLeftCommand : ControlsCommand {
 public:
 	virtual void execute(GameEntity& player) override {
-		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
 	}
 };
 
 class moveRightCommand : ControlsCommand {
 public:
 	virtual void execute(GameEntity& player) override {
-		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
 	}
 };

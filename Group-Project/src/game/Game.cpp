@@ -65,8 +65,8 @@ void Game::InitAssets() {
 
 void Game::InitPhysics() {
 	maxProxies = 1024;
-	worldAabbMin = { -100, -100, -100 };
-	worldAabbMax = { 100, 100, 100 };
+	worldAabbMin = { -1000, -1000, -1000 };
+	worldAabbMax = { 1000, 1000, 1000 };
 	broadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 	collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -81,6 +81,7 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
+	//Should be static bodies
 	ground = new GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
@@ -95,21 +96,26 @@ void Game::InitScene() {
 
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
+	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer somehow
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
+
+	ground->GetRigidBody()->setFriction(0.3);
 
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 }
 
 void Game::InitCharacter() {
+	//To be added to inheritance class of game Entity
+	//Will need to limit velocity of all kinematic objects
 	character = new GameEntity();
 	character->GetTransform()
-		.SetPosition({25, 50, -25})
+		.SetPosition({25, 4, -25})
 		.SetScale({ 1, 1, 1 }) //Check Scale
 		.SetOrientation({ 0, 0, 0, 1 }); 
 
-	//Set all values with a strut
+	//Set all values with a strut?
 	//Tidy up variables
 
 	character->SetRenderObject(new RenderObject(&character->GetTransform(), capsuleMesh, basicTex, basicShader));
@@ -126,12 +132,26 @@ void Game::InitCharacter() {
 	btRigidBody::btRigidBodyConstructionInfo sphereCI(80, characterMotion, characterShape, {1, 1, 1});
 	character->SetRigidBody(new btRigidBody(sphereCI));
 
-	//Constraints
-	
+	btVector3 lowerLimit = { 0, 0, 0 };
+	btVector3 upperLimit = { 0, 0, 0 };
+	btGeneric6DofConstraint* constraint = new btGeneric6DofConstraint(*character->GetRigidBody(), character->GetbtTransform(), true);
+	constraint->setLimit(0, 1, -1);
+	constraint->setLimit(1, 1, -1);
+	constraint->setLimit(2, 1, -1);
+	constraint->setLimit(3, 0, 0);
+	constraint->setLimit(4, 1, -1);
+	constraint->setLimit(5, 0, 0);
+
+	character->GetRigidBody()->setFriction(0.3);
+	//btConstraintParams
+	//character->GetRigidBody()->
 
 
 	world->AddGameObject(character);
 	dynamicsWorld->addRigidBody(character->GetRigidBody());
+	dynamicsWorld->addConstraint(constraint);
+
+
 
 	//Build From Classes
 	//Scene Graph?

@@ -13,16 +13,16 @@ public:
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 			return spaceBar;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::W)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::UP)) {
 			return wKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::S)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::DOWN)) {
 			return sKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::A)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::LEFT)) {
 			return aKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::D)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
 			return dKey;
 		}
 

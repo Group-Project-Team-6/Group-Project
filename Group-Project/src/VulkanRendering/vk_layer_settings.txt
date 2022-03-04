@@ -72,7 +72,7 @@ lunarg_mem_tracker.log_filename = stdout
 
 # VK_LAYER_LUNARG_object_tracker Settings
 lunarg_object_tracker.debug_action = VK_DBG_LAYER_ACTION_LOG_MSG
-lo9okiiiium,j8uv                                                                             bfffffffffffffffffffffffffffffffffffffff-------------------------btgn -btgn -btgn -btgn -btgn -btgn -btgn -btgn -btgn -btgn -w\zzzz4unarg_object_tracker.report_flags = error,warn,perf
+lunarg_object_tracker.report_flags = error,warn,perf
 lunarg_object_tracker.log_filename = stdout
 
 # VK_LAYER_LUNARG_param_checker Settings

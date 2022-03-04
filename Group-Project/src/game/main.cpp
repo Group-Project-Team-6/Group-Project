@@ -1,5 +1,6 @@
-#include "../Common/Window.h"
+#include "../common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
+#include "../Physics/VkTechRenderer.h"
 
 #include <iostream>
 
@@ -14,10 +15,12 @@ int main() {
 		return -1;
 	}
 	srand(time(0));
-	w->ShowOSPointer(false);
-	w->LockMouseToWindow(true);
+	w->ShowOSPointer(true);
+	w->LockMouseToWindow(false);
 
-	PhysicsTestScene* g = new PhysicsTestScene();
+	VkTechRenderer* renderer = new VkTechRenderer();
+
+	PhysicsTestScene* g = new PhysicsTestScene(renderer);
 	w->GetTimer()->GetTimeDeltaSeconds();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {

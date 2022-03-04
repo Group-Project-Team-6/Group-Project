@@ -2,10 +2,11 @@
 #include "VulkanMesh.h"
 #include "VulkanTexture.h"
 
-#include "../../Common/TextureLoader.h"
+#include "../Common/TextureLoader.h"
+#include "VulkanUtility.h"
 
 #ifdef WIN32
-#include "../../Common/Win32Window.h"
+#include "../Common/Win32Window.h"
 using namespace NCL::Win32Code;
 #endif
 
@@ -13,6 +14,9 @@ using namespace NCL;
 using namespace Rendering;
 
 VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
+	
+	currentSwap = 0;
+
 	depthBuffer		= nullptr;
 	frameBuffers	= nullptr;
 
@@ -31,11 +35,6 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	window.SetRenderer(this);	
 	
 	pipelineCache = device.createPipelineCache(vk::PipelineCacheCreateInfo());
-
-	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
-	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
-
-	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
 }
 
 VulkanRenderer::~VulkanRenderer() {
@@ -67,7 +66,7 @@ VulkanRenderer::~VulkanRenderer() {
 bool VulkanRenderer::InitInstance() {
 	vk::ApplicationInfo appInfo = vk::ApplicationInfo(this->hostWindow.GetTitle().c_str());
 
-	appInfo.apiVersion = VK_MAKE_VERSION(1, 1, 0);
+	appInfo.apiVersion = VK_MAKE_VERSION(1, 2, 0);
 
 	const char* usedExtensions[] =	{
 		VK_KHR_SURFACE_EXTENSION_NAME,
@@ -107,10 +106,12 @@ bool VulkanRenderer::InitGPUDevice() {
 
 	std::cout << "Vulkan using physical device " << gpu.getProperties().deviceName << std::endl;
 
-	const char* layerNames[]		= { "VK_LAYER_LUNARG_standard_validation" };
+	const char* layerNames[]		= { "VK_LAYER_KHRONOS_validation" };
 	const char* extensionNames[]	= { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	float queuePriority = 0.0f;
+	InitSurface();
+	InitDeviceQueue();
 	vk::DeviceQueueCreateInfo queueInfo = vk::DeviceQueueCreateInfo()
 		.setQueueCount(1)
 		.setQueueFamilyIndex(gfxQueueIndex)
@@ -120,7 +121,8 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setMultiDrawIndirect(true)
 		.setDrawIndirectFirstInstance(true)
 		.setShaderClipDistance(true)
-		.setShaderCullDistance(true);
+		.setShaderCullDistance(true)
+		.setSamplerAnisotropy(true);
 
 	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo()
 		.setQueueCreateInfoCount(1)
@@ -130,11 +132,9 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setPpEnabledLayerNames(layerNames)
 		.setEnabledExtensionCount(sizeof(extensionNames) / sizeof(char*))
 		.setPpEnabledExtensionNames(extensionNames);
-
-	InitSurface();
-	InitDeviceQueue();
-
-	device		= gpu.createDevice(createInfo);
+	
+	device = gpu.createDevice(createInfo);
+	//device		= gpu.createDevice(createInfo);
 	deviceQueue = device.getQueue(gfxQueueIndex, 0);
 	deviceMemoryProperties = gpu.getMemoryProperties();
 
@@ -291,7 +291,7 @@ void	VulkanRenderer::ImageTransitionBarrier(vk::CommandBuffer* buffer, VulkanTex
 	t->layout = newLayout;
 }
 
-void	VulkanRenderer::InitCommandPool() {
+void	VulkanRenderer:: InitCommandPool() {
 	commandPool = device.createCommandPool(vk::CommandPoolCreateInfo(
 		vk::CommandPoolCreateFlagBits::eResetCommandBuffer, gfxQueueIndex));
 
@@ -393,7 +393,6 @@ bool VulkanRenderer::InitDeviceQueue() {
 	if (gfxQueueIndex == -1 || gfxPresentIndex == -1) {
 		return false;
 	}
-
 	return true;
 }
 
@@ -426,6 +425,15 @@ void VulkanRenderer::OnWindowResize(int width, int height) {
 	CompleteResize();
 
 	EndSetupCmdBuffer();
+
+	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
+	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
+
+	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
+
+	device.waitForFences(fence, true, ~0);
+	device.destroySemaphore(presentSempaphore);
+	device.destroy(fence);
 }
 
 void VulkanRenderer::CompleteResize() {
@@ -457,14 +465,12 @@ void	VulkanRenderer::EndFrame() {
 
 void VulkanRenderer::SwapBuffers() {
 	PresentScreenImage();
-
 	deviceQueue.presentKHR(vk::PresentInfoKHR(0, nullptr, 1, &swapChain, &currentSwap, nullptr));
 
 	vk::Semaphore	presentSempaphore = device.createSemaphore(vk::SemaphoreCreateInfo());
 	vk::Fence		fence = device.createFence(vk::FenceCreateInfo());
 
 	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
-
 	defaultBeginInfo = vk::RenderPassBeginInfo()
 		.setRenderPass(defaultRenderPass)
 		.setFramebuffer(frameBuffers[currentSwap])
@@ -540,7 +546,7 @@ void	VulkanRenderer::PresentScreenImage() {
 bool VulkanRenderer::CreateDefaultFrameBuffers() {
 	if (frameBuffers) {
 		for (unsigned int i = 0; i < numFrameBuffers; ++i) {
-			device.destroyFramebuffer(frameBuffers[i]);
+			device.destroyFramebuffer(frameBuffers[i]); //potential out of index?
 		}
 	}
 	else {
@@ -601,13 +607,14 @@ void	VulkanRenderer::InitDefaultDescriptorPool() {
 	defaultDescriptorPool = device.createDescriptorPool(poolCreate);
 }
 
-void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const string& debugName) {
-	device.setDebugUtilsObjectNameEXT(
-		vk::DebugUtilsObjectNameInfoEXT()
-		.setObjectType(t)
-		.setObjectHandle(handle)
-		.setPObjectName(debugName.c_str()), *dispatcher
-	);
+void VulkanRenderer::SetDebugName(vk::ObjectType t, uint64_t handle, const std::string& debugName) {
+	std::cout << debugName << std::endl;
+	//device.setDebugUtilsObjectNameEXT(
+	//	vk::DebugUtilsObjectNameInfoEXT()
+	//	.setObjectType(t)
+	//	//.setObjectHandle(handle)
+	//	.setPObjectName(debugName.c_str()), *dispatcher
+	//);
 };
 
 void	VulkanRenderer::UpdateImageDescriptor(vk::DescriptorSet& set, VulkanTexture* tex, vk::Sampler sampler, vk::ImageView forceView, vk::ImageLayout forceLayout, int bindingNum) {

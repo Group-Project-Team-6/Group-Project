@@ -3,12 +3,21 @@
 #include "../common/TextureLoader.h"
 #include "../CSC8503/GameTechRenderer.h"
 
-class Player : GameEntity {
+class Player : public GameEntity {
 public:
 	Player();
 	~Player();
 
 	void AddPlayer(const Vector3& position, string name = "");
+
+	btRigidBody* GetRigidBody() const {
+		return rigidBody;
+	}
+
+	void SetRigidBody(btRigidBody* newRigidBody) {
+		rigidBody = newRigidBody;
+	}
+
 protected:
 	//Temp
 	OGLMesh* playerMesh;
@@ -18,12 +27,16 @@ protected:
 	//general
 	string name;
 	TransformConverter transformConverter;
+	Transform transform;
+	btTransform bttransform;
 
 	//player Physics
+	int playerMass;
+	int playerFriction;
+	btVector3 playerInertia;
+
 	btDefaultMotionState* playerMotion;
 	btCollisionShape* playerShape;
-	int playerMass;
-	btVector3 playerInertia;
 	btGeneric6DofConstraint* playerConstraint;
-
+	btRigidBody* playerRigidBody;
 };

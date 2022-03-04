@@ -23,24 +23,37 @@ Player::Player() {
 Player::~Player() {
 	delete playerMotion;
 	delete playerShape;
+	delete playerConstraint;
+	delete playerRigidBody;
+
 }
 
 void Player::AddPlayer(const Vector3& position, string name) {
-	Player* player = new Player();
-	player->GetTransform()
+	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
 		.SetOrientation({ 0, 0, 0, 1 });
 
-	player->SetRenderObject(new RenderObject(&player->GetTransform(), playerMesh, playerTex, playerShader));
-	transformConverter.BTNCLConvert(player->GetTransform(), player->GetbtTransform());
+	this->SetRenderObject(new RenderObject(&transform, playerMesh, playerTex, playerShader));
+	transformConverter.BTNCLConvert(transform, bttransform);
 
-	playerMotion = new btDefaultMotionState();
+	playerMotion = new btDefaultMotionState(bttransform);
 	playerShape = new btCapsuleShape(0.5, 1);
 	playerMass = 80;
+	playerFriction = 0.3f;
 	playerInertia = { 1, 1, 1 };
 	playerShape->calculateLocalInertia(playerMass, playerInertia);
-	//btRigidBody::btRigidBodyConstructionInfo()
+	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
+	playerRigidBody = new btRigidBody(playerCI);
 
-	//player->SetRigidBody()
+	playerConstraint = new btGeneric6DofConstraint(*playerRigidBody, bttransform, true);
+	playerConstraint->setLimit(0, 1, -1);
+	playerConstraint->setLimit(1, 1, -1);
+	playerConstraint->setLimit(2, 1, -1);
+	playerConstraint->setLimit(3, 0, 0);
+	playerConstraint->setLimit(4, 1, -1);
+	playerConstraint->setLimit(5, 0, 0);
+
+	playerRigidBody->setFriction(playerFriction);
+
 }

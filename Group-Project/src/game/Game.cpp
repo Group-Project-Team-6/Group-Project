@@ -28,7 +28,7 @@ Game::~Game() {
 	delete dynamicsWorld;
 
 	//delete GameEntities
-	delete character;
+	delete player;
 	delete ground;
 
 	//delete world
@@ -107,9 +107,15 @@ void Game::InitScene() {
 }
 
 void Game::InitCharacter() {
+
+	/*player = new Player();
+	player->AddPlayer({ 25, 5, -25 });
+	dynamicsWorld->addRigidBody(player->GetRigidBody());
+	world->AddGameObject(player);*/
+
 	//To be added to inheritance class of game Entity
 	//Will need to limit velocity of all kinematic objects
-	character = new GameEntity();
+	GameEntity* character = new GameEntity();
 	character->GetTransform()
 		.SetPosition({25, 4, -25})
 		.SetScale({ 1, 1, 1 }) //Check Scale
@@ -154,7 +160,7 @@ void Game::InitCharacter() {
 
 
 	//Build From Classes
-	//Scene Graph?
+	//Scene Graph?*/
 
 }
 
@@ -164,7 +170,7 @@ void Game::UpdateGame(float dt) {
 
 	command = playerInput.handleInput();
 	if (command) {
-		command->execute(*character);
+		command->execute(*player);
 	}
 
 	world->UpdatePositions(); //Maybe Change

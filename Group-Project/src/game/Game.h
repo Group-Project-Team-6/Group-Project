@@ -51,7 +51,7 @@ protected:
 	//Custom motion state?
 
 	//GameEntities
-	GameEntity* character;
+	Player* player;
 	GameEntity* ground;
 
 	//Game Assets? Temp

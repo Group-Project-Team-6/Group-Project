@@ -75,8 +75,9 @@ void VulkanMesh::UploadToGPU(RendererBase* r)  {
 	attributeSpec.numAttributes = (int)attributeTypes.size();
 
 	vertexBuffer = sourceDevice.createBuffer(
-		vk::BufferCreateInfo({}, strideSize * GetVertexCount(), vk::BufferUsageFlagBits::eVertexBuffer)
+		vk::BufferCreateInfo({}, strideSize * (int)GetVertexCount(), vk::BufferUsageFlagBits::eVertexBuffer)
 	);
+
 
 	vk::MemoryRequirements memReqs = sourceDevice.getBufferMemoryRequirements(vertexBuffer);
 

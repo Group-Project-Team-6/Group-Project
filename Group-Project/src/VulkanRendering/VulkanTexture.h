@@ -1,7 +1,9 @@
 #pragma once
-#include "../common/TextureBase.h"
+#include "../Common/TextureBase.h"
 #include <string>
-#include <vulkan\vulkan.hpp> //
+
+#include <vulkan\vulkan.hpp>
+#include "VulkanRenderer.h"
 
 namespace NCL {
 	namespace Rendering {
@@ -49,7 +51,7 @@ namespace NCL {
 			static VulkanTexture* GenerateTextureFromDataInternal(int width, int height, int channelCount, bool isCube, std::vector<char*>dataSrcs, std::string debugName);
 
 
-			vk::ImageView  GenerateDefaultView(vk::ImageAspectFlags type);
+			vk::ImageView  GenerateDefaultView(vk::ImageAspectFlags type, bool isCubemap = false);
 
 			static int CalculateMipCount(int width, int height);
 

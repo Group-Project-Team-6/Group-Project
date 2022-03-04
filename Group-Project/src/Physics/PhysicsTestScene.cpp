@@ -45,11 +45,6 @@ void PhysicsTestScene::InitAssets() {
 	loadFunc("Cube.msh", &sphereMesh);
 
 	//TODO : Change to virtual function of meshGeometry
-<<<<<<< HEAD
-	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-
-=======
->>>>>>> c6968614256661fcde2a366b0ba69dc349d9ec76
 	VulkanShaderBuilder builder = VulkanShaderBuilder()
 		.WithVertexBinary("GameTechVert.spv")
 		.WithFragmentBinary("GameTechFrag.spv");

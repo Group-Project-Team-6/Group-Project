@@ -2,10 +2,10 @@
 #include "VulkanMesh.h"
 #include "VulkanTexture.h"
 
-#include "../../Common/TextureLoader.h"
+#include "../common/TextureLoader.h"
 
 #ifdef WIN32
-#include "../../Common/Win32Window.h"
+#include "../common/Win32Window.h"
 using namespace NCL::Win32Code;
 #endif
 

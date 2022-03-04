@@ -3,7 +3,6 @@
 #include "../VulkanRendering/VulkanTexture.h"
 #include "../VulkanRendering/VulkanShader.h"
 #include "../VulkanRendering/VulkanShaderBuilder.h"
-#include "../common/TextureLoader.cpp"
 
 //using namespace NCL;
 //using namespace CSC8503;
@@ -46,7 +45,6 @@ void PhysicsTestScene::InitAssets() {
 	loadFunc("Cube.msh", &sphereMesh);
 
 	//TODO : Change to virtual function of meshGeometry
-	basicTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	VulkanShaderBuilder builder = VulkanShaderBuilder()
 		.WithVertexBinary("GameTechVert.spv")
 		.WithFragmentBinary("GameTechFrag.spv");

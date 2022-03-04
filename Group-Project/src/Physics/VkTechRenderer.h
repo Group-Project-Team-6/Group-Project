@@ -52,7 +52,7 @@ namespace NCL {
 			VulkanMesh* skyboxMesh;
 			UniformData matrixDataObject;
 			Matrix4 matrix;
-			//VulkanTexture* skyboxTex;
+			VulkanTexture* skyboxTex;
 
 			////shadow mapping things
 			//VulkanShader* shadowShader;
@@ -65,7 +65,9 @@ namespace NCL {
 			//Vector3		lightPosition;
 
 			vk::DescriptorBufferInfo bufferInfo;
-			vk::WriteDescriptorSet desWrite;
+			vk::DescriptorImageInfo imageInfo;
+			vk::Sampler sampler;
+			vk::WriteDescriptorSet desWrite[2];
 			VulkanDescriptorSetLayoutBuilder desSetLayoutBuilder;
 			vk::DescriptorSetLayout desSetLayout;
 			std::vector<vk::DescriptorSet> set;

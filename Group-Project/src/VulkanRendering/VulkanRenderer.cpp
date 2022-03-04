@@ -41,6 +41,7 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 
 	currentSwap = device.acquireNextImageKHR(swapChain, UINT64_MAX, presentSempaphore, fence).value;	//Get swap image
 
+	device.waitForFences(fence, true, ~0);
 	device.destroySemaphore(presentSempaphore);
 	device.destroy(fence);
 }
@@ -129,7 +130,8 @@ bool VulkanRenderer::InitGPUDevice() {
 		.setMultiDrawIndirect(true)
 		.setDrawIndirectFirstInstance(true)
 		.setShaderClipDistance(true)
-		.setShaderCullDistance(true);
+		.setShaderCullDistance(true)
+		.setSamplerAnisotropy(true);
 
 	vk::DeviceCreateInfo createInfo = vk::DeviceCreateInfo()
 		.setQueueCreateInfoCount(1)

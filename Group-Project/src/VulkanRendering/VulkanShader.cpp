@@ -1,6 +1,6 @@
 #include "VulkanShader.h"
-#include "glslangtoSpv.h"
-#include "../../Common/Assets.h"
+//#include "glslangtoSpv.h"
+#include "../common/Assets.h"
 
 #include <fstream>
 #include <iostream>

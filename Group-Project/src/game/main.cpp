@@ -1,6 +1,4 @@
 #include "../Common/Window.h"
-#include "../Audio/AudioManager.h"
-#include "../Audio/common.h"
 
 #include "../Physics/PhysicsTestScene.h"
 #include "../game/Game.h"
@@ -21,14 +19,9 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	//PhysicsTestScene* g = new PhysicsTestScene();
 	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();
-
-	AudioManager* a = new AudioManager();
-	a->InitSystem();
-
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
@@ -46,9 +39,7 @@ int main() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T)) {
 			w->SetWindowPosition(0, 0);
 		}
-
 		g->UpdateGame(dt);
-		a->AudioUpdate(w);
 	}
 
 	Window::DestroyGameWindow();

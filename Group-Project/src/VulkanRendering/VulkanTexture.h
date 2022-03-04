@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Common/TextureBase.h"
+#include "../common/TextureBase.h"
 #include <string>
 #include <vulkan\vulkan.hpp> //
 

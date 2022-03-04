@@ -1,6 +1,6 @@
 #include "VulkanTexture.h"
 #include "VulkanRenderer.h"
-#include "../../Common/TextureLoader.h"
+#include "../common/TextureLoader.h"
 
 using namespace NCL;
 using namespace Rendering;

@@ -93,6 +93,7 @@ VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 }
 
 VkTechRenderer::~VkTechRenderer() {
+	device.destroy(sampler);
 	device.destroy(desSetLayout);
 	device.destroy(pipeline.pipeline);
 	device.destroy(pipeline.layout);
@@ -102,7 +103,7 @@ void VkTechRenderer::RenderFrame() {
 	count += 0.001f;
 	if (count > 0.8f) count = 0.0f;
 
-	std::cout << "Render" << std::endl;
+	//std::cout << "Render" << std::endl;
 
 	//Create pipeline
 	matrix.SetPositionVector(Vector3(0.2f + count, 0.2f, 0.2f));

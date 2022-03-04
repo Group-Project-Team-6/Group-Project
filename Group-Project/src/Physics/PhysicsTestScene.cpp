@@ -76,5 +76,6 @@ void PhysicsTestScene::InitScene() {
 }
 
 void PhysicsTestScene::UpdateGame(float dt) {
+	std::cout << (1.0f / dt) << " fps" << std::endl;
 	renderer->Render();
 }

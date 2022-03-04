@@ -17,12 +17,11 @@ class AudioManager {
 
         void CacheRelease();
     private:
-        const float DISTANCEFACTOR = 1.0f;
-
-        FMOD::System              *system;
-        FMOD::Sound               *sound;
-        FMOD::Channel             *channel = 0;
-        FMOD_RESULT                result;
-        void                      *extradriverdata = 0;
-        FMOD_VECTOR                listenerpos  = { 0.0f, 0.0f, -1.0f * DISTANCEFACTOR };
+        const float     DISTANCEFACTOR = 1.0f;
+        FMOD::System   *system;
+        FMOD::Sound    *sound;
+        FMOD::Channel  *channel = 0;
+        FMOD_RESULT     result;
+        void           *extradriverdata = 0;
+        FMOD_VECTOR     listenerpos  = { 0.0f, 0.0f, -1.0f * DISTANCEFACTOR };
 };

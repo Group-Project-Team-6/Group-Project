@@ -11,7 +11,6 @@ https://research.ncl.ac.uk/game/
 
 namespace NCL {
 	namespace Assets {
-
 		const std::string SHADERDIR("../Assets/Shaders/");
 		const std::string MESHDIR("../Assets/Meshes/");
 		const std::string TEXTUREDIR("../Assets/Textures/");

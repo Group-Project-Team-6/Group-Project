@@ -1,6 +1,5 @@
 #include "VulkanTexture.h"
 #include "VulkanRenderer.h"
-
 #include "../Common/TextureLoader.h"
 
 using namespace NCL;

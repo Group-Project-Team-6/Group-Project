@@ -113,7 +113,7 @@ bool VulkanRenderer::InitGPUDevice() {
 	float queuePriority = 0.0f;
 	InitSurface();
 	InitDeviceQueue();
-	std::cout << gfxQueueIndex << std::endl;
+
 	vk::DeviceQueueCreateInfo queueInfo = vk::DeviceQueueCreateInfo()
 		.setQueueCount(1)
 		.setQueueFamilyIndex(gfxQueueIndex)

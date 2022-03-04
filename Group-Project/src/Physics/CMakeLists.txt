@@ -5,8 +5,9 @@ project(Group-Project)
 add_library(Physics
 	PhysicsTestScene.cpp
 	PhysicsObject.cpp
+	VkTechRenderer.cpp
 
 	PhysicsTestScene.h
 	PhysicsObject.h
-	btNCLmotionState.h
+	VkTechRenderer.h
 )

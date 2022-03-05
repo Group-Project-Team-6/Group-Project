@@ -5,18 +5,37 @@
 
 class Player : public GameEntity {
 public:
-	Player();
+	Player(Vector3 position, string name);
 	~Player();
 
-	void AddPlayer(const Vector3& position, string name = "");
-
-	btRigidBody* GetRigidBody() const {
-		return rigidBody;
+	virtual btRigidBody* GetRigidBody() const override{
+		return playerRigidBody;
 	}
 
-	void SetRigidBody(btRigidBody* newRigidBody) {
-		rigidBody = newRigidBody;
+	virtual void SetRigidBody(btRigidBody* newRigidBody) override {
+		playerRigidBody = newRigidBody;
 	}
+
+	btGeneric6DofConstraint* GetPlayerConstraints() const {
+		return playerConstraint;
+	}
+
+	virtual void UpdateRenderPositions() override {
+
+		bttransform = playerRigidBody->getWorldTransform();
+
+		btRot = bttransform.getRotation();
+		btPos = bttransform.getOrigin();
+
+		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
+		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
+
+		transform.SetOrientation(nclRot);
+		transform.SetPosition(nclPos);
+
+	}
+
+	void IntitAssets(); //Temp
 
 protected:
 	//Temp
@@ -32,7 +51,8 @@ protected:
 
 	//player Physics
 	int playerMass;
-	int playerFriction;
+	float playerFriction;
+	float playerRestitution;
 	btVector3 playerInertia;
 
 	btDefaultMotionState* playerMotion;

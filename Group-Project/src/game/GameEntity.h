@@ -29,11 +29,11 @@ public:
 	}
 
 	//Physics
-	btRigidBody* GetRigidBody() const {
+	virtual btRigidBody* GetRigidBody() const {
 		return rigidBody;
 	}
 
-	void SetRigidBody(btRigidBody* newRigidBody) {
+	virtual void SetRigidBody(btRigidBody* newRigidBody) {
 		rigidBody = newRigidBody;
 	}
 
@@ -67,7 +67,7 @@ public:
 		return worldID;
 	}
 
-	void UpdateRenderPositions() {
+	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();
 

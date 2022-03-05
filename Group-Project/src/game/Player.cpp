@@ -1,34 +1,10 @@
 #include "Player.h"
 
 
-Player::Player() {
-	//Intialise to nullptr
+Player::Player(Vector3 position, string newName) {
+	IntitAssets(); //Temp, Replace with loadAsset Class
 
-	//Temp //
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("capsule.msh", &playerMesh);
-
-	playerTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	playerShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-	//Temp //
-
-	//Replace with loadAsset Class
-}
-
-Player::~Player() {
-	delete playerMotion;
-	delete playerShape;
-	delete playerConstraint;
-	delete playerRigidBody;
-
-}
-
-void Player::AddPlayer(const Vector3& position, string name) {
+	name = newName;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -40,7 +16,8 @@ void Player::AddPlayer(const Vector3& position, string name) {
 	playerMotion = new btDefaultMotionState(bttransform);
 	playerShape = new btCapsuleShape(0.5, 1);
 	playerMass = 80;
-	playerFriction = 0.3f;
+	playerFriction = 0.5;
+	playerRestitution = 0.5;
 	playerInertia = { 1, 1, 1 };
 	playerShape->calculateLocalInertia(playerMass, playerInertia);
 	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
@@ -55,5 +32,26 @@ void Player::AddPlayer(const Vector3& position, string name) {
 	playerConstraint->setLimit(5, 0, 0);
 
 	playerRigidBody->setFriction(playerFriction);
-
+	playerRigidBody->setRestitution(playerRestitution);
 }
+
+Player::~Player() {
+	delete playerMotion;
+	delete playerShape;
+	delete playerConstraint;
+	delete playerRigidBody;
+}
+
+void Player::IntitAssets() {
+	auto loadFunc = [](const string& name, OGLMesh** into) {
+		*into = new OGLMesh(name);
+		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
+		(*into)->UploadToGPU();
+	};
+
+	loadFunc("capsule.msh", &playerMesh);
+
+	playerTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	playerShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+}
+

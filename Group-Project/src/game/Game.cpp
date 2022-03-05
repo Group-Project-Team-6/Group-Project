@@ -11,6 +11,7 @@ Game::Game() {
 	//void InitAudio();
 	InitAssets();
 	InitScene();
+	InitItems();
 	//void LevelGeneration();
 	InitCharacter();
 	//void InitHUD
@@ -28,7 +29,7 @@ Game::~Game() {
 	delete dynamicsWorld;
 
 	//delete GameEntities
-	delete player;
+	delete players;
 	delete ground;
 
 	//delete world
@@ -100,79 +101,49 @@ void Game::InitScene() {
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
 
-	ground->GetRigidBody()->setFriction(0.3);
+	ground->GetRigidBody()->setFriction(0.5);
+	ground->GetRigidBody()->setRestitution(0.5);
 
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 }
 
-void Game::InitCharacter() {
-
-	/*player = new Player();
-	player->AddPlayer({ 25, 5, -25 });
-	dynamicsWorld->addRigidBody(player->GetRigidBody());
-	world->AddGameObject(player);*/
-
-	//To be added to inheritance class of game Entity
-	//Will need to limit velocity of all kinematic objects
-	GameEntity* character = new GameEntity();
-	character->GetTransform()
-		.SetPosition({25, 4, -25})
-		.SetScale({ 1, 1, 1 }) //Check Scale
-		.SetOrientation({ 0, 0, 0, 1 }); 
-
-	//Set all values with a strut?
-	//Tidy up variables
-
-	character->SetRenderObject(new RenderObject(&character->GetTransform(), capsuleMesh, basicTex, basicShader));
-
-	transformConverter.BTNCLConvert(character->GetTransform(), character->GetbtTransform());
-
-	btDefaultMotionState* characterMotion = new btDefaultMotionState(character->GetbtTransform());
-	btCollisionShape* characterShape = new btCapsuleShape(0.5, 1);
-	int characterMass = 80;
-	btVector3 characterIntertia = { 1, 1, 1 };
-
-	characterShape->calculateLocalInertia(characterMass, characterIntertia);
-
-	btRigidBody::btRigidBodyConstructionInfo sphereCI(80, characterMotion, characterShape, {1, 1, 1});
-	character->SetRigidBody(new btRigidBody(sphereCI));
-
-	btVector3 lowerLimit = { 0, 0, 0 };
-	btVector3 upperLimit = { 0, 0, 0 };
-	btGeneric6DofConstraint* constraint = new btGeneric6DofConstraint(*character->GetRigidBody(), character->GetbtTransform(), true);
-	constraint->setLimit(0, 1, -1);
-	constraint->setLimit(1, 1, -1);
-	constraint->setLimit(2, 1, -1);
-	constraint->setLimit(3, 0, 0);
-	constraint->setLimit(4, 1, -1);
-	constraint->setLimit(5, 0, 0);
-
-	character->GetRigidBody()->setFriction(0.3);
-	//btConstraintParams
-	//character->GetRigidBody()->
-
-
-	world->AddGameObject(character);
-	dynamicsWorld->addRigidBody(character->GetRigidBody());
-	dynamicsWorld->addConstraint(constraint);
-
-
-
-	//Build From Classes
-	//Scene Graph?*/
+void Game::InitItems() {
 
 }
 
+void Game::InitCharacter() {
+
+	for (int i = 0; i < 4; i++) {
+		players[i] = new Player({25, 5, -25}, "");
+		//players[i]->AddPlayer({ 25, 5, -25 }); //Positions set from map data
+		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		world->AddGameObject(players[i]);
+		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
+	}
+
+	//maybe use foreach loops for static objects
+}
+
 void Game::UpdateGame(float dt) {
-	dynamicsWorld->stepSimulation(1 / 60.0f, 10);
+	dynamicsWorld->stepSimulation(dt, 0);
 	world->GetMainCamera()->UpdateCamera(dt);
 
 	command = playerInput.handleInput();
 	if (command) {
-		command->execute(*player);
+		command->execute(*players[0]); //Learn which player from networking
 	}
 
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
+
+	/*std::cout <<
+		std::to_string(character->GetTransform().GetPosition().x) +
+		std::to_string(character->GetTransform().GetPosition().y) +
+		std::to_string(character->GetTransform().GetPosition().z) << std::endl;
+
+	std::cout << std::to_string(
+		character->GetbtTransform().getOrigin().x())
+		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
+		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
 }

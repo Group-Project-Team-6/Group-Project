@@ -25,6 +25,7 @@ protected:
 	//void InitAudio();
 	void InitAssets();
 	void InitScene();
+	void InitItems();
 	//Build State Machine?
 	//void LevelGeneration();
 	void InitCharacter();
@@ -51,7 +52,8 @@ protected:
 	//Custom motion state?
 
 	//GameEntities
-	Player* player;
+	GameEntity* character;
+	Player* players[4];
 	GameEntity* ground;
 
 	//Game Assets? Temp

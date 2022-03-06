@@ -7,7 +7,13 @@ class PlayerInput {
 public:
 	//will need deconstructor
 	//Check Memory Leaks!
-
+	~PlayerInput() {
+		delete spaceBar;
+		delete wKey;
+		delete sKey;
+		delete aKey;
+		delete dKey;
+	}
 
 	ControlsCommand* handleInput() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
@@ -35,4 +41,5 @@ private:
 	ControlsCommand* sKey = (ControlsCommand*) new moveBackwardCommand();
 	ControlsCommand* aKey = (ControlsCommand*) new moveLeftCommand();
 	ControlsCommand* dKey = (ControlsCommand*) new moveRightCommand();
+	//ControlsCommand* leftMouse = (ControlsCommand) new 
 };

@@ -36,3 +36,10 @@ public:
 		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
 	}
 };
+
+class leftMouse : ControlsCommand {
+public:
+	virtual void execute(GameEntity& player) override {
+		//Shoot
+	}
+};

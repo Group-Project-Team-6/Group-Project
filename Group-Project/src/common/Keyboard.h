@@ -194,4 +194,4 @@ namespace NCL {
 		bool keyStates[(int)KeyboardKeys::MAXVALUE];		//Is the key down?
 		bool holdStates[(int)KeyboardKeys::MAXVALUE];		//Has the key been down for multiple updates?
 	};
-}
+};

@@ -11,7 +11,7 @@
 #include "../Common/TextureLoader.h"
 
 #include "../common/Matrix4.h"
-//#include "../CSC8503/GameWorld.h"
+#include "../CSC8503/GameWorld.h"
 
 namespace NCL {
 	class Maths::Vector3;
@@ -21,10 +21,11 @@ namespace NCL {
 
 		class VkTechRenderer : public VulkanRenderer {
 		public:
-			VkTechRenderer();
+			VkTechRenderer(GameWorld& world);
 			~VkTechRenderer();
 
 		protected:
+			void	InitVulkan();
 			void	RenderFrame()	override;
 
 			void	InitDefaultRenderPass() override { VulkanRenderer::InitDefaultRenderPass(); };
@@ -36,7 +37,7 @@ namespace NCL {
 
 			//VulkanShader* defaultShader;
 
-			//GameWorld& gameWorld;
+			GameWorld& gameWorld;
 
 			//void BuildObjectList();
 			//void SortObjectList();

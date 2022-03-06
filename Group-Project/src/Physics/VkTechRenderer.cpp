@@ -5,7 +5,21 @@ using namespace NCL;
 using namespace Rendering;
 using namespace CSC8503;
 
-VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
+VkTechRenderer::VkTechRenderer(GameWorld& world) : VulkanRenderer(*Window::GetWindow()), gameWorld(world){
+	InitVulkan();
+}
+
+VkTechRenderer::~VkTechRenderer() {
+	device.destroy(sampler);
+	device.destroy(desSetLayout);
+	device.destroy(pipeline.pipeline);
+	device.destroy(pipeline.layout);
+}
+
+void VkTechRenderer::InitVulkan() {
+	// Get resources from AssetManager
+	// Initialize the resources
+	// Init Pipeline
 	count = 0.0f;
 	skyboxTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 
@@ -20,8 +34,9 @@ VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 
 	matrix = Matrix4();
 	matrix.SetPositionVector(Vector3(0.2f, 0.2f, 0.2f));
-	InitUniformBuffer(matrixDataObject,matrix.array,sizeof(matrix.array));
+	InitUniformBuffer(matrixDataObject, matrix.array, sizeof(matrix.array));
 
+	// Pipeline
 	desSetLayoutBuilder
 		.WithDebugName("desSetLayoutBuilder")
 		.WithUniformBuffers(1, vk::ShaderStageFlagBits::eVertex)
@@ -92,13 +107,6 @@ VkTechRenderer::VkTechRenderer() : VulkanRenderer(*Window::GetWindow()){
 	pipeline = pipelineBuilder.Build(*this);
 }
 
-VkTechRenderer::~VkTechRenderer() {
-	device.destroy(sampler);
-	device.destroy(desSetLayout);
-	device.destroy(pipeline.pipeline);
-	device.destroy(pipeline.layout);
-}
-
 void VkTechRenderer::RenderFrame() {
 	count += 0.001f;
 	if (count > 0.8f) count = 0.0f;
@@ -107,14 +115,14 @@ void VkTechRenderer::RenderFrame() {
 
 	//Create pipeline
 	matrix.SetPositionVector(Vector3(0.2f + count, 0.2f, 0.2f));
-	UpdateUniformBuffer(matrixDataObject,matrix.array, sizeof(matrix.array));
+	UpdateUniformBuffer(matrixDataObject, matrix.array, sizeof(matrix.array));
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
 
 	frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
 	frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
 
-	SubmitDrawCall(skyboxMesh,frameCmdBuffer);
+	SubmitDrawCall(skyboxMesh, frameCmdBuffer);
 
-	frameCmdBuffer.endRenderPass();	
+	frameCmdBuffer.endRenderPass();
 }

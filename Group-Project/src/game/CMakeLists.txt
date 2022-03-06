@@ -10,7 +10,8 @@ add_executable(Game
 	Items.h
 	Player.h
 	PlayerInput.h
-	TransformConverter.h	
+	TransformConverter.h
+	Wall.h	
 
 	main.cpp
 	Game.cpp
@@ -19,4 +20,5 @@ add_executable(Game
 	Player.cpp
 	PlayerInput.cpp
 	TransformConverter.cpp
+	Wall.cpp
 )

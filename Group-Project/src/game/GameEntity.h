@@ -4,7 +4,8 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "../Common/RenderObject.h"
-#include "../Physics/PhysicsObject.h"
+#include "../CSC8503/GameTechRenderer.h"
+#include "../common/TextureLoader.h"
 
 #include "../CSC8503/Transform.h"
 

@@ -36,7 +36,20 @@ Game::~Game() {
 	delete world;
 	delete renderer;
 
-	//nullptr?
+	for (auto i : players) {
+		delete i;
+	}
+
+	for (auto i : items) {
+		delete i;
+	}
+
+	for (auto i : walls) {
+		delete i;
+	}
+	//for loop to delete characters
+	//for loop to delete items
+	//for loop to delete walls
 }
 
 void Game::InitWorld() {
@@ -82,7 +95,7 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
-	//Should be static bodies
+	//Should be a static bodies
 	ground = new GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
@@ -90,26 +103,29 @@ void Game::InitScene() {
 		.SetOrientation(Quaternion(0, 0, 0, 1));
 
 	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
-
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
-
 	int groundMass = 0;
-
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
-	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer somehow
+	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer static objects btTransforms work differently
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
-
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
-
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
+
+	Transform wallTransform;
+	walls[0] = new Wall(wallTransform);
+	world->AddGameObject(walls[0]);
+	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
+	//maybe use foreach loops for static objects
 }
 
 void Game::InitItems() {
-
+	items[0] = new Item({ 0, 2, 0 }, 1);
+	world->AddGameObject(items[0]);
+	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
 }
 
 void Game::InitCharacter() {
@@ -122,7 +138,7 @@ void Game::InitCharacter() {
 		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
 
-	//maybe use foreach loops for static objects
+
 }
 
 void Game::UpdateGame(float dt) {
@@ -134,6 +150,7 @@ void Game::UpdateGame(float dt) {
 		command->execute(*players[0]); //Learn which player from networking
 	}
 
+	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
 

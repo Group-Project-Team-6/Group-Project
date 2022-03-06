@@ -1,13 +1,13 @@
 #pragma once
 
-//#include "btBulletCollisionCommon.h"
-//#include "btBulletDynamicsCommon.h"
 #include "../game/GameEntity.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
 #include "Player.h"
+#include "Items.h"
+#include "Wall.h"
 
 //Encapsulate in namespace?
 
@@ -52,8 +52,9 @@ protected:
 	//Custom motion state?
 
 	//GameEntities
-	GameEntity* character;
 	Player* players[4];
+	Item* items[36];
+	Wall* walls[100]; //Exact number data driven;
 	GameEntity* ground;
 
 	//Game Assets? Temp

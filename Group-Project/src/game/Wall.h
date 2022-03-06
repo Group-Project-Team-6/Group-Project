@@ -1,27 +1,27 @@
 #pragma once
 
 #include "GameEntity.h"
-#include "../CSC8503/GameTechRenderer.h"
-#include "../common/TextureLoader.h"
+//#include "../CSC8503/GameTechRenderer.h"
+//#include "../common/TextureLoader.h"
 
-class Item : public GameEntity {
+class Wall : public GameEntity {
 public:
-	Item(Vector3 position, int score);
-	~Item();
+	Wall(Transform buildTransform);
+	~Wall();
+
 	void InitAssets(); //Temp
-	void OnPlayerCollide();
 
 	virtual btRigidBody* GetRigidBody() const override {
-		return itemRigidBody;
+		return wallRigidBody;
 	}
 
 	virtual void SetRigidBody(btRigidBody* newRigidBody) override {
-		itemRigidBody = newRigidBody;
+		wallRigidBody = newRigidBody;
 	}
 
 	virtual void UpdateRenderPositions() override {
 
-		bttransform = itemRigidBody->getWorldTransform();
+		bttransform = wallRigidBody->getWorldTransform();
 
 		btRot = bttransform.getRotation();
 		btPos = bttransform.getOrigin();
@@ -33,22 +33,17 @@ public:
 		transform.SetPosition(nclPos);
 
 	}
-
 private:
-	int score;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;
-	int itemScore;
 
-	btDefaultMotionState* itemMotion;
-	btCollisionShape* itemShape;
-	btRigidBody* itemRigidBody;
-
-	//Anim
+	btDefaultMotionState* wallMotion;
+	btCollisionShape* wallShape;
+	btRigidBody* wallRigidBody;
 
 	//graphics
-	OGLMesh* itemMesh;
-	OGLTexture* itemTex;
-	OGLShader* itemShader;
+	OGLMesh* wallMesh;
+	OGLTexture* wallTex;
+	OGLShader* wallShader;
 };

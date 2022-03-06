@@ -40,6 +40,9 @@ Player::~Player() {
 	delete playerShape;
 	delete playerConstraint;
 	delete playerRigidBody;
+
+	delete playerMesh;
+	delete playerShader;
 }
 
 void Player::IntitAssets() {
@@ -53,5 +56,6 @@ void Player::IntitAssets() {
 
 	playerTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	playerShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+
 }
 

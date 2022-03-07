@@ -42,6 +42,8 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
 
             NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
             float yaw = world->GetMainCamera()->GetYaw();
+            
+            forward.z = yaw;
 
             listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
 

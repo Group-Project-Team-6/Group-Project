@@ -1,8 +1,6 @@
 add_subdirectory(Audio)
-#add_subdirectory(Bullet)
 add_subdirectory(common)
 add_subdirectory(CSC8503)
-#add_subdirectory(FMOD)
 add_subdirectory(OpenGLRendering)
 add_subdirectory(Physics)
 add_subdirectory(game)

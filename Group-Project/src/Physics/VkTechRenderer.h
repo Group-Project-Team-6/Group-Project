@@ -37,18 +37,20 @@ namespace NCL {
 
 			//VulkanShader* defaultShader;
 
-			GameWorld& gameWorld;
-
-			//void BuildObjectList();
-			//void SortObjectList();
-			//void RenderShadowMap();
-			//void RenderCamera();
-			//void RenderSkybox();
+			void BuildObjectList();
+			void SortObjectList();
+			void RenderShadowMap();
+			void RenderCamera();
+			void RenderSkybox();
 
 			//void LoadSkybox();
 
+			void BuildPipeline();
 
-			//vector<const RenderObject*> activeObjects;
+
+			GameWorld& gameWorld;
+
+			vector<const RenderObject*> activeObjects;
 
 			VulkanTexture* basicTex;
 			VulkanShader* skyboxShader;

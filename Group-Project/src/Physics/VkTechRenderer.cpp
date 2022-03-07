@@ -48,10 +48,10 @@ void VkTechRenderer::RenderFrame() {
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
 	for (int i = 0; i < activeObjects.size(); i++) {
+		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[0]->GetTransform()->GetMatrix();
+		UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
 		frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
 		frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
-		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[i]->GetTransform()->GetMatrix();
-		UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
 		if (activeObjects[i]->GetMesh()) {
 			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetMesh());
 			if (mesh) SubmitDrawCall(mesh, frameCmdBuffer);

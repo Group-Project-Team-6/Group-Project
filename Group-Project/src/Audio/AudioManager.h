@@ -24,4 +24,5 @@ class AudioManager {
         FMOD_RESULT     result;
         void           *extradriverdata = 0;
         FMOD_VECTOR     listenerpos  = { 0.0f, 0.0f, -1.0f * DISTANCEFACTOR };
+        FMOD_VECTOR forward        = { 0.0f, 0.0f, 1.0f };
 };

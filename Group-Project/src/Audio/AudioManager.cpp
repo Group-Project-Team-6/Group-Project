@@ -1,4 +1,5 @@
 #include "AudioManager.h"
+#include <iostream>
 
 void AudioManager::InitSystem() {
     Common_Init(&extradriverdata);
@@ -36,14 +37,20 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
 
     {       
             static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
-            FMOD_VECTOR forward        = { 0.0f, 0.0f, 1.0f };
             FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
             FMOD_VECTOR vel;
-
+            
             NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
             float yaw = world->GetMainCamera()->GetYaw();
+
+            float radians = yaw * (3.14159265 / 180);
+
+            forward.x = cos(radians);
+            forward.y = 0.0f;
+            forward.z = sin(radians);
             
-            forward.z = yaw;
+            std::cout << "Yaw: " << yaw << std::endl;
+            std::cout << "Forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
 
             listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
 

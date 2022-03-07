@@ -37,9 +37,11 @@ public:
 	}
 };
 
-class leftMouse : ControlsCommand {
+class leftMouseCommand : ControlsCommand {
 public:
 	virtual void execute(GameEntity& player) override {
-		//Shoot
+		//Shoot with freelist
+		//player.shooting position
+		//player.bulletPool.create(Vector3 life)
 	}
 };

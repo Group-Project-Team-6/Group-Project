@@ -1,15 +1,17 @@
 #pragma once
 #include "../common/Vector3.h"
+#include "GameEntity.h"
 
-class Bullet {
+class Bullet : public GameEntity{
 public:
-	Bullet() : frameLeft(0) {}
+	Bullet() : framesLeft(0) {};
 	~Bullet();
 
-	void Init(int lifeTime);
-	void Animate();
+	void Init(Transform startTransform, int lifeTime);
+	bool Animate();
+	void InitAssets();
 
-	bool inUse() const { return frameLeft > 0; }
+	bool inUse() const { return framesLeft > 0; }
 
 	Bullet* getNext() const {
 		return state.next;
@@ -18,15 +20,49 @@ public:
 		state.next;
 	}
 
+	virtual btRigidBody* GetRigidBody() const override {
+		return bulletRigidBody;
+	}
+
+	virtual void SetRigidBody(btRigidBody* newRigidBody) override {
+		bulletRigidBody = newRigidBody;
+	}
+
+	virtual void UpdateRenderPositions() override {
+
+		bttransform = bulletRigidBody->getWorldTransform();
+
+		btRot = bttransform.getRotation();
+		btPos = bttransform.getOrigin();
+
+		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
+		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
+
+		transform.SetOrientation(nclRot);
+		transform.SetPosition(nclPos);
+
+	}
+
 private:
-	int frameLeft;
+	int framesLeft;
 	union {
 		struct {
-			//pos data
+			Vector3 position;
+			Vector3 force;
 		} live;
 
 		Bullet* next;
 	} state; //Rename
 
-	//NCL::Maths::Vector3 direction;
+	OGLMesh* bulletMesh;
+	OGLTexture* bulletTex;
+	OGLShader* bulletShader;
+
+	TransformConverter transformConverter;
+	int bulletMass;
+	btVector3 bulletInertia;
+
+	btDefaultMotionState* bulletMotion;
+	btCollisionShape* bulletShape;
+	btRigidBody* bulletRigidBody;
 };

@@ -28,14 +28,12 @@ Game::~Game() {
 	delete solver;
 	delete dynamicsWorld;
 
-	//delete GameEntities
-	delete players;
-	delete ground;
-
 	//delete world
 	delete world;
 	delete renderer;
 
+	//delete GameEntities
+	delete ground;
 	for (auto i : players) {
 		delete i;
 	}
@@ -47,9 +45,7 @@ Game::~Game() {
 	for (auto i : walls) {
 		delete i;
 	}
-	//for loop to delete characters
-	//for loop to delete items
-	//for loop to delete walls
+
 }
 
 void Game::InitWorld() {
@@ -131,14 +127,11 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "");
-		//players[i]->AddPlayer({ 25, 5, -25 }); //Positions set from map data
+		players[i] = new Player({25, 5, -25}, ""); //Positions set from map data	 
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
 		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
-
-
 }
 
 void Game::UpdateGame(float dt) {

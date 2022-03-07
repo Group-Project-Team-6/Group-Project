@@ -2,6 +2,7 @@
 #include "GameEntity.h"
 #include "../common/TextureLoader.h"
 #include "../CSC8503/GameTechRenderer.h"
+#include "BulletPool.h"
 
 class Player : public GameEntity {
 public:
@@ -35,7 +36,7 @@ public:
 
 	}
 
-	void IntitAssets(); //Temp
+	void InitAssets(); //Temp
 
 protected:
 	//Temp
@@ -47,7 +48,9 @@ protected:
 	string name;
 	TransformConverter transformConverter;
 	Transform transform;
+	Transform shootingPos;
 	btTransform bttransform;
+	BulletPool bullets;
 
 	//player Physics
 	int playerMass;

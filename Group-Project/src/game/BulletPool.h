@@ -3,11 +3,11 @@
 
 class BulletPool {
 public:
-	//BulletPool();
+	BulletPool();
 	//~BulletPool();
 
 	void Create(int lifeTime);
-	//void Animate();
+	void Animate();
 
 private:
 	Bullet* firstAvailable;

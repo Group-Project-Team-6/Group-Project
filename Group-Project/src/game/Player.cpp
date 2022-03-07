@@ -2,7 +2,7 @@
 
 
 Player::Player(Vector3 position, string newName) {
-	IntitAssets(); //Temp, Replace with loadAsset Class
+	InitAssets(); //Temp, Replace with loadAsset Class
 
 	name = newName;
 	transform
@@ -33,6 +33,9 @@ Player::Player(Vector3 position, string newName) {
 
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
+
+	shootingPos = transform;
+	shootingPos.GetPosition() = { transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z + 5 };
 }
 
 Player::~Player() {
@@ -45,7 +48,7 @@ Player::~Player() {
 	delete playerShader;
 }
 
-void Player::IntitAssets() {
+void Player::InitAssets() {
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);

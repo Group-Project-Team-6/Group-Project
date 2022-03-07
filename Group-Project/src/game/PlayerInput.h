@@ -31,7 +31,10 @@ public:
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
 			return dKey;
 		}
-
+		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
+			return leftMouse;
+		}
+			
 		return NULL;
 	}
 
@@ -41,5 +44,5 @@ private:
 	ControlsCommand* sKey = (ControlsCommand*) new moveBackwardCommand();
 	ControlsCommand* aKey = (ControlsCommand*) new moveLeftCommand();
 	ControlsCommand* dKey = (ControlsCommand*) new moveRightCommand();
-	//ControlsCommand* leftMouse = (ControlsCommand) new 
+	ControlsCommand* leftMouse = (ControlsCommand*) new leftMouseCommand();
 };

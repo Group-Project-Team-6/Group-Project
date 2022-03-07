@@ -5,7 +5,7 @@
 
 class Player : public GameEntity {
 public:
-	Player(Vector3 position, string name);
+	Player(Vector3 position, string name, RendererBase& r);
 	~Player();
 
 	virtual btRigidBody* GetRigidBody() const override{
@@ -32,16 +32,20 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
+		renderObject->GetTransform()->SetOrientation(nclRot);
+		renderObject->GetTransform()->SetPosition(nclPos);
+		renderObject->GetTransform()->SetScale(transform.GetScale());
+		renderObject->GetTransform()->UpdateMatrix();
 
 	}
 
-	void IntitAssets(); //Temp
+	void IntitAssets(RendererBase& r); //Temp
 
 protected:
 	//Temp
-	OGLMesh* playerMesh;
-	OGLTexture* playerTex;
-	OGLShader* playerShader;
+	MeshGeometry* playerMesh;
+	TextureBase* playerTex;
+	ShaderBase* playerShader;
 
 	//general
 	string name;

@@ -158,6 +158,7 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 			case GeometryChunkTypes::SubMeshNames: 		ReadSubMeshNames(file, numMeshes); break;
 		}
 	}
+	file.close();
 }
 
 MeshGeometry::~MeshGeometry()

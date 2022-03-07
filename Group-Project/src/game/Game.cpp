@@ -54,25 +54,19 @@ Game::~Game() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	renderer = new GameTechRenderer(*world);
+	renderer = new VkTechRenderer(*world);// new GameTechRenderer(*world);
 
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 }
 
 void Game::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
+	sphereMesh = renderer->LoadMesh("Sphere.msh");
+	cubeMesh = renderer->LoadMesh("Cube.msh");
+	capsuleMesh = renderer->LoadMesh("Capsule.msh");
 
-	loadFunc("sphere.msh", &sphereMesh);
-	loadFunc("cube.msh", &cubeMesh);
-	loadFunc("capsule.msh", &capsuleMesh);
-
-	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicTex = TextureLoader::LoadAPITexture("checkerboard.png");
+	basicShader = renderer->LoadShader("GameTechShader.set");
 
 	//Replace with loadAsset Class
 }
@@ -116,14 +110,14 @@ void Game::InitScene() {
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
 	Transform wallTransform;
-	walls[0] = new Wall(wallTransform);
+	walls[0] = new Wall(wallTransform,*renderer);
 	world->AddGameObject(walls[0]);
 	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
 	//maybe use foreach loops for static objects
 }
 
 void Game::InitItems() {
-	items[0] = new Item({ 0, 2, 0 }, 1);
+	items[0] = new Item({ 0, 2, 0 }, 1,*renderer);
 	world->AddGameObject(items[0]);
 	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
 }
@@ -131,7 +125,7 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "");
+		players[i] = new Player({25, 5, -25}, "",*renderer);
 		//players[i]->AddPlayer({ 25, 5, -25 }); //Positions set from map data
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);

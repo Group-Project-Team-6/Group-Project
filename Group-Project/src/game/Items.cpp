@@ -1,7 +1,7 @@
 #include "Items.h"
 
-Item::Item(Vector3 position, int score) {
-	InitAssets(); //Temp, Replace with loadAsset Class
+Item::Item(Vector3 position, int score, RendererBase& r) {
+	InitAssets(r); //Temp, Replace with loadAsset Class
 
 	transform
 		.SetPosition(position)
@@ -27,17 +27,10 @@ Item::~Item() {
 	delete itemShader;
 }
 
-void Item::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("Cube.msh", &itemMesh);
-
-	itemTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	itemShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+void Item::InitAssets(RendererBase& r) {
+	itemMesh = r.LoadMesh("Cube.msh");
+	itemTex = TextureLoader::LoadAPITexture("checkerboard.png");
+	itemShader = r.LoadShader("GameTechShader.set");;
 }
 
 void Item::OnPlayerCollide() {

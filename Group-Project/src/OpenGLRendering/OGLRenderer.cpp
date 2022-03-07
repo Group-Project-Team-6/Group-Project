@@ -96,6 +96,17 @@ OGLRenderer::~OGLRenderer()	{
 #endif
 }
 
+MeshGeometry* OGLRenderer::LoadMesh(const std::string& name) {
+	MeshGeometry* into = new OGLMesh(name);
+	into->SetPrimitiveType(GeometryPrimitive::Triangles);
+	into->UploadToGPU(this);
+	return into;
+}
+
+ShaderBase* OGLRenderer::LoadShader(ShaderMap shaderStages) {
+	return new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+}
+
 void OGLRenderer::OnWindowResize(int w, int h)	 {
 	currentWidth	= w;
 	currentHeight	= h;

@@ -48,6 +48,10 @@ namespace NCL {
 			OGLRenderer(Window& w);
 			~OGLRenderer();
 
+			MeshGeometry* LoadMesh(const std::string& name) override;
+			ShaderBase* LoadShader(ShaderMap shaderStages) override;
+			ShaderBase* LoadShader(const std::string& shaderSet) override;
+
 			void OnWindowResize(int w, int h)	override;
 			bool HasInitialised()				const override {
 				return initState;

@@ -6,10 +6,10 @@
 
 class Wall : public GameEntity {
 public:
-	Wall(Transform buildTransform);
+	Wall(Transform buildTransform, RendererBase&  r);
 	~Wall();
 
-	void InitAssets(); //Temp
+	void InitAssets(RendererBase& b); //Temp
 
 	virtual btRigidBody* GetRigidBody() const override {
 		return wallRigidBody;
@@ -31,6 +31,10 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
+		renderObject->GetTransform()->SetOrientation(nclRot);
+		renderObject->GetTransform()->SetPosition(nclPos);
+		renderObject->GetTransform()->SetScale(transform.GetScale());
+		renderObject->GetTransform()->UpdateMatrix();
 
 	}
 private:
@@ -43,7 +47,7 @@ private:
 	btRigidBody* wallRigidBody;
 
 	//graphics
-	OGLMesh* wallMesh;
-	OGLTexture* wallTex;
-	OGLShader* wallShader;
+	MeshGeometry* wallMesh;
+	TextureBase* wallTex;
+	ShaderBase* wallShader;
 };

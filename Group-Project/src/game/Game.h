@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../game/GameEntity.h"
-#include "../CSC8503/GameTechRenderer.h"
+#include "../common/RendererBase.h"
+//#include "../CSC8503/GameTechRenderer.h"
+#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
@@ -36,7 +38,7 @@ protected:
 	TransformConverter transformConverter;
 
 	//World
-	GameTechRenderer* renderer;
+	RendererBase* renderer;//GameTechRenderer* renderer;
 	GameWorld* world;
 
 	//Physics
@@ -58,12 +60,12 @@ protected:
 	GameEntity* ground;
 
 	//Game Assets? Temp
-	OGLMesh* sphereMesh;
-	OGLMesh* cubeMesh;
-	OGLMesh* capsuleMesh;
+	MeshGeometry* sphereMesh;
+	MeshGeometry* cubeMesh;
+	MeshGeometry* capsuleMesh;
 
-	OGLTexture* basicTex;
-	OGLShader* basicShader;
+	TextureBase* basicTex;
+	ShaderBase* basicShader;
 
 	//Controls
 	PlayerInput playerInput;

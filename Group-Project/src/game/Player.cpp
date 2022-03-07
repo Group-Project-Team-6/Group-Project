@@ -1,8 +1,8 @@
 #include "Player.h"
 
 
-Player::Player(Vector3 position, string newName) {
-	IntitAssets(); //Temp, Replace with loadAsset Class
+Player::Player(Vector3 position, string newName, RendererBase& r) {
+	IntitAssets(r); //Temp, Replace with loadAsset Class
 
 	name = newName;
 	transform
@@ -45,17 +45,10 @@ Player::~Player() {
 	delete playerShader;
 }
 
-void Player::IntitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("capsule.msh", &playerMesh);
-
-	playerTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	playerShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+void Player::IntitAssets(RendererBase& r) {
+	playerMesh = r.LoadMesh("capsule.msh");
+	playerTex = TextureLoader::LoadAPITexture("checkerboard.png");
+	playerShader = r.LoadShader("GameTechShader.set");
 
 }
 

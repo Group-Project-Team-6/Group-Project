@@ -81,8 +81,6 @@ namespace NCL {
 			VulkanPipeline pipeline;
 			
 			VulkanShaderBuilder builder;
-
-			float count;
 		};
 	}
 }

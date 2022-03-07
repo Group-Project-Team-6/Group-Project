@@ -4,27 +4,32 @@ using namespace NCL;
 using namespace Rendering;
 
 VulkanShaderBuilder& VulkanShaderBuilder::WithVertexBinary(const string& name) {
-	shaderFiles[(int)ShaderStages::SHADER_VERTEX] = name;
+	if (name != "")
+		shaderFiles[(int)ShaderStages::SHADER_VERTEX] = name;
 	return *this;
 }
 
 VulkanShaderBuilder& VulkanShaderBuilder::WithFragmentBinary(const string& name) {
-	shaderFiles[(int)ShaderStages::SHADER_FRAGMENT] = name;
+	if (name != "")
+		shaderFiles[(int)ShaderStages::SHADER_FRAGMENT] = name;
 	return *this;
 }
 
 VulkanShaderBuilder& VulkanShaderBuilder::WithGeometryBinary(const string& name) {
-	shaderFiles[(int)ShaderStages::SHADER_GEOMETRY] = name;
+	if (name != "")
+		shaderFiles[(int)ShaderStages::SHADER_GEOMETRY] = name;
 	return *this;
 }
 
 VulkanShaderBuilder& VulkanShaderBuilder::WithTessControlBinary(const string& name) {
-	shaderFiles[(int)ShaderStages::SHADER_DOMAIN] = name;
+	if (name != "")
+		shaderFiles[(int)ShaderStages::SHADER_DOMAIN] = name;
 	return *this;
 }
 
 VulkanShaderBuilder& VulkanShaderBuilder::WithTessEvalBinary(const string& name) {
-	shaderFiles[(int)ShaderStages::SHADER_HULL] = name;
+	if (name != "")
+		shaderFiles[(int)ShaderStages::SHADER_HULL] = name;
 	return *this;
 }
 

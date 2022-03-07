@@ -21,7 +21,6 @@ void VkTechRenderer::InitVulkan() {
 	// Get resources from AssetManager
 	// Initialize the resources
 	// Init Pipeline
-	count = 0.0f;
 	skyboxTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 
 	skyboxMesh = new VulkanMesh("CharacterM.msh");
@@ -42,24 +41,22 @@ void VkTechRenderer::InitVulkan() {
 
 void VkTechRenderer::RenderFrame() {
 	BuildObjectList();
-	SortObjectList();
+	/*SortObjectList();
 	RenderShadowMap();
 	RenderSkybox();
-	RenderCamera();
-
-	count += 0.001f;
-	if (count > 0.8f) count = 0.0f;
-
-	matrix.SetPositionVector(Vector3(0.2f + count, 0.2f, 0.2f));
-	UpdateUniformBuffer(matrixDataObject, matrix.array, sizeof(matrix.array));
+	RenderCamera();*/
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
-
-	frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
-	frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
-
-	SubmitDrawCall(skyboxMesh, frameCmdBuffer);
-
+	for (int i = 0; i < activeObjects.size(); i++) {
+		frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
+		frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
+		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[i]->GetTransform()->GetMatrix();
+		UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
+		if (activeObjects[i]->GetMesh()) {
+			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetMesh());
+			if (mesh) SubmitDrawCall(mesh, frameCmdBuffer);
+		}
+	}
 	frameCmdBuffer.endRenderPass();
 }
 
@@ -270,7 +267,7 @@ void VkTechRenderer::BuildPipeline() {
 		.setDstSet(set[0])
 		.setDstBinding(0)
 		.setDstArrayElement(0)
-		.setDescriptorType(vk::DescriptorType::eUniformBuffer)
+		.setDescriptorType(vk::DescriptorType::eUniformBufferDynamic)
 		.setDescriptorCount(1)
 		.setPBufferInfo(&bufferInfo)
 		.setPImageInfo(nullptr)
@@ -297,3 +294,4 @@ void VkTechRenderer::BuildPipeline() {
 		.WithDescriptorSetLayout(desSetLayout);
 	pipeline = pipelineBuilder.Build(*this);
 }
+

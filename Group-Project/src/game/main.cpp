@@ -20,8 +20,6 @@ int main() {
 	w->ShowOSPointer(true);
 	w->LockMouseToWindow(false);
 
-	//VkTechRenderer* renderer = new VkTechRenderer();
-
 	//PhysicsTestScene* g = new PhysicsTestScene(renderer);
 	Game* g = new Game();
 

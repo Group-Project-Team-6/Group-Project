@@ -1,6 +1,7 @@
 #include "VulkanRenderer.h"
 #include "VulkanMesh.h"
 #include "VulkanTexture.h"
+#include "VulkanShaderBuilder.h"
 
 #include "../Common/TextureLoader.h"
 #include "VulkanUtility.h"
@@ -63,6 +64,29 @@ VulkanRenderer::~VulkanRenderer() {
 	instance.destroy();
 
 	delete[] frameBuffers;
+}
+
+MeshGeometry* VulkanRenderer::LoadMesh(const std::string& name) {
+	MeshGeometry*  into = new VulkanMesh(name);
+	into->SetPrimitiveType(GeometryPrimitive::Triangles);
+	into->UploadToGPU(this);
+	return into;
+}
+
+ShaderBase* VulkanRenderer::LoadShader(ShaderMap shaderStages) {
+	VulkanShaderBuilder builder = VulkanShaderBuilder()
+		.WithVertexBinary(shaderStages["vertex"])
+		.WithFragmentBinary(shaderStages["fragment"])
+		.WithGeometryBinary(shaderStages["geometry"])
+		.WithTessControlBinary(shaderStages["tessControl"])
+		.WithTessEvalBinary(shaderStages["tessEval"]);
+	return builder.Build(*this);
+}
+
+ShaderBase* VulkanRenderer::LoadShader(const std::string& shaderSet) {
+	ShaderMap map = LoadShaderSet(shaderSet, "Vulkan");
+	if (map.size() > 0) return LoadShader(map);
+	return nullptr;
 }
 
 bool VulkanRenderer::InitInstance() {

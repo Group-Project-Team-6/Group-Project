@@ -1,7 +1,7 @@
 #include "Wall.h"
 
-Wall::Wall(Transform buildTransform) {
-	InitAssets(); //Temp, Replace with loadAsset Class
+Wall::Wall(Transform buildTransform, RendererBase& r) {
+	InitAssets(r); //Temp, Replace with loadAsset Class
 
 	transform = buildTransform;		
 
@@ -18,16 +18,10 @@ Wall::~Wall() {
 
 }
 
-void Wall::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
+void Wall::InitAssets(RendererBase& r) {
 
-	loadFunc("Cube.msh", &wallMesh);
-
-	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	wallShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	wallMesh = r.LoadMesh("Cube.msh");
+	wallTex = TextureLoader::LoadAPITexture("checkerboard.png");
+	wallShader = r.LoadShader("GameTechShader.set");
 }
 

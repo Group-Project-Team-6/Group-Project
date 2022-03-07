@@ -1,0 +1,14 @@
+OpenGL
+{
+vertex
+GameTechVert.glsl
+fragment
+GameTechFrag.glsl
+}
+Vulkan
+{
+vertex
+GameTechVert.spv
+fragment
+GameTechFrag.spv
+}

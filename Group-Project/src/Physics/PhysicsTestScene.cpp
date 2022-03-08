@@ -11,6 +11,8 @@
 
 #include "../Audio/AudioManager.h"
 
+#include "../game/DebugMode.h"
+
 #include <iomanip>
 
 using namespace NCL;
@@ -19,9 +21,14 @@ using namespace Maths;
 
 PhysicsTestScene::PhysicsTestScene() {
 
+	DebugMode* d = new DebugMode();
 	world = new GameWorld();
 	audioManager = new AudioManager();
 	renderer = new GameTechRenderer(*world);
+	
+	d->GetMemoryAllocationSize(*world);
+	d->GetMemoryAllocationSize(*audioManager);
+	d->GetMemoryAllocationSize(*renderer);
 
 	//Default Broadphase
 	maxProxies = 1024;

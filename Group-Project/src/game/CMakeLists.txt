@@ -4,7 +4,9 @@ project(Group-Project)
 #Executable
 add_executable(Game
 	GameEntity.h
+	DebugMode.h
 
 	main.cpp
 	GameEntity.cpp
+	DebugMode.cpp
 )

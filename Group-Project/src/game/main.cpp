@@ -1,5 +1,6 @@
 #include "../Common/Window.h"
 #include "../Physics/PhysicsTestScene.h"
+#include "DebugMode.h"
 
 #include <iostream>
 
@@ -9,6 +10,9 @@ using namespace NCL;
 int main() {
 
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
+	DebugMode* d = new DebugMode();
+	d->GetMemoryAllocationSize(*w);
+	d->GetMemoryAllocationSize(*d);
 
 	if (!w->HasInitialised()) {
 		return -1;
@@ -18,6 +22,7 @@ int main() {
 	w->LockMouseToWindow(true);
 
 	PhysicsTestScene* g = new PhysicsTestScene();
+	d->GetMemoryAllocationSize(g);
 	w->GetTimer()->GetTimeDeltaSeconds();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {

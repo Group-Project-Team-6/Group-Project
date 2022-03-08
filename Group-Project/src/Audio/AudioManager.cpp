@@ -31,6 +31,9 @@ void AudioManager::InitSystem() {
     result = system->createSound(Common_MediaPath("splash.wav"), FMOD_3D, 0, &SplashSound);
     ERRCHECK(result);
 
+    result = system->createSound(Common_MediaPath("wave.mp3"), FMOD_3D, 0, &WaveSound);
+    ERRCHECK(result);
+
     result = FaintSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
     ERRCHECK(result);
 
@@ -48,6 +51,18 @@ void AudioManager::InitSystem() {
 
     result = SplashSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
     ERRCHECK(result);
+
+    result = WaveSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+}
+
+void AudioManager::SetVolume() {
+    std::cout << "Please Enter Preffered Output Volume (Default Value: 1.0f): ";
+    float _volume;
+    std::cin >> _volume;
+    volume = _volume;   
+    result = channel->setVolume(volume);
+    ERRCHECK(result);
 }
 
 void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
@@ -57,42 +72,46 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
     FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
     
     if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::P)) {
-        result = system->playSound(PickUpSound, 0, false, &channel);
+        result = system->playSound(WaveSound, 0, false, &channel);
         ERRCHECK(result);
-        result = channel->setVolume(5.0f);
+        result = channel->setVolume(volume);
         ERRCHECK(result);
         result = channel->set3DAttributes(&pos, &vel);
         ERRCHECK(result);
     }
 
+    if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::O)) {
+        SetVolume();
+    }
+
     {       
-            static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
-            FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
-            FMOD_VECTOR vel;
+        static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
+        FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
+        FMOD_VECTOR vel;
             
-            NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
-            float yaw = world->GetMainCamera()->GetYaw();
+        NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
+        float yaw = world->GetMainCamera()->GetYaw();
 
-            float radians = yaw * ( 3.14159265 / 180 );
+        float radians = yaw * ( 3.14159265 / 180 );
 
-            forward.x = sin(radians);
-            forward.y = 0.0f;
-            forward.z = cos(radians);
-            
-            std::cout << "Yaw: " << yaw << std::endl;
-            std::cout << "Forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
+        forward.x = sin(radians);
+        forward.y = 0.0f;
+        forward.z = cos(radians);
+        
+        std::cout << "Yaw: " << yaw << std::endl;
+        std::cout << "Forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
 
-            listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
+        listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
 
-            vel.x = (listenerpos.x - lastpos.x) * dt;
-            vel.y = (listenerpos.y - lastpos.y) * dt;
-            vel.z = (listenerpos.z - lastpos.z) * dt;
+        vel.x = (listenerpos.x - lastpos.x) * dt;
+        vel.y = (listenerpos.y - lastpos.y) * dt;
+        vel.z = (listenerpos.z - lastpos.z) * dt;
 
-            lastpos = listenerpos;
+        lastpos = listenerpos;
 
-            result = system->set3DListenerAttributes(0, &listenerpos, &vel, &forward, &up);
-            ERRCHECK(result);
-        }
+        result = system->set3DListenerAttributes(0, &listenerpos, &vel, &forward, &up);
+        ERRCHECK(result);
+    }
 
     result = system->update();
     ERRCHECK(result);
@@ -115,6 +134,9 @@ void AudioManager::CacheRelease() {
     ERRCHECK(result);
 
     result = SplashSound->release();
+    ERRCHECK(result);
+
+    result = WaveSound->release();
     ERRCHECK(result);
 
     Common_Close();

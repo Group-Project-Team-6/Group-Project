@@ -12,17 +12,18 @@
 class AudioManager {
     public:
         void InitSystem();
-
+        void SetVolume();
         void AudioUpdate(NCL::CSC8503::GameWorld* world, float dt);
 
         void CacheRelease();
     private:
         const float     DISTANCEFACTOR = 1.0f;
         FMOD::System   *system;
-        FMOD::Sound    *FaintSound, *FootStepSound, *HurtSound, *JumpSound, *PickUpSound, *SplashSound;
+        FMOD::Sound    *FaintSound, *FootStepSound, *HurtSound, *JumpSound, *PickUpSound, *SplashSound, *WaveSound;
         FMOD::Channel  *channel = 0;
         FMOD_RESULT     result;
         void           *extradriverdata = 0;
         FMOD_VECTOR     listenerpos  = { 0.0f, 0.0f, -1.0f * DISTANCEFACTOR };
         FMOD_VECTOR forward        = { 0.0f, 0.0f, 1.0f };
+        float volume = 1.0f;
 };

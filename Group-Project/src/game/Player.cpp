@@ -34,8 +34,13 @@ Player::Player(Vector3 position, string newName) {
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
 
-	shootingPos = transform;
-	shootingPos.GetPosition() = { transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z + 5 };
+	//cameraPos = &transform;
+	//cameraPos->GetPosition() = { transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z - 10 };
+
+	shootingPos = &transform;
+	shootingPos->GetPosition() = { transform.GetPosition().x, transform.GetPosition().y, transform.GetPosition().z + 5 };
+
+	
 }
 
 Player::~Player() {

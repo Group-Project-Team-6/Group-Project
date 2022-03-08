@@ -39,11 +39,11 @@ public:
 	}
 
 	//General
-	Transform& GetTransform(){
+	virtual Transform& GetTransform(){
 		return transform;
 	}
 
-	void SetTransform(Transform newtransform) {
+	virtual void SetTransform(Transform newtransform) {
 		transform = newtransform;
 	}
 

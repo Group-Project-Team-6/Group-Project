@@ -21,12 +21,24 @@ public:
 		return playerConstraint;
 	}
 
+	virtual Transform& GetTransform() override {
+		return transform;
+	}
+
+	virtual void SetTransform(Transform newtransform) override {
+		transform = newtransform;
+	}
+
 	BulletPool GetBulletPool() const {
 		return bullets;
 	}
 
 	Transform GetShootingPosition() const {
-		return shootingPos;
+		return *shootingPos;
+	}
+
+	Transform GetCameraPosition() const {
+		return *cameraPos;
 	}
 
 	virtual void UpdateRenderPositions() override {
@@ -44,6 +56,11 @@ public:
 
 	}
 
+	/*void Shoot() {
+		Bullet* bullet = new Bullet();
+		bullet->Init(*shootingPos, 5);
+	}*/
+
 	void InitAssets(); //Temp
 
 protected:
@@ -56,7 +73,8 @@ protected:
 	string name;
 	TransformConverter transformConverter;
 	Transform transform;
-	Transform shootingPos;
+	Transform* shootingPos;
+	Transform* cameraPos;
 	btTransform bttransform;
 	BulletPool bullets;
 

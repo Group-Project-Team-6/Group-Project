@@ -37,11 +37,37 @@ public:
 	}
 };
 
+class MouseHorizontal : ControlsCommand {
+public:
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
+		//world.getmaincamera().setpitch
+	}
+};
+
+class MouseVertical : ControlsCommand {
+public:
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
+		//world.getmaincamera().setyaw
+	}
+};
+
 class leftMouseCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
 		//Shoot with freelist
-		player.GetBulletPool().Create(player.GetShootingPosition(), 5);
+		//player.Shoot();
+		Bullet* bullet = new Bullet();
+		bullet->Init(player.GetShootingPosition(), 5);
+		world.AddGameObject(bullet);
+		physicsWorld.addRigidBody(bullet->GetRigidBody());
+		float yaw = (player.GetShootingPosition().GetOrientation().x) * 100; //Needs to be euler
+		float pitch = (player.GetShootingPosition().GetOrientation().y) * 100;
+		float roll = (player.GetShootingPosition().GetOrientation().z) * 100;
+		bullet->GetRigidBody()->applyCentralImpulse({ yaw, pitch, roll });
+		//no memory deallocation
+		//memory fragmentation
+		// 
+		//player.GetBulletPool().Create(player.GetShootingPosition(), 5);
 		//world.AddGameObject();
 		//physicsWorld.addRigidBody();
 	}

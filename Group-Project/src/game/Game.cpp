@@ -132,11 +132,15 @@ void Game::InitCharacter() {
 		world->AddGameObject(players[i]);
 		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
+
+	//Networking to tell which player to camera
+	
+	//world->GetMainCamera()->SetPosition(players[0]->GetCameraPosition().GetPosition());
 }
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
-	world->GetMainCamera()->UpdateCamera(dt);
+	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), dt);
 
 	command = playerInput.handleInput();
 	if (command) {

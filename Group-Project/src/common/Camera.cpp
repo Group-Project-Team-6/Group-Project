@@ -9,7 +9,7 @@ Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...)
 */
-void Camera::UpdateCamera(float dt) {
+void Camera::UpdateCamera(Vector3& playersPosition, float dt) {
 	//Update the mouse by how much
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
@@ -28,6 +28,11 @@ void Camera::UpdateCamera(float dt) {
 		yaw -= 360.0f;
 	}
 
+	position.x = playersPosition.x;
+	position.y = playersPosition.y + 5;
+	position.z = playersPosition.z - 20;
+
+	/*
 	float frameSpeed = 100 * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
@@ -49,7 +54,7 @@ void Camera::UpdateCamera(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::X)) {
 		position.y -= frameSpeed;
-	}
+	}*/
 }
 
 /*

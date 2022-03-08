@@ -32,10 +32,8 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		renderObject->GetTransform()->SetOrientation(nclRot);
-		renderObject->GetTransform()->SetPosition(nclPos);
-		renderObject->GetTransform()->SetScale(transform.GetScale());
-		renderObject->GetTransform()->UpdateMatrix();
+		std::cout << transform.GetMatrix() << std::endl;
+		//transform.UpdateMatrix();
 
 	}
 
@@ -50,7 +48,7 @@ protected:
 	//general
 	string name;
 	TransformConverter transformConverter;
-	Transform transform;
+	//Transform transform;
 	btTransform bttransform;
 
 	//player Physics

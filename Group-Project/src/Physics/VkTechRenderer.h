@@ -50,7 +50,7 @@ namespace NCL {
 
 			GameWorld& gameWorld;
 
-			vector<const RenderObject*> activeObjects;
+			vector<GameEntity*> activeObjects;
 
 			VulkanTexture* basicTex;
 			VulkanShader* skyboxShader;

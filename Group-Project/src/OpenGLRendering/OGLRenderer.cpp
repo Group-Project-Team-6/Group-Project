@@ -107,6 +107,12 @@ ShaderBase* OGLRenderer::LoadShader(ShaderMap shaderStages) {
 	return new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
 }
 
+ShaderBase* OGLRenderer::LoadShader(const std::string& shaderSet) {
+	ShaderMap map = LoadShaderSet(shaderSet, "OpenGL");
+	if (map.size() > 0) return LoadShader(map);
+	return nullptr;
+}
+
 void OGLRenderer::OnWindowResize(int w, int h)	 {
 	currentWidth	= w;
 	currentHeight	= h;

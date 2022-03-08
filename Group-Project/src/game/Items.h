@@ -31,17 +31,14 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		renderObject->GetTransform()->SetOrientation(nclRot);
-		renderObject->GetTransform()->SetPosition(nclPos);
-		renderObject->GetTransform()->SetScale(transform.GetScale());
-		renderObject->GetTransform()->UpdateMatrix();
+		transform.UpdateMatrix();
 
 	}
 
 private:
 	int score;
 	TransformConverter transformConverter;
-	Transform transform;
+	//Transform transform;
 	btTransform bttransform;
 	int itemScore;
 

@@ -48,12 +48,12 @@ void VkTechRenderer::RenderFrame() {
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
 	for (int i = 0; i < activeObjects.size(); i++) {
-		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[i]->GetTransform()->GetMatrix();
+		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[i]->GetTransform().GetMatrix();
 		//UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
 		frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
 		frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
-		if (activeObjects[i]->GetMesh()) {
-			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetMesh());
+		if (activeObjects[i]->GetRenderObject()->GetMesh()) {
+			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetRenderObject()->GetMesh());
 			frameCmdBuffer.pushConstants(pipeline.layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(mat.array), mat.array);
 			if (mesh) SubmitDrawCall(mesh, frameCmdBuffer);
 		}
@@ -67,10 +67,7 @@ void VkTechRenderer::BuildObjectList() {
 	gameWorld.OperateOnContents(
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
-				const RenderObject* g = o->GetRenderObject();
-				if (g) {
-					activeObjects.emplace_back(g);
-				}
+				activeObjects.emplace_back(o);
 			}
 		}
 	);

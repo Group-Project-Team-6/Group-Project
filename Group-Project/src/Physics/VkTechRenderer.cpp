@@ -267,7 +267,7 @@ void VkTechRenderer::BuildPipeline() {
 		.setDstSet(set[0])
 		.setDstBinding(0)
 		.setDstArrayElement(0)
-		.setDescriptorType(vk::DescriptorType::eUniformBufferDynamic)
+		.setDescriptorType(vk::DescriptorType::eUniformBuffer)
 		.setDescriptorCount(1)
 		.setPBufferInfo(&bufferInfo)
 		.setPImageInfo(nullptr)

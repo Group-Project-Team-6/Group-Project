@@ -48,12 +48,13 @@ void VkTechRenderer::RenderFrame() {
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
 	for (int i = 0; i < activeObjects.size(); i++) {
-		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[0]->GetTransform()->GetMatrix();
-		UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
+		Matrix4 mat = gameWorld.GetMainCamera()->BuildProjectionMatrix() * gameWorld.GetMainCamera()->BuildViewMatrix() * activeObjects[i]->GetTransform()->GetMatrix();
+		//UpdateUniformBuffer(matrixDataObject, mat.array, sizeof(mat.array));
 		frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
 		frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
 		if (activeObjects[i]->GetMesh()) {
 			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetMesh());
+			frameCmdBuffer.pushConstants(pipeline.layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(mat.array), mat.array);
 			if (mesh) SubmitDrawCall(mesh, frameCmdBuffer);
 		}
 	}
@@ -285,13 +286,20 @@ void VkTechRenderer::BuildPipeline() {
 
 	device.updateDescriptorSets(2, desWrite, 0, nullptr);
 
+	vk::PushConstantRange pushConstant;
+	pushConstant
+		.setOffset(0)
+		.setSize(sizeof(matrix.array))
+		.setStageFlags(vk::ShaderStageFlagBits::eVertex);
+
 	pipelineBuilder
 		.WithDebugName("Pipeline")
 		.WithDepthState(vk::CompareOp::eLess, true, true)
 		.WithPass(defaultRenderPass)
 		.WithShaderState(skyboxShader)
 		.WithVertexSpecification(skyboxMesh->GetVertexSpecification(), vk::PrimitiveTopology::eTriangleList)
-		.WithDescriptorSetLayout(desSetLayout);
+		.WithDescriptorSetLayout(desSetLayout)
+		.WithPushConstant(pushConstant);
 	pipeline = pipelineBuilder.Build(*this);
 }
 

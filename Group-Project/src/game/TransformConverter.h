@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../CSC8503/Transform.h"
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+#include "../Bullet/btBulletCollisionCommon.h"
+#include "../Bullet/btBulletDynamicsCommon.h"
 
 class TransformConverter {
 public:

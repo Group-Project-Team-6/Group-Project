@@ -21,6 +21,14 @@ public:
 		return playerConstraint;
 	}
 
+	BulletPool GetBulletPool() const {
+		return bullets;
+	}
+
+	Transform GetShootingPosition() const {
+		return shootingPos;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();

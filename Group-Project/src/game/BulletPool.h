@@ -3,14 +3,14 @@
 
 class BulletPool {
 public:
-	BulletPool();
-	//~BulletPool();
+	BulletPool() {};
+	~BulletPool();
 
-	void Create(int lifeTime);
+	void Create(Transform shootingPos, int lifeTime);
 	void Animate();
 
 private:
-	Bullet* firstAvailable;
+	//Bullet* firstAvailable;
 	static const int poolSize = 100;
 	Bullet bullets[poolSize];
 };

@@ -4,7 +4,7 @@
 
 class Bullet : public GameEntity{
 public:
-	Bullet() : framesLeft(0) {};
+	Bullet() : framesLeft(0) {}; //Intialise variables to null
 	~Bullet();
 
 	void Init(Transform startTransform, int lifeTime);
@@ -13,12 +13,12 @@ public:
 
 	bool inUse() const { return framesLeft > 0; }
 
-	Bullet* getNext() const {
+	/*Bullet* getNext() const {
 		return state.next;
 	}
 	void SetNext(Bullet* next) {
 		state.next;
-	}
+	}*/
 
 	virtual btRigidBody* GetRigidBody() const override {
 		return bulletRigidBody;
@@ -45,14 +45,8 @@ public:
 
 private:
 	int framesLeft;
-	union {
-		struct {
-			Vector3 position;
-			Vector3 force;
-		} live;
-
-		Bullet* next;
-	} state; //Rename
+	
+	Bullet* next;
 
 	OGLMesh* bulletMesh;
 	OGLTexture* bulletTex;

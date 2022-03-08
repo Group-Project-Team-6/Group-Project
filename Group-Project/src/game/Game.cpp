@@ -70,7 +70,7 @@ void Game::InitAssets() {
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
-	//Replace with loadAsset Class
+	//Replace with loadAsset Class*/
 }
 
 void Game::InitPhysics() {
@@ -140,12 +140,13 @@ void Game::UpdateGame(float dt) {
 
 	command = playerInput.handleInput();
 	if (command) {
-		command->execute(*players[0]); //Learn which player from networking
+		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking
 	}
 
 	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
+	//players[1]->GetBulletPool().Animate(); will not work without shooting first?! Assert or If Statement
 
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +

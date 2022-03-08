@@ -16,7 +16,7 @@ void Bullet::InitAssets() {
 		(*into)->UploadToGPU();
 	};
 
-	loadFunc("capsule.msh", &bulletMesh);
+	loadFunc("sphere.msh", &bulletMesh);
 
 	bulletTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	bulletShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");

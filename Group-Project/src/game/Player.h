@@ -32,7 +32,6 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		std::cout << transform.GetMatrix() << std::endl;
 		//transform.UpdateMatrix();
 
 	}

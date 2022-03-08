@@ -12,7 +12,6 @@ int main() {
 	Assets::FetchDirConfig("dir.txt");
 
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
-
 	if (!w->HasInitialised()) {
 		return -1;
 	}

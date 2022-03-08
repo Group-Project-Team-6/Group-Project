@@ -17,7 +17,7 @@ using namespace NCL;
 using namespace Rendering;
 
 VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
-	
+	std::cout << (int)window.GetScreenSize().x << " , " << (int)window.GetScreenSize().y << std::endl;
 	currentSwap = 0;
 
 	depthBuffer		= nullptr;
@@ -33,7 +33,7 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	VulkanTexture::SetRenderer(this);
 	TextureLoader::RegisterAPILoadFunction(VulkanTexture::VulkanTextureFromFilename);
 
-	OnWindowResize((int)hostWindow.GetScreenSize().x, (int)hostWindow.GetScreenSize().y);
+	OnWindowResize((int)window.GetScreenSize().x, (int)window.GetScreenSize().y);
 
 	window.SetRenderer(this);	
 	

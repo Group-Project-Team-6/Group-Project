@@ -13,10 +13,40 @@ void AudioManager::InitSystem() {
     result = system->set3DSettings(1.0, DISTANCEFACTOR, 0.1f);
     ERRCHECK(result);
 
-    result = system->createSound(Common_MediaPath("wave.mp3"), FMOD_3D, 0, &sound);
+    result = system->createSound(Common_MediaPath("faint.mp3"), FMOD_3D, 0, &FaintSound);
     ERRCHECK(result);
 
-    result = sound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 10000.0f * DISTANCEFACTOR);
+    result = system->createSound(Common_MediaPath("footsteps.wav"), FMOD_3D, 0, &FootStepSound);
+    ERRCHECK(result);
+
+    result = system->createSound(Common_MediaPath("hurt.wav"), FMOD_3D, 0, &HurtSound);
+    ERRCHECK(result);
+
+    result = system->createSound(Common_MediaPath("jump.wav"), FMOD_3D, 0, &JumpSound);
+    ERRCHECK(result);
+
+    result = system->createSound(Common_MediaPath("Pickup.wav"), FMOD_3D, 0, &PickUpSound);
+    ERRCHECK(result);
+
+    result = system->createSound(Common_MediaPath("splash.wav"), FMOD_3D, 0, &SplashSound);
+    ERRCHECK(result);
+
+    result = FaintSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+
+    result = FootStepSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+
+    result = HurtSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+
+    result = JumpSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+
+    result = PickUpSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+    ERRCHECK(result);
+
+    result = SplashSound->set3DMinMaxDistance(0.5f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
     ERRCHECK(result);
 }
 
@@ -27,7 +57,7 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
     FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
     
     if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::P)) {
-        result = system->playSound(sound, 0, false, &channel);
+        result = system->playSound(PickUpSound, 0, false, &channel);
         ERRCHECK(result);
         result = channel->setVolume(5.0f);
         ERRCHECK(result);
@@ -43,11 +73,11 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
             NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
             float yaw = world->GetMainCamera()->GetYaw();
 
-            float radians = yaw * (3.14159265 / 180);
+            float radians = yaw * ( 3.14159265 / 180 );
 
-            forward.x = cos(radians);
+            forward.x = sin(radians);
             forward.y = 0.0f;
-            forward.z = sin(radians);
+            forward.z = cos(radians);
             
             std::cout << "Yaw: " << yaw << std::endl;
             std::cout << "Forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
@@ -69,7 +99,22 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
 }
 
 void AudioManager::CacheRelease() {
-    result = sound->release();
+    result = FaintSound->release();
+    ERRCHECK(result);
+
+    result = FootStepSound->release();
+    ERRCHECK(result);
+
+    result = HurtSound->release();
+    ERRCHECK(result);
+
+    result = JumpSound->release();
+    ERRCHECK(result);
+
+    result = PickUpSound->release();
+    ERRCHECK(result);
+
+    result = SplashSound->release();
     ERRCHECK(result);
 
     Common_Close();

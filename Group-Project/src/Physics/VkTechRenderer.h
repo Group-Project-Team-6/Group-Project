@@ -12,6 +12,7 @@
 
 #include "../common/Matrix4.h"
 #include "../CSC8503/GameWorld.h"
+#include "../game/Painter.h"
 
 namespace NCL {
 	class Maths::Vector3;
@@ -36,7 +37,7 @@ namespace NCL {
 			//Matrix4 SetupDebugStringMatrix()const;
 
 			//VulkanShader* defaultShader;
-
+			void UpdatePaints();
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();

@@ -27,6 +27,7 @@ namespace NCL {
 
 			GameWorld&	gameWorld;
 
+			void UpdatePaints();
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();

@@ -13,7 +13,8 @@ add_executable(Game
 	TransformConverter.h
 	Wall.h
 	Bullet.h
-	BulletPool.h	
+	BulletPool.h
+	Painter.h
 
 	main.cpp
 	Game.cpp
@@ -25,4 +26,5 @@ add_executable(Game
 	Wall.cpp
 	Bullet.cpp
 	BulletPool.cpp
+	Painter.cpp
 )

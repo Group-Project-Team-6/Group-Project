@@ -19,6 +19,7 @@ public:
 		wallRigidBody = newRigidBody;
 	}
 
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = wallRigidBody->getWorldTransform();
@@ -34,6 +35,9 @@ public:
 		transform.UpdateMatrix();
 
 	}
+
+	void UpdatePaintTex();
+
 private:
 	TransformConverter transformConverter;
 	//Transform transform;

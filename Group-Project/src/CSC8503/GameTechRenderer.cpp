@@ -5,6 +5,7 @@
 #include "../Common/Vector3.h"
 #include "../Common/TextureLoader.h"
 #include "Transform.h"
+#include "..\game\Painter.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -102,12 +103,32 @@ void GameTechRenderer::LoadSkybox() {
 void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
+	UpdatePaints();
 	BuildObjectList();
 	SortObjectList();
 	RenderShadowMap();
 	RenderSkybox();
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+}
+
+void GameTechRenderer::UpdatePaints() {
+	PainterMap map = Painter::GetPaintInfos();
+	OGLShader* shader = new OGLShader("PaintVertex.glsl", "skyboxFragment.glsl");
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	for (auto& it = map.begin(); it != map.end(); it++) {
+		OGLTexture* texObj = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
+		GLuint tex = texObj->GetObjectID();
+		glViewport(0, 0, 32, 32);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+		int texLocation = glGetUniformLocation(shader->GetProgramID(), "cubeTex");
+		int hitUV = glGetUniformLocation(shader->GetProgramID(), "hitUV");
+		glUniform2fv(hitUV,1,it->second.array);
+		
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	Painter::ClearPaint();
+	delete shader;
 }
 
 void GameTechRenderer::BuildObjectList() {
@@ -131,6 +152,7 @@ void GameTechRenderer::SortObjectList() {
 
 void GameTechRenderer::RenderShadowMap() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
@@ -219,6 +241,7 @@ void GameTechRenderer::RenderCamera() {
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 
 	for (const auto&i : activeObjects) {
+		//Draw to Texture
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
 		BindShader(shader);
 		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);

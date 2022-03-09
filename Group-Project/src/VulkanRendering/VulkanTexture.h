@@ -69,6 +69,7 @@ namespace NCL {
 			int height;
 			int mipCount;
 			int layerCount;
+			int channelCount;
 
 			static void SetRenderer(VulkanRenderer* r) {
 				vkRenderer = r;

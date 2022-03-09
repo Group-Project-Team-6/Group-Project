@@ -1,7 +1,7 @@
 #pragma once
 #include "GameEntity.h"
 #include "../common/TextureLoader.h"
-#include "../CSC8503/GameTechRenderer.h"
+#include "../common/RendererBase.h"
 
 class Player : public GameEntity {
 public:

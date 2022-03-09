@@ -65,6 +65,10 @@ void VkTechRenderer::RenderFrame() {
 	frameCmdBuffer.endRenderPass();
 }
 
+void VkTechRenderer::UpdatePaints() {
+	
+}
+
 void VkTechRenderer::CreateNewEntityPipeline(GameEntity* entity) {
 	VulkanShader* shader = dynamic_cast<VulkanShader*>(entity->GetRenderObject()->GetShader());
 	VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(entity->GetRenderObject()->GetMesh());

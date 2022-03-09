@@ -8,7 +8,7 @@ Player::Player(Vector3 position, string newName) {
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
-		.SetOrientation({ 0, 0.5, 0, 1 });
+		.SetOrientation({ 0, 1, 0, 1 });
 
 	this->SetRenderObject(new RenderObject(&transform, playerMesh, playerTex, playerShader));
 	transformConverter.BTNCLConvert(transform, bttransform);

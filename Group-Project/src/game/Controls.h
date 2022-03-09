@@ -44,19 +44,7 @@ public:
 class MouseHorizontal : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
-
-		//player.GetRigidBody()->setAngularVelocity({ 0,0,0 });
-		//player.GetRigidBody()->applyTorque({ 0, Window::GetMouse()->GetRelativePosition().x*-50, 0 });
-
-		btQuaternion q = btQuaternion(Window::GetMouse()->GetRelativePosition().x/10, 0, 0);
-		player.GetRigidBody()->getWorldTransform().setRotation(q);
-		
-
-		/*Quaternion newQuaternion({ 0, Window::GetMouse()->GetAbsolutePosition().x * 100, 0 }, 0);
-		Quaternion quaternion(player.GetTransform().GetOrientation());
-		quaternion = quaternion - newQuaternion;
-		player.GetTransform().SetOrientation(quaternion);
-		quaternion.*/
+		player.GetRigidBody()->setAngularVelocity({ 0, -(Window::GetMouse()->GetRelativePosition().x) , 0 });		
 	}	
 };
 

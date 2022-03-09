@@ -21,22 +21,22 @@ void VkTechRenderer::InitVulkan() {
 	// Get resources from AssetManager
 	// Initialize the resources
 	// Init Pipeline
-	skyboxTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
+	/*skyboxTex = (VulkanTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 
-	skyboxMesh = new VulkanMesh("CharacterM.msh");
+	skyboxMesh = new VulkanMesh("Quad.msh");
 	skyboxMesh->SetPrimitiveType(GeometryPrimitive::Triangles);
 	skyboxMesh->UploadToGPU(this);
 
 	builder = VulkanShaderBuilder()
 		.WithVertexBinary("SimpleVert.spv")
 		.WithFragmentBinary("SimpleFrag.spv");
-	skyboxShader = builder.Build(*this);
+	skyboxShader = builder.Build(*this);*/
 
 	matrix = Matrix4();
 	matrix.SetPositionVector(Vector3(0.2f, 0.2f, 0.2f));
 	InitUniformBuffer(matrixDataObject, matrix.array, sizeof(matrix.array));
 
-	BuildPipeline();
+	//BuildPipeline();
 }
 
 void VkTechRenderer::RenderFrame() {
@@ -51,17 +51,109 @@ void VkTechRenderer::RenderFrame() {
 	UpdateUniformBuffer(matrixDataObject, VPMat.array, sizeof(VPMat.array));
 
 	frameCmdBuffer.beginRenderPass(defaultBeginInfo, vk::SubpassContents::eInline);
+
 	for (int i = 0; i < activeObjects.size(); i++) {
 		Matrix4 MMat = activeObjects[i]->GetTransform().GetMatrix();
-		frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.pipeline);
-		frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline.layout, 0, 1, set.data(), 0, nullptr);
 		if (activeObjects[i]->GetRenderObject()->GetMesh()) {
+			frameCmdBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, (*ObjectPipelineMap[activeObjects[i]]).pipeline);
+			frameCmdBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, (*ObjectPipelineMap[activeObjects[i]]).layout, 0, 1, set.data(), 0, nullptr);
 			VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(activeObjects[i]->GetRenderObject()->GetMesh());
-			frameCmdBuffer.pushConstants(pipeline.layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(MMat.array), MMat.array);
+			frameCmdBuffer.pushConstants((*ObjectPipelineMap[activeObjects[i]]).layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(MMat.array), MMat.array);
 			if (mesh) SubmitDrawCall(mesh, frameCmdBuffer);
 		}
 	}
 	frameCmdBuffer.endRenderPass();
+}
+
+void VkTechRenderer::CreateNewEntityPipeline(GameEntity* entity) {
+	VulkanShader* shader = dynamic_cast<VulkanShader*>(entity->GetRenderObject()->GetShader());
+	VulkanMesh* mesh = dynamic_cast<VulkanMesh*>(entity->GetRenderObject()->GetMesh());
+	VulkanTexture* texture = dynamic_cast<VulkanTexture*>(entity->GetRenderObject()->GetDefaultTexture());
+
+	VulkanDescriptorSetLayoutBuilder desSetLayoutBuilder;
+	desSetLayoutBuilder
+		.WithDebugName("desSetLayoutBuilder")
+		.WithUniformBuffers(1, vk::ShaderStageFlagBits::eVertex)
+		.WithSamplers(1, vk::ShaderStageFlagBits::eFragment);
+	desSetLayout = desSetLayoutBuilder.Build(*this);
+
+	//Global 
+	set.push_back(BuildDescriptorSet(desSetLayout));
+
+	vk::PushConstantRange pushConstant;
+	pushConstant
+		.setOffset(0)
+		.setSize(sizeof(matrix.array))
+		.setStageFlags(vk::ShaderStageFlagBits::eVertex);
+
+	VulkanPipelineBuilder pipelineBuilder;
+	pipelineBuilder
+		.WithDebugName("Pipeline")
+		.WithDepthState(vk::CompareOp::eLess, true, true)
+		.WithPass(defaultRenderPass)
+		.WithShaderState(shader)
+		.WithVertexSpecification(mesh->GetVertexSpecification(), vk::PrimitiveTopology::eTriangleList)
+		.WithDescriptorSetLayout(desSetLayout)
+		.WithPushConstant(pushConstant);
+
+	VulkanPipeline* pipeline = new VulkanPipeline(pipelineBuilder.Build(*this));
+	pipelinePool.push_back(pipeline);
+	ObjectPipelineMap[entity] = pipeline;
+
+	// Descriptor sets
+	vk::SamplerCreateInfo samplerInfo;
+	samplerInfo
+		.setMagFilter(vk::Filter::eLinear)
+		.setMinFilter(vk::Filter::eLinear)
+		.setAddressModeU(vk::SamplerAddressMode::eRepeat)
+		.setAddressModeV(vk::SamplerAddressMode::eRepeat)
+		.setAddressModeW(vk::SamplerAddressMode::eRepeat)
+		.setAnisotropyEnable(true)
+		.setMaxAnisotropy(gpu.getProperties().limits.maxSamplerAnisotropy)
+		.setBorderColor(vk::BorderColor::eIntOpaqueBlack)
+		.setUnnormalizedCoordinates(false)
+		.setCompareEnable(false)
+		.setCompareOp(vk::CompareOp::eAlways)
+		.setMipmapMode(vk::SamplerMipmapMode::eLinear)
+		.setMipLodBias(0.0f)
+		.setMinLod(0.0f)
+		.setMaxLod(0.0f);
+
+	vk::Sampler sampler = device.createSampler(samplerInfo);
+	vk::DescriptorBufferInfo bufferInfo;
+	vk::DescriptorImageInfo imageInfo;
+	bufferInfo
+		.setBuffer(matrixDataObject.buffer)
+		.setOffset(0)
+		.setRange(sizeof(matrix.array));
+
+	imageInfo
+		.setImageLayout(texture->GetLayout())
+		.setImageView(texture->GetDefaultView())
+		.setSampler(sampler);
+
+	vk::WriteDescriptorSet desWrite[2];
+	desWrite[0]
+		.setDstSet(set[0])
+		.setDstBinding(0)
+		.setDstArrayElement(0)
+		.setDescriptorType(vk::DescriptorType::eUniformBuffer)
+		.setDescriptorCount(1)
+		.setPBufferInfo(&bufferInfo)
+		.setPImageInfo(nullptr)
+		.setPTexelBufferView(nullptr);
+
+	desWrite[1]
+		.setDstSet(set[0])
+		.setDstBinding(1)
+		.setDstArrayElement(0)
+		.setDescriptorType(vk::DescriptorType::eCombinedImageSampler)
+		.setDescriptorCount(1)
+		.setPBufferInfo(nullptr)
+		.setPImageInfo(&imageInfo)
+		.setPTexelBufferView(nullptr);
+
+	device.updateDescriptorSets(2, desWrite, 0, nullptr);
 }
 
 void VkTechRenderer::BuildObjectList() {
@@ -71,13 +163,16 @@ void VkTechRenderer::BuildObjectList() {
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
 				activeObjects.emplace_back(o);
+				if (ObjectPipelineMap[o] == nullptr) {
+					CreateNewEntityPipeline(o);
+				}
 			}
 		}
 	);
 }
 
 void VkTechRenderer::SortObjectList() {
-	//Who cares!
+	
 }
 
 void VkTechRenderer::RenderShadowMap() {

@@ -9,5 +9,5 @@ layout(location = 2) in vec3 normal;
 layout(location = 0) out vec4 outColor;
 
 void main() {
-    	outColor = texture(texSampler,UV) * vec4(normal,1.0);
+    	outColor = texture(texSampler,UV);
 }

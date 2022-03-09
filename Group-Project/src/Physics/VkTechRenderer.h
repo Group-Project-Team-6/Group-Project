@@ -31,7 +31,7 @@ namespace NCL {
 			void	InitDefaultRenderPass() override { VulkanRenderer::InitDefaultRenderPass(); };
 			void	InitDefaultDescriptorPool() override { VulkanRenderer::InitDefaultDescriptorPool(); };
 
-
+			void	CreateNewEntityPipeline(GameEntity* entity);
 			//Matrix4 SetupDebugLineMatrix()	const;
 			//Matrix4 SetupDebugStringMatrix()const;
 
@@ -51,6 +51,8 @@ namespace NCL {
 			GameWorld& gameWorld;
 
 			vector<GameEntity*> activeObjects;
+			map<GameEntity*, VulkanPipeline*> ObjectPipelineMap;
+			vector<VulkanPipeline*> pipelinePool;
 
 			VulkanTexture* basicTex;
 			VulkanShader* skyboxShader;

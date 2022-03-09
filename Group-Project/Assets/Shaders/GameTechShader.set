@@ -8,11 +8,11 @@ GameTechFrag.glsl
 Vulkan
 {
 vertex
-GameTechVert.spv
+SimpleVert.spv
 fragment
-GameTechFrag.spv
+SimpleFrag.spv
 }
-PS4
+GNM
 {
 
 }

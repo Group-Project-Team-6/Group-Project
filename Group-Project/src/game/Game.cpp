@@ -130,7 +130,7 @@ void Game::InitCharacter() {
 		players[i] = new Player({25, 5, -25}, ""); //Positions set from map data	 
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
-		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
+		//dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
 
 	//Networking to tell which player to camera
@@ -140,8 +140,12 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
-	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), dt);
+	
 
+	//Vector3 Test = players[0]->GetTransform().GetOrientation().ToEuler();
+	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+	players[0]->GetTransform().GetOrientation().x;
+	std::cout << players[0]->GetTransform().GetOrientation().ToEuler().x << std::endl;
 	command = playerInput.handleInput();
 	if (command) {
 		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking

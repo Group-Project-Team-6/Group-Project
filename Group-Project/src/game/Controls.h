@@ -26,30 +26,27 @@ public:
 class moveLeftCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
 	}
 };
 
 class moveRightCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
 	}
 };
 
 class MouseHorizontal : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
-		//world.getmaincamera().setpitch
+		
+		float yaw = (Window::GetMouse()->GetRelativePosition().x);	
+		//player.GetTransform().SetOrientation(player.GetTransform().GetOrientation().EulerAnglesToQuaternion(0, yaw, 0));
+		player.GetRigidBody()->applyTorque({ 0, 100, 0 });
 	}
 };
 
-class MouseVertical : ControlsCommand {
-public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
-		//world.getmaincamera().setyaw
-	}
-};
 
 class leftMouseCommand : ControlsCommand {
 public:

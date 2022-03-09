@@ -17,8 +17,8 @@ Player::Player(Vector3 position, string newName) {
 	playerShape = new btCapsuleShape(0.5, 1);
 	playerMass = 160;
 	playerFriction = 0.5;
-	playerRestitution = 0.5;
-	playerInertia = { 0, 40, 0 };
+	playerRestitution = 0.8;
+	playerInertia = { 0, 0, 0 };
 	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
 	playerRigidBody = new btRigidBody(playerCI);
 	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
@@ -31,7 +31,7 @@ Player::Player(Vector3 position, string newName) {
 	playerConstraint->setLimit(4, 1, -1);
 	playerConstraint->setLimit(5, 0, 0);*/
 
-	//playerRigidBody->setFriction(playerFriction);
+	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
 
 	//cameraPos = &transform;

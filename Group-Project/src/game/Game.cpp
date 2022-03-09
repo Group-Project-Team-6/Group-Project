@@ -145,7 +145,7 @@ void Game::UpdateGame(float dt) {
 	//Vector3 Test = players[0]->GetTransform().GetOrientation().ToEuler();
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
 	players[0]->GetTransform().GetOrientation().x;
-	std::cout << players[0]->GetTransform().GetOrientation().ToEuler().x << std::endl;
+	//std::cout << players[0]->GetTransform().GetOrientation().ToEuler().x << std::endl;
 	command = playerInput.handleInput();
 	if (command) {
 		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking

@@ -14,9 +14,9 @@ last frame (default value is for simplicities sake...)
 void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
 	//Update the mouse by how much
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
-	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
+	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
-	//yaw = playerYaw + 180;
+	yaw = playerYaw;
 
 	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
 	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
@@ -32,9 +32,9 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
 		yaw -= 360.0f;
 	}	
 
-	position = { playersPosition.x - 10*sin(Maths::DegreesToRadians(yaw * Maths::PI/180)),
+	position = { playersPosition.x + 10*sin(Maths::DegreesToRadians(yaw)),
 		playersPosition.y + 5,
-		playersPosition.z - 10*cos(Maths::DegreesToRadians(yaw * Maths::PI / 180))};
+		playersPosition.z + 10*cos(Maths::DegreesToRadians(yaw))};
 
 	/*
 	float frameSpeed = 100 * dt;

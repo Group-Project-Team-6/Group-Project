@@ -12,39 +12,52 @@ public:
 class moveForwardCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ 0, 0, 100 });
+		//player.GetRigidBody()->applyCentralImpulse({ 0, 0, 100 });
+		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * -1000);
 	}
 };
 
 class moveBackwardCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ 0, 0, -100 });
+		//player.GetRigidBody()->applyCentralImpulse({ 0, 0, -100 });
+		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * 1000);
 	}
 };
 
 class moveLeftCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
+		//player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * -1000);
 	}
 };
 
 class moveRightCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
-		player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
+		//player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
+		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * 1000);
 	}
 };
 
 class MouseHorizontal : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
+
+		//player.GetRigidBody()->setAngularVelocity({ 0,0,0 });
+		//player.GetRigidBody()->applyTorque({ 0, Window::GetMouse()->GetRelativePosition().x*-50, 0 });
+
+		btQuaternion q = btQuaternion(Window::GetMouse()->GetRelativePosition().x/10, 0, 0);
+		player.GetRigidBody()->getWorldTransform().setRotation(q);
 		
-		float yaw = (Window::GetMouse()->GetRelativePosition().x);	
-		//player.GetTransform().SetOrientation(player.GetTransform().GetOrientation().EulerAnglesToQuaternion(0, yaw, 0));
-		player.GetRigidBody()->applyTorque({ 0, 100, 0 });
-	}
+
+		/*Quaternion newQuaternion({ 0, Window::GetMouse()->GetAbsolutePosition().x * 100, 0 }, 0);
+		Quaternion quaternion(player.GetTransform().GetOrientation());
+		quaternion = quaternion - newQuaternion;
+		player.GetTransform().SetOrientation(quaternion);
+		quaternion.*/
+	}	
 };
 
 

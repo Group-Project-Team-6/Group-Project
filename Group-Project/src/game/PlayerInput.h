@@ -34,12 +34,12 @@ public:
 		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
 			return leftMouse;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::E)) {
+		/*if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::E)) {
 			return  mouseHorizontal;
-		}
-		/*if (Window::GetMouse()->GetRelativePosition().x) {
-			return mouseHorizontal;
 		}*/
+		if (Window::GetMouse()->GetRelativePosition().x) {
+			return mouseHorizontal;
+		}
 			
 		return NULL;
 	}

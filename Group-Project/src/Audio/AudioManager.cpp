@@ -97,9 +97,6 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
         forward.x = sin(radians);
         forward.y = 0.0f;
         forward.z = cos(radians);
-        
-        std::cout << "Yaw: " << yaw << std::endl;
-        std::cout << "Forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
 
         listenerpos = {cameraPos.x, cameraPos.y, cameraPos.z};
 

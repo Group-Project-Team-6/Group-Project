@@ -20,15 +20,9 @@ using namespace CSC8503;
 using namespace Maths;
 
 PhysicsTestScene::PhysicsTestScene() {
-
-	DebugMode* d = new DebugMode();
 	world = new GameWorld();
 	audioManager = new AudioManager();
 	renderer = new GameTechRenderer(*world);
-	
-	d->GetMemoryAllocationSize(*world);
-	d->GetMemoryAllocationSize(*audioManager);
-	d->GetMemoryAllocationSize(*renderer);
 
 	//Default Broadphase
 	maxProxies = 1024;
@@ -41,6 +35,7 @@ PhysicsTestScene::PhysicsTestScene() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
 
 	InitAssets();
 	InitCamera();
@@ -154,9 +149,14 @@ void PhysicsTestScene::UpdateGame(float dt) {
 	renderer->Render();
 
 	world->UpdatePositions();
-
 }
 
 void PhysicsTestScene::UpdateKeys() {
 
+}
+
+void PhysicsTestScene::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
+	d->GetMemoryAllocationSize(*world);
+	d->GetMemoryAllocationSize(*audioManager);
+	d->GetMemoryAllocationSize(*renderer);
 }

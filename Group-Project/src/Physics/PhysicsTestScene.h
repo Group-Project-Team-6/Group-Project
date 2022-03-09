@@ -10,6 +10,8 @@
 
 #include "../Audio/AudioManager.h"
 
+#include "../game/DebugMode.h"
+
 class PhysicsTestScene {
 	public:
 		PhysicsTestScene();
@@ -17,6 +19,8 @@ class PhysicsTestScene {
 		~PhysicsTestScene();
 
 		void UpdateGame(float dt);
+
+		void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 	private:
 		void InitAssets();

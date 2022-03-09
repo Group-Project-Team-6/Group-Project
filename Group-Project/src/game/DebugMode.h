@@ -1,5 +1,8 @@
+#pragma once
+
 #include <iostream>
 #include <string>
+#include <memory>
 
 class DebugMode {
     public:
@@ -7,7 +10,8 @@ class DebugMode {
         void GetMemoryAllocationSize(T&& t) {
             MemorySize = sizeof(t);
             const char* name = typeid(t).name();
-            std::cout << "Memory Size for " << name << ": " << MemorySize << " Btye." << std::endl;
+            std::cout << "Memory Size for " << name << ": " << MemorySize << " Byte." << std::endl;
+            std::cout << "Memory Location for " << name << ": " << &t << std::endl;
         }
 
     private:

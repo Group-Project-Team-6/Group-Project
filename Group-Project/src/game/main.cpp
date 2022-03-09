@@ -3,17 +3,15 @@
 #include "DebugMode.h"
 
 #include <iostream>
+#include <memory>
 
 using namespace NCL;
 //using namespace CSC8503;
 
 int main() {
-
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
-	DebugMode* d = new DebugMode();
-	d->GetMemoryAllocationSize(*w);
-	d->GetMemoryAllocationSize(*d);
-
+	std::shared_ptr<DebugMode> d(new(DebugMode));
+	
 	if (!w->HasInitialised()) {
 		return -1;
 	}
@@ -21,8 +19,8 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	PhysicsTestScene* g = new PhysicsTestScene();
-	d->GetMemoryAllocationSize(g);
+	//PhysicsTestScene* g = new PhysicsTestScene();
+	std::shared_ptr<PhysicsTestScene> g(new(PhysicsTestScene));
 	w->GetTimer()->GetTimeDeltaSeconds();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
@@ -40,6 +38,13 @@ int main() {
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T)) {
 			w->SetWindowPosition(0, 0);
+		}
+
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
+			d->GetMemoryAllocationSize(*w);
+			d->GetMemoryAllocationSize(*d);
+			d->GetMemoryAllocationSize(*g);
+			g->GetPhysicsTestSceneDebugData(d);
 		}
 		g->UpdateGame(dt);
 	}

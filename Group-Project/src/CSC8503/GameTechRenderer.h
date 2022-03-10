@@ -36,7 +36,11 @@ namespace NCL {
 
 			void LoadSkybox();
 
-			vector<const RenderObject*> activeObjects;
+			vector<GameEntity*> activeObjects;
+
+			OGLMesh* painterMesh;
+			OGLShader* painterShader;
+			GLuint		PainterFBO;
 
 			OGLShader*  skyboxShader;
 			OGLMesh*	skyboxMesh;
@@ -45,6 +49,7 @@ namespace NCL {
 			//shadow mapping things
 			OGLShader*	shadowShader;
 			GLuint		shadowTex;
+			GLuint		shadowColourTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
 

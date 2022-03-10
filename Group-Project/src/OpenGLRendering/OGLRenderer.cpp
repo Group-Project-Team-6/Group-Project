@@ -226,6 +226,7 @@ void OGLRenderer::BindTextureToShader(const TextureBase*t, const std::string& un
 	GLuint slot = glGetUniformLocation(boundShader->programID, uniform.c_str());
 
 	if (slot < 0) {
+		std::cout << "No slot left" << std::endl;
 		return;
 	}
 

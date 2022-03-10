@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "Window.h"
 #include <algorithm>
+#include <math.h>
+#include "Maths.h"
 
 using namespace NCL;
 
@@ -9,13 +11,15 @@ Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...)
 */
-void Camera::UpdateCamera(float dt) {
+void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
 	//Update the mouse by how much
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
-	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
+	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
-	yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
-	yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
+	yaw = playerYaw;
+
+	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
+	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
 
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);
@@ -26,8 +30,13 @@ void Camera::UpdateCamera(float dt) {
 	}
 	if (yaw > 360.0f) {
 		yaw -= 360.0f;
-	}
+	}	
 
+	position = { playersPosition.x + 10*sin(Maths::DegreesToRadians(yaw)),
+		playersPosition.y + 5,
+		playersPosition.z + 10*cos(Maths::DegreesToRadians(yaw))};
+
+	/*
 	float frameSpeed = 100 * dt;
 
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
@@ -49,7 +58,7 @@ void Camera::UpdateCamera(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::X)) {
 		position.y -= frameSpeed;
-	}
+	}*/
 }
 
 /*

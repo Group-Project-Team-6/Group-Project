@@ -31,7 +31,16 @@ public:
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
 			return dKey;
 		}
-
+		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
+			return leftMouse;
+		}
+		/*if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::E)) {
+			return  mouseHorizontal;
+		}*/
+		if (Window::GetMouse()->GetRelativePosition().x) {
+			return mouseHorizontal;
+		}
+			
 		return NULL;
 	}
 
@@ -41,5 +50,7 @@ private:
 	ControlsCommand* sKey = (ControlsCommand*) new moveBackwardCommand();
 	ControlsCommand* aKey = (ControlsCommand*) new moveLeftCommand();
 	ControlsCommand* dKey = (ControlsCommand*) new moveRightCommand();
-	//ControlsCommand* leftMouse = (ControlsCommand) new 
+	ControlsCommand* leftMouse = (ControlsCommand*) new leftMouseCommand();
+	ControlsCommand* mouseHorizontal = (ControlsCommand*) new MouseHorizontal();
+
 };

@@ -1,16 +1,17 @@
 #pragma once
 #include "Bullet.h"
+#include "../common/RendererBase.h"
 
 class BulletPool {
 public:
-	//BulletPool();
-	//~BulletPool();
+	BulletPool() {};
+	~BulletPool();
 
-	void Create(int lifeTime);
-	//void Animate();
+	void Create(Transform shootingPos, int lifeTime, RendererBase& renderer);
+	void Animate();
 
 private:
-	Bullet* firstAvailable;
+	//Bullet* firstAvailable;
 	static const int poolSize = 100;
 	Bullet bullets[poolSize];
 };

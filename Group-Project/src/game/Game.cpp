@@ -28,14 +28,12 @@ Game::~Game() {
 	delete solver;
 	delete dynamicsWorld;
 
-	//delete GameEntities
-	delete players;
-	delete ground;
-
 	//delete world
 	delete world;
 	delete renderer;
 
+	//delete GameEntities
+	delete ground;
 	for (auto i : players) {
 		delete i;
 	}
@@ -54,8 +52,8 @@ Game::~Game() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	renderer = new VkTechRenderer(*world);// new GameTechRenderer(*world);
-
+	renderer = new GameTechRenderer(*world);// new GameTechRenderer(*world);
+	world->SetRenderer(renderer);
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 }
@@ -125,28 +123,34 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "",*renderer);
-		//players[i]->AddPlayer({ 25, 5, -25 }); //Positions set from map data
+		players[i] = new Player({25, 5, -25}, "",*renderer);	 
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
-		dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
+		//dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
 
-
+	//Networking to tell which player to camera
+	
+	//world->GetMainCamera()->SetPosition(players[0]->GetCameraPosition().GetPosition());
 }
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
-	world->GetMainCamera()->UpdateCamera(dt);
+	
 
+	//Vector3 Test = players[0]->GetTransform().GetOrientation().ToEuler();
+	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+	//players[0]->GetTransform().GetOrientation().x;
+	//std::cout << players[0]->GetTransform().GetOrientation().ToEuler().x << std::endl;
 	command = playerInput.handleInput();
 	if (command) {
-		command->execute(*players[0]); //Learn which player from networking
+		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking
 	}
 
 	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
+	//players[1]->GetBulletPool().Animate(); will not work without shooting first?! Assert or If Statement
 
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +

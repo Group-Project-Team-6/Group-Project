@@ -39,11 +39,11 @@ public:
 	}
 
 	//General
-	Transform& GetTransform(){
+	virtual Transform& GetTransform(){
 		return transform;
 	}
 
-	void SetTransform(Transform newtransform) {
+	virtual void SetTransform(Transform newtransform) {
 		transform = newtransform;
 	}
 
@@ -80,7 +80,6 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		transform.UpdateMatrix();
 
 	}
 

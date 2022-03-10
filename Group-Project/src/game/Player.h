@@ -2,6 +2,7 @@
 #include "GameEntity.h"
 #include "../common/TextureLoader.h"
 #include "../common/RendererBase.h"
+#include "BulletPool.h"
 
 class Player : public GameEntity {
 public:
@@ -20,6 +21,27 @@ public:
 		return playerConstraint;
 	}
 
+	virtual Transform& GetTransform() override {
+		return transform;
+	}
+
+	virtual void SetTransform(Transform newtransform) override {
+		transform = newtransform;
+	}
+
+	BulletPool GetBulletPool() const {
+		return bullets;
+	}
+
+	Transform GetShootingPosition() const {
+		return transform;
+		//return *shootingPos;
+	}
+
+	Transform GetCameraPosition() const {
+		return *cameraPos;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
@@ -32,11 +54,15 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		//transform.UpdateMatrix();
 
 	}
 
 	void IntitAssets(RendererBase& r); //Temp
+	/*void Shoot() {
+		Bullet* bullet = new Bullet();
+		bullet->Init(*shootingPos, 5);
+	}*/
+
 
 protected:
 	//Temp
@@ -47,8 +73,10 @@ protected:
 	//general
 	string name;
 	TransformConverter transformConverter;
-	//Transform transform;
+	Transform* shootingPos;
+	Transform* cameraPos;
 	btTransform bttransform;
+	BulletPool bullets;
 
 	//player Physics
 	int playerMass;

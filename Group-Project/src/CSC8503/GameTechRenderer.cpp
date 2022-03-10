@@ -5,7 +5,7 @@
 #include "../Common/Vector3.h"
 #include "../Common/TextureLoader.h"
 #include "Transform.h"
-#include "..\game\Painter.h"
+#include "../game/Painter.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -113,7 +113,7 @@ void GameTechRenderer::RenderFrame() {
 }
 
 void GameTechRenderer::UpdatePaints() {
-	PainterMap map = Painter::GetPaintInfos();
+	/*PainterMap map = Painter::GetPaintInfos();
 	OGLShader* shader = new OGLShader("PaintVertex.glsl", "skyboxFragment.glsl");
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	for (auto& it = map.begin(); it != map.end(); it++) {
@@ -128,7 +128,7 @@ void GameTechRenderer::UpdatePaints() {
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	Painter::ClearPaint();
-	delete shader;
+	delete shader;*/
 }
 
 void GameTechRenderer::BuildObjectList() {

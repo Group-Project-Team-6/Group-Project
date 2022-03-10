@@ -19,7 +19,6 @@ public:
 		wallRigidBody = newRigidBody;
 	}
 
-
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = wallRigidBody->getWorldTransform();

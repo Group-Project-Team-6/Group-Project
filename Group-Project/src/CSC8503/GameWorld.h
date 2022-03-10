@@ -2,6 +2,7 @@
 #include "../common/Camera.h"
 #include "../game/TransformConverter.h"
 #include "../game/TransformConverter.h"
+#include "../common/RendererBase.h"
 
 #include <vector>
 #include <functional>
@@ -24,6 +25,14 @@ namespace NCL {
 
 			void AddGameObject(GameEntity* o);
 			void RemoveGameObject(GameEntity* o, bool andDelete = false);
+
+			void SetRenderer(RendererBase* renderer) {
+				this->renderer = renderer;
+			}
+
+			RendererBase* GetRenderer() {
+				return renderer;
+			}
 
 			Camera* GetMainCamera() const {
 				return mainCamera;
@@ -49,6 +58,7 @@ namespace NCL {
 
 		protected:
 			std::vector<GameEntity*> gameObjects;
+			RendererBase* renderer;
 
 			Camera* mainCamera;
 

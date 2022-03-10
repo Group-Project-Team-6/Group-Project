@@ -26,7 +26,7 @@ GameUI::GameUI()
     //io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.Fonts->AddFontFromFileTTF("./fonts/Roboto-Medium.ttf", 16);
+    io.Fonts->AddFontFromFileTTF("../../../Assets/Fonts/Roboto-Medium.ttf", 16);
     //io.Fonts->AddFontDefault();
 
     // Setup Dear ImGui style

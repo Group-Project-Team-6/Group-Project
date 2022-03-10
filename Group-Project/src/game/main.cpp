@@ -19,7 +19,6 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	//PhysicsTestScene* g = new PhysicsTestScene();
 	std::shared_ptr<PhysicsTestScene> g(new(PhysicsTestScene));
 	w->GetTimer()->GetTimeDeltaSeconds();
 

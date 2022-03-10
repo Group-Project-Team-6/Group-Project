@@ -11,7 +11,7 @@ void MainMenu::Draw()
     ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(360, 280), ImGuiCond_Always);
 
-    if (!ImGui::Begin("Tutorial Menu", NULL, window_flags))
+    if (!ImGui::Begin("Main Menu", NULL, window_flags))
     {
         // Early out if the window is collapsed, as an optimization.
         ImGui::End();
@@ -29,6 +29,7 @@ void MainMenu::Draw()
           
             ImGui::EndTable();
         }*/
+        /*
         if (ImGui::Checkbox("Use Gravity", &(game->useGravity)))
             game->physics->UseGravity(game->useGravity);
         ImGui::SliderFloat("Push Force", &(game->forceMagnitude), 10.0f, 50000.0f);
@@ -38,6 +39,7 @@ void MainMenu::Draw()
         float pScale = game->physics->GetPenaltyScale();
         if (ImGui::SliderFloat("Penalty Scale", &pScale, 0.0f, 5000.0f))
             game->physics->SetPenaltyScale(pScale);
+        */
     }
 
     if (ImGui::CollapsingHeader("Render"))

@@ -15,7 +15,7 @@ Bullet::~Bullet() {
 }
 
 void Bullet::InitAssets(RendererBase& r) {
-	bulletMesh = r.LoadMesh("capsule.msh");
+	bulletMesh = r.LoadMesh("Sphere.msh");
 	bulletTex = TextureLoader::LoadAPITexture("checkerboard.png");
 	bulletShader = r.LoadShader("GameTechShader.set");
 }

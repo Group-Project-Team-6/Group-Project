@@ -25,6 +25,7 @@ out vec4 fragColor;
 
 void main(void)
 {
+	if(texture(mainTex, IN.texCoord).a < 0.5) discard;
 	float shadow = 1.0; // New !
 	
 	if( IN . shadowProj . w > 0.0) { // New !

@@ -12,6 +12,8 @@
 #include "../Audio/AudioManager.h"
 
 #include "../game/DebugMode.h"
+#include "../GUI/GameUI.h"
+#include "../GUI/PauseState.h"
 
 #include <iomanip>
 
@@ -36,10 +38,13 @@ PhysicsTestScene::PhysicsTestScene() {
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
+	quit = false;
+	freezed = true;
 
 	InitAssets();
 	InitCamera();
 	InitScene();
+	InitUI();
 	audioManager->InitSystem();
 }
 
@@ -141,6 +146,10 @@ void PhysicsTestScene::InitScene() {
 }
 
 void PhysicsTestScene::UpdateGame(float dt) {
+	gameUI->UpdateUI();
+	quit = !pauseMachine->Update(dt);
+	if (freezed) { return; }
+	
 	audioManager->AudioUpdate(world, dt);
 	dynamicsWorld->stepSimulation(1 / 60.f, 10);
 	
@@ -159,4 +168,24 @@ void PhysicsTestScene::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d
 	d->GetMemoryAllocationSize(*world);
 	d->GetMemoryAllocationSize(*audioManager);
 	d->GetMemoryAllocationSize(*renderer);
+}
+
+void PhysicsTestScene::InitUI(){
+	gameUI = new GameUI();
+	renderer->SetUI(gameUI);
+	gameMenu.reset(new MainMenu(this));
+	gameUI->PushMenu(gameMenu);
+	pauseMachine = new PushdownMachine(new InGameState(this));
+}
+
+void PhysicsTestScene::SetMainLevel()
+{
+	//Init Main Scene
+}
+
+void PhysicsTestScene::SetSettingLevel()
+{
+	SMenu.reset(new SettingMenu(this));
+	gameUI->PushMenu(SMenu);
+	pauseMachine = new PushdownMachine(new InGameState(this));
 }

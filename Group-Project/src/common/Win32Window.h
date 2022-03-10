@@ -46,6 +46,13 @@ namespace NCL {
 		class Win32Mouse;
 		class Win32Keyboard;
 
+		struct ExInputResult
+		{
+			bool occupyMouse;
+			bool occupyKeyboard;
+		};
+		typedef ExInputResult(*ExInputFunc)(void*);
+
 		class Win32Window : public Window {
 		public:
 			friend class Window;
@@ -58,6 +65,8 @@ namespace NCL {
 
 			HWND		GetHandle()			const { return windowHandle; }
 			HINSTANCE	GetInstance()		const { return windowInstance; }
+
+			void SetExtraMsgFunc(ExInputFunc func) { exInputFunc = func; }
 
 		protected:
 			Win32Window(const std::string& title, int sizeX, int sizeY, bool fullScreen, int offsetX, int offsetY);
@@ -82,6 +91,10 @@ namespace NCL {
 			bool			maximised;
 			Win32Mouse*		winMouse;
 			Win32Keyboard*  winKeyboard;
+
+			Vector2 fullscreenSize;
+			Vector2 defaultPosition;
+			ExInputFunc exInputFunc = nullptr;
 		};
 	}
 }

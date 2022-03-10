@@ -4,6 +4,8 @@ add_subdirectory(CSC8503)
 add_subdirectory(OpenGLRendering)
 add_subdirectory(Physics)
 add_subdirectory(game)
+add_subdirectory(GUI)
+add_subdirectory(imgui)
 
 #Targeting Directories & Linking Libraries
 find_package(Bullet CONFIG REQUIRED)
@@ -25,11 +27,12 @@ set_property(TARGET FMOD PROPERTY
 )
 
 target_link_libraries(Game Physics OpenGLRendering CSC8503 Common Audio)
-target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
+target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503 GUI)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common)
 target_link_libraries(Common ${BULLET_LIBRARIES})
 target_link_libraries(Audio FMOD CSC8503)
+target_link_libraries(GUI imgui Physics)
 
 #Copy fmod.dll to Output Directory
 get_property(FMOD_DLL TARGET FMOD PROPERTY IMPORTED_LOCATION)

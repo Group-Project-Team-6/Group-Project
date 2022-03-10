@@ -7,6 +7,8 @@
 #include "GameWorld.h"
 #include "..//common/Matrix4.h"
 
+class GameUI;
+
 namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
@@ -16,6 +18,8 @@ namespace NCL {
 		public:
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
+
+			void SetUI(const GameUI* ui) { gameUI = ui; };
 
 		protected:
 			void RenderFrame()	override;
@@ -50,6 +54,8 @@ namespace NCL {
 			Vector4		lightColour;
 			float		lightRadius;
 			Vector3		lightPosition;
+
+			const GameUI* gameUI = nullptr;
 		};
 	}
 }

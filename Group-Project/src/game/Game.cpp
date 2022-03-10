@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
+#include "LevelGen.h"
 
 //Namespaces?
 
@@ -12,7 +13,7 @@ Game::Game() {
 	InitAssets();
 	InitScene();
 	InitItems();
-	//void LevelGeneration();
+	LevelGeneration();
 	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
@@ -165,4 +166,79 @@ void Game::UpdateGame(float dt) {
 		character->GetbtTransform().getOrigin().x())
 		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
 		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
+}
+
+void Game::LevelGeneration() {
+
+	int length = 5;
+	int width = 5;
+
+	LevelGen* levelGenerator = new LevelGen();
+	levelGenerator->Generate(length, width);
+	vector<string> maze = levelGenerator->GetLevelStrings();
+
+	//create world here
+	Transform wallsTransform;
+	wallsTransform.SetPosition({ 50,2,0 });
+	wallsTransform.SetScale({ 1,1,1 });
+	wallsTransform.SetOrientation({ 1,0,0,1 });
+	Wall* wall1 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
+	world->AddGameObject(wall1);
+
+	wallsTransform.SetPosition({ 0,2,50 });
+	Wall* wall2 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
+	world->AddGameObject(wall2);
+
+	wallsTransform.SetPosition({ 0,2,-50 });
+	Wall* wall3 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
+	world->AddGameObject(wall3);
+
+	wallsTransform.SetPosition({ -50,2,0 });
+	Wall* wall4 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
+	world->AddGameObject(wall4);
+	
+
+	int unitLength = 10;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int level = 0; level < maze.size(); level++)
+		{
+			for (int l = 0; l < length; l++)
+			{
+				for (int w = 0; w < width; w++)
+				{
+					//AddChild(i, GetSymbol(level, l, w), level, l, w);
+					//AddChild(i, maze[level][l * width + w], level, l, w);
+
+					char ch = maze[level][l * width + w];
+
+					switch (ch)
+					{
+					case 'P':
+						break;
+					case '#':
+						break;
+					case 'S':
+						break;
+					case 'A':
+						break;
+					case 'V':
+						break;
+					case '<':
+						break;
+					case '>':
+						break;
+					}
+
+
+				}
+			}
+			//collGen.Collectables(level, maze[level], width, length, unitLength);
+		}
+	}
+
 }

@@ -27,7 +27,7 @@ protected:
 	void InitScene();
 	void InitItems();
 	//Build State Machine?
-	//void LevelGeneration();
+	void LevelGeneration();
 	void InitCharacter();
 	//void InitHUD
 	//InitNetworking?

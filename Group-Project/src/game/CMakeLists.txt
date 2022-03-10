@@ -14,7 +14,8 @@ add_executable(Game
 	Wall.h
 	Bullet.h
 	Painter.h
-	BulletPool.h	
+	BulletPool.h
+	AssetsManager.h
 
 	main.cpp
 	Game.cpp
@@ -27,4 +28,5 @@ add_executable(Game
 	Bullet.cpp
 	BulletPool.cpp
 	Painter.cpp
+	AssetsManager.cpp
 )

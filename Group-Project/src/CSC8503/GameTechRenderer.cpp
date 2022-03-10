@@ -131,7 +131,7 @@ void GameTechRenderer::RenderFrame() {
 
 void GameTechRenderer::UpdatePaints() {
 	for (int i = 0; i < activeObjects.size(); i++) {
-		Painter::Paint(activeObjects[i], Vector2(0.5, 0.5));
+		Painter::Paint(activeObjects[i], activeObjects[i]->GetTransform().GetPosition());
 	}
 	PainterMap map = Painter::GetPaintInfos();
 	for (auto& it = map.begin(); it != map.end(); it++) {
@@ -139,17 +139,25 @@ void GameTechRenderer::UpdatePaints() {
 		
 		/*glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);*/
+		OGLTexture* objTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
 		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
 		GLuint tex = renderTex->GetObjectID();
 		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
 
 		BindShader(painterShader);
-		BindTextureToShader(renderTex, "hitTex", 0);
-		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitUV");
-		glUniform2fv(hitUV,1,it->second.array);
 
-		BindMesh(painterMesh);
+		BindTextureToShader(objTex, "hitTex", 0);
+
+		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+		glUniform3fv(hitUV,1,it->second.array);
+
+		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+		Matrix4 modelMatrix = it->first->GetTransform().GetMatrix();
+
+		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
+
+		BindMesh(it->first->GetRenderObject()->GetMesh());
 		DrawBoundMesh();
 		glViewport(0, 0, currentWidth, currentHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

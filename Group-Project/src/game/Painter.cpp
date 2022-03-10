@@ -2,7 +2,7 @@
 
 PainterMap Painter::paintInfos;
 
-void Painter::Paint(GameEntity* entity, Vector2 uv) {
+void Painter::Paint(GameEntity* entity, Vector3 uv) {
 	paintInfos.insert(PainterPair(entity,uv));
 }
 

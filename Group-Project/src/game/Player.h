@@ -29,16 +29,8 @@ public:
 		transform = newtransform;
 	}
 
-	BulletPool GetBulletPool() const {
+	BulletPool* GetBulletPool() const {
 		return bullets;
-	}
-
-	Transform GetShootingPosition() const {
-		return *shootingPos;
-	}
-
-	Transform GetCameraPosition() const {
-		return *cameraPos;
 	}
 
 	virtual void UpdateRenderPositions() override {
@@ -56,11 +48,6 @@ public:
 
 	}
 
-	/*void Shoot() {
-		Bullet* bullet = new Bullet();
-		bullet->Init(*shootingPos, 5);
-	}*/
-
 	void InitAssets(); //Temp
 
 protected:
@@ -73,10 +60,8 @@ protected:
 	string name;
 	TransformConverter transformConverter;
 	Transform transform;
-	Transform* shootingPos;
-	Transform* cameraPos;
 	btTransform bttransform;
-	BulletPool bullets;
+	BulletPool* bullets;
 
 	//player Physics
 	int playerMass;

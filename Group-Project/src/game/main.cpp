@@ -11,14 +11,14 @@ using namespace NCL;
 int main() {
 	Assets::FetchDirConfig("dir.txt");
 
-	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, true);
+	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 
 	if (!w->HasInitialised()) {
 		return -1;
 	}
 	srand(time(0));
-	w->ShowOSPointer(false);
-	w->LockMouseToWindow(true);
+	w->ShowOSPointer(true);
+	w->LockMouseToWindow(false);
 
 	//VkTechRenderer* renderer = new VkTechRenderer();
 

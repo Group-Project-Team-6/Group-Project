@@ -116,6 +116,9 @@ void Game::InitScene() {
 	world->AddGameObject(walls[0]);
 	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
 	//maybe use foreach loops for static objects
+
+	//std::cout << &*world << std::endl;
+	//std::cout << &*dynamicsWorld << std::endl;
 }
 
 void Game::InitItems() {
@@ -130,22 +133,16 @@ void Game::InitCharacter() {
 		players[i] = new Player({25, 5, -25}, ""); //Positions set from map data	 
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
-		//dynamicsWorld->addConstraint(players[i]->GetPlayerConstraints());
 	}
 
-	//Networking to tell which player to camera
-	
-	//world->GetMainCamera()->SetPosition(players[0]->GetCameraPosition().GetPosition());
+	players[0]->GetTransform().SetPosition({ 0,0,0 });
 }
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
-	
 
-	//Vector3 Test = players[0]->GetTransform().GetOrientation().ToEuler();
+	//Networking to tell which player to camera
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
-	//players[0]->GetTransform().GetOrientation().x;
-	//std::cout << players[0]->GetTransform().GetOrientation().ToEuler().x << std::endl;
 	command = playerInput.handleInput();
 	if (command) {
 		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking
@@ -154,7 +151,7 @@ void Game::UpdateGame(float dt) {
 	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
-	//players[1]->GetBulletPool().Animate(); will not work without shooting first?! Assert or If Statement
+	//players[0]->GetBulletPool()->Animate();
 
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +

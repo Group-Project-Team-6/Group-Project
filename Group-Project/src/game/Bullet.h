@@ -4,12 +4,13 @@
 
 class Bullet : public GameEntity{
 public:
-	Bullet() : framesLeft(0) {}; //Intialise variables to null
+	Bullet();
 	~Bullet();
 
-	void Init(Transform startTransform, int lifeTime);
+	void Init(Transform& startTransform, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
 	bool Animate();
 	void InitAssets();
+	void RemoveFromPool();
 
 	bool inUse() const { return framesLeft > 0; }
 
@@ -52,6 +53,8 @@ private:
 	OGLTexture* bulletTex;
 	OGLShader* bulletShader;
 
+	//Transform transform;
+	//btTransform bttransform;
 	TransformConverter transformConverter;
 	int bulletMass;
 	btVector3 bulletInertia;

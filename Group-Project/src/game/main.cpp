@@ -45,8 +45,10 @@ int main() {
 			d->GetMemoryAllocationSize(*d);
 			d->GetMemoryAllocationSize(*g);
 			g->GetPhysicsTestSceneDebugData(d);
+			d->GetFPS(dt);
 		}
 		g->UpdateGame(dt);
+		//d->GetFPS(dt);
 	}
 
 	Window::DestroyGameWindow();

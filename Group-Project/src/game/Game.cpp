@@ -52,7 +52,7 @@ Game::~Game() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	renderer = new GameTechRenderer(*world);// new GameTechRenderer(*world);
+	renderer = new VkTechRenderer(*world);// new GameTechRenderer(*world);
 	world->SetRenderer(renderer);
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions

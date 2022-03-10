@@ -158,7 +158,10 @@ void GameTechRenderer::UpdatePaints() {
 		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
 		BindMesh(it->first->GetRenderObject()->GetMesh());
-		DrawBoundMesh();
+		int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+		for (int i = 0; i < layerCount; ++i) {
+			DrawBoundMesh(i);
+		}
 		glViewport(0, 0, currentWidth, currentHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

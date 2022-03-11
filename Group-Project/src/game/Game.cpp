@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
+#include "LevelGen.h"
 
 //Namespaces?
 
@@ -12,7 +13,7 @@ Game::Game() {
 	InitAssets();
 	InitScene();
 	InitItems();
-	//void LevelGeneration();
+	LevelGeneration();
 	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
@@ -157,4 +158,133 @@ void Game::UpdateGame(float dt) {
 		character->GetbtTransform().getOrigin().x())
 		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
 		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
+}
+
+void Game::LevelGeneration() {
+
+	int length = 10;
+	int width = 10;
+
+	float scale = 5;
+
+	LevelGen* levelGenerator = new LevelGen();
+	levelGenerator->Generate(length, width);
+	vector<string> maze = levelGenerator->GetLevelStrings();
+	//vector<string> maze = levelGenerator->TestMap();
+
+
+	Transform wallsTransform;
+	wallsTransform.SetPosition({ 50,2,0 });
+	wallsTransform.SetScale({ scale,scale,scale });
+	wallsTransform.SetOrientation({ 1,0,0,1 });
+
+	Transform stairsTransform;
+	stairsTransform.SetScale({ scale, scale ,0.5 });
+	stairsTransform.SetOrientation({ 0.5,0,0,1 });
+	stairsTransform.SetPosition({ 10,2,0 });
+
+	/*
+	stairsTransform.SetOrientation({ 0.5,0,0,1 });
+	Wall* stairs = new Wall(stairsTransform);
+	stairs->UpdateCollShape(scale, scale, 0.5);
+	dynamicsWorld->addRigidBody(stairs->GetRigidBody());
+	world->AddGameObject(stairs);
+
+	stairsTransform.SetOrientation({ -0.5,0,0,1 });
+	Wall* stairs1 = new Wall(stairsTransform);
+	stairs1->UpdateCollShape(scale, scale, 0.5);
+	dynamicsWorld->addRigidBody(stairs1->GetRigidBody());
+	world->AddGameObject(stairs1);
+	stairsTransform.SetScale({ 0.5, scale ,scale });
+	stairsTransform.SetOrientation({ 0.5,0,0,1 });
+	Wall* stairs2 = new Wall(stairsTransform);
+	stairs2->UpdateCollShape(scale, scale, 0.5);
+	dynamicsWorld->addRigidBody(stairs2->GetRigidBody());
+	world->AddGameObject(stairs2);
+	stairsTransform.SetOrientation({ -0.5,0,0,1 });
+	Wall* stairs3 = new Wall(stairsTransform);
+	stairs3->UpdateCollShape(scale, scale, 0.5);
+	dynamicsWorld->addRigidBody(stairs3->GetRigidBody());
+	world->AddGameObject(stairs3);
+	*/
+
+	/*
+	Wall* wall1 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
+	world->AddGameObject(wall1);
+	wallsTransform.SetPosition({ 0,2,50 });
+	Wall* wall2 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
+	world->AddGameObject(wall2);
+	wallsTransform.SetPosition({ 0,2,-50 });
+	Wall* wall3 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
+	world->AddGameObject(wall3);
+	wallsTransform.SetPosition({ -50,2,0 });
+	Wall* wall4 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
+	world->AddGameObject(wall4);
+	*/
+
+	vector<Wall*> vecWalls;
+
+	float unitLength = scale; //int
+	int numWalls = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (float level = 0; level < maze.size(); level++) //int
+		{
+			for (float l = 0; l < length; l++) //int
+			{
+				for (float w = 0; w < width; w++) //int
+				{
+					//AddChild(i, GetSymbol(level, l, w), level, l, w);
+					//AddChild(i, maze[level][l * width + w], level, l, w);
+
+					char ch = maze[level][l * width + w];
+
+					switch (ch)
+					{
+					case 'P':
+						break;
+					case '#':
+						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(wallsTransform));
+						wallsTransform.SetScale({ scale, scale, scale });
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+
+						break;
+					case 'S':
+						break;
+					case 'A':
+						/*
+						stairsTransform.SetOrientation({ 0.5,0,0,1 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls[numWalls]->UpdateCollShape(scale, scale, 0.5);
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						*/
+						break;
+					case 'V':
+
+						break;
+					case '<':
+
+						break;
+					case '>':
+
+						break;
+					}
+
+
+				}
+			}
+			//collGen.Collectables(level, maze[level], width, length, unitLength);
+		}
+	}
+
 }

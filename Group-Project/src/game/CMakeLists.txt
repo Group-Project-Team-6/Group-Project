@@ -16,6 +16,7 @@ add_executable(Game
 	Painter.h
 	BulletPool.h
 	AssetsManager.h
+	LevelGen.h
 
 	main.cpp
 	Game.cpp
@@ -29,4 +30,5 @@ add_executable(Game
 	BulletPool.cpp
 	Painter.cpp
 	AssetsManager.cpp
+	LevelGen.cpp
 )

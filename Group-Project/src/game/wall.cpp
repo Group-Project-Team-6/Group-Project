@@ -10,7 +10,8 @@ Wall::Wall(Transform buildTransform) {
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	wallMotion = new btDefaultMotionState(bttransform);
-	wallShape = new btCapsuleShape(0.5, 1);
+	Vector3 scale = transform.GetScale();
+	wallShape = new btBoxShape({ (scale.x / 2.0f), (scale.y / 2.0f), (scale.z / 2.0f) });
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0, wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
 }

@@ -1,7 +1,8 @@
 #include "Wall.h"
+#include "AssetsManager.h"
 
-Wall::Wall(Transform buildTransform, RendererBase& r) {
-	InitAssets(r); //Temp, Replace with loadAsset Class
+Wall::Wall(Transform buildTransform) {
+	InitAssets(); //Temp, Replace with loadAsset Class
 
 	transform = buildTransform;		
 
@@ -18,10 +19,11 @@ Wall::~Wall() {
 
 }
 
-void Wall::InitAssets(RendererBase& r) {
+void Wall::InitAssets() {
 
-	wallMesh = r.LoadMesh("Cube.msh");
-	wallTex = TextureLoader::LoadAPITexture("checkerboard.png");
-	wallShader = r.LoadShader("GameTechShader.set");
+	wallMesh = AssetsManager::FetchMesh("CubeMesh");
+
+	wallTex = AssetsManager::FetchTextureUnique("CheckerBoardTex");
+	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

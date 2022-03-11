@@ -1,27 +1,17 @@
 #include "AssetsManager.h"
 #include "../common/TextureLoader.h"
 
-RendererBase* AssetsManager::renderer = nullptr;
-std::map<std::string, TextureBase*> AssetsManager::texturePool;
-std::map<std::string, ShaderBase*> AssetsManager::shaderPool;
-std::map<std::string, MeshGeometry*> AssetsManager::meshPool;
+RendererPtr AssetsManager::renderer(nullptr);
+std::map<std::string, std::vector<TexturePtr>> AssetsManager::texturePoolMap;
+std::map<std::string, std::vector<ShaderPtr>> AssetsManager::shaderPoolMap;
+std::map<std::string, std::vector<MeshPtr>> AssetsManager::meshPoolMap;
+std::map<std::string, std::stack<TexID>> AssetsManager::TexStackMap;
+std::map<std::string, std::stack<ShaderID>> AssetsManager::ShaderStackMap;
+std::map<std::string, std::stack<MeshID>> AssetsManager::MeshStackMap;
 
 AssetsManager::~AssetsManager() {
-	for (auto& it = texturePool.begin(); it != texturePool.end(); it++) {
-		if(it->second) delete(it->second);
-	}
-	texturePool.clear();
-	for (auto& it = shaderPool.begin(); it != shaderPool.end(); it++) {
-		if (it->second) delete(it->second);
-	}
-	shaderPool.clear();
-	for (auto& it = meshPool.begin(); it != meshPool.end(); it++) {
-		if (it->second) delete(it->second);
-	}
-	meshPool.clear();
-
-
 }
+
 void AssetsManager::LoadAssets(std::string configFileName) {
 	std::ifstream configFile(Assets::DATADIR + configFileName);
 	std::string line;
@@ -66,57 +56,179 @@ void AssetsManager::LoadAssets(std::string configFileName) {
 	}
 }
 
-void AssetsManager::LoadTextureFromFile(std::string name, std::string fileName) {
+TexID AssetsManager::LoadTextureFromFile(std::string name, std::string fileName, bool isShared) {
 	if (renderer) {
-		TextureBase* t = TextureLoader::LoadAPITexture(fileName);
-		if (t) LoadTexture(name,t);
+		std::shared_ptr<TextureBase> t = std::make_shared<TextureBase>(TextureLoader::LoadAPITexture(fileName));
+		if (t.get()) return LoadTexture(name,t);
+	}
+	return -1;
+}
+ShaderID AssetsManager::LoadShaderFromFile(std::string name, std::string fileName, bool isShared) {
+	if (renderer) {
+		std::shared_ptr<ShaderBase> s = std::make_shared<ShaderBase>(renderer->LoadShader(fileName));
+		if (s.get()) return LoadShader(name,s);
+	}
+	return -1;
+}
+MeshID AssetsManager::LoadMeshFromFile(std::string name, std::string fileName, bool isShared) {
+	if (renderer) {
+		MeshPtr m = std::make_shared<MeshGeometry>(renderer->LoadMesh(fileName));
+		if (m.get()) return LoadMesh(name,m);
+	}
+	return -1;
+}
+
+TexID AssetsManager::LoadTexture(std::string name, TexturePtr texture, bool isShared) {
+	if (isShared) {
+		if (texturePoolMap[name][0].get()) return -1;
+		if (texture.get()) {
+			texturePoolMap[name][0] = texture;
+			return 0;
+		}
+		return -1;
+	}
+	else {
+		if (texture.get()) {
+			TexID id = -1;
+			if (TexStackMap[name].size() > 0) {
+				id = TexStackMap[name].top();
+				texturePoolMap[name][id] = texture;
+				TexStackMap[name].pop();
+			}
+			else {
+				id = texturePoolMap.size();
+				texturePoolMap[name].push_back(texture);
+			}
+			return texturePoolMap[name].size();
+		}
+		return - 1;
 	}
 }
-void AssetsManager::LoadShaderFromFile(std::string name, std::string fileName) {
-	if (renderer) {
-		ShaderBase* s = renderer->LoadShader(fileName);
-		if (s) LoadShader(name,s);
+ShaderID AssetsManager::LoadShader(std::string name, ShaderPtr shader, bool isShared) {
+	if (isShared) {
+		if (shaderPoolMap[name][0].get()) return -1;
+		if (shader.get()) {
+			shaderPoolMap[name][0] = shader;
+			return 0;
+		}
+		return -1;
+	}
+	else {
+		if (shader.get()) {
+			TexID id = -1;
+			if (ShaderStackMap[name].size() > 0) {
+				id = ShaderStackMap[name].top();
+				shaderPoolMap[name][id] = shader;
+				ShaderStackMap[name].pop();
+			}
+			else {
+				id = shaderPoolMap.size();
+				shaderPoolMap[name].push_back(shader);
+			}
+			return shaderPoolMap[name].size();
+		}
+		return -1;
 	}
 }
-void AssetsManager::LoadMeshFromFile(std::string name, std::string fileName) {
-	if (renderer) {
-		MeshGeometry* m = renderer->LoadMesh(fileName);
-		if (m) LoadMesh(name,m);
+MeshID AssetsManager::LoadMesh(std::string name, MeshPtr mesh, bool isShared) {
+	if (isShared) {
+		if (meshPoolMap[name][0].get()) return -1;
+		if (mesh.get()) {
+			meshPoolMap[name][0] = mesh;
+			return 0;
+		}
+		return -1;
+	}
+	else {
+		if (mesh.get()) {
+			TexID id = -1;
+			if (MeshStackMap[name].size() > 0) {
+				id = MeshStackMap[name].top();
+				meshPoolMap[name][id] = mesh;
+				MeshStackMap[name].pop();
+			}
+			else {
+				id = meshPoolMap.size();
+				meshPoolMap[name].push_back(mesh);
+			}
+			return meshPoolMap[name].size();
+		}
+		return -1;
 	}
 }
 
-void AssetsManager::LoadTexture(std::string name, TextureBase* texture) {
-	if (texturePool[name] != nullptr) return;
-	if (texture) texturePool[name] = texture;
+TexturePtr AssetsManager::FetchTexture(std::string name, TexID id) {
+	if (id >= 0 && texturePoolMap[name].size() > id) {
+		return texturePoolMap[name][id];
+	}
+	else {
+		if(texturePoolMap[name].size() == 0)
+			texturePoolMap[name].clear();
+		return nullptr;
+	}
 }
-void AssetsManager::LoadShader(std::string name, ShaderBase* shader) {
-	if (shaderPool[name] != nullptr) return;
-	if (shader) shaderPool[name] = shader;
+ShaderPtr AssetsManager::FetchShader(std::string name, ShaderID id) {
+	if (id >= 0 && shaderPoolMap[name].size() > id) {
+		return shaderPoolMap[name][id];
+	}
+	else {
+		if(shaderPoolMap[name].size() == 0) 
+			shaderPoolMap[name].clear();
+		return nullptr;
+	}
 }
-void AssetsManager::LoadMesh(std::string name, MeshGeometry* mesh) {
-	if (meshPool[name] != nullptr) return;
-	if (mesh) meshPool[name] = mesh;
+MeshPtr AssetsManager::FetchMesh(std::string name, MeshID id) {
+	if (id >= 0 && meshPoolMap[name].size() > id) {
+		return meshPoolMap[name][id];
+	}
+	else {
+		if(meshPoolMap[name].size() == 0)
+			meshPoolMap[name].clear();
+		return nullptr;
+	}
 }
 
-TextureBase* AssetsManager::FetchTexture(std::string name) {
-	return texturePool[name];
+void AssetsManager::UnloadTexture(std::string name, TexID id) {
+	if (id >= 0 && texturePoolMap[name].size() > id) {
+		if (texturePoolMap[name][id].get()) {
+			texturePoolMap[name][id].reset();
+		}
+		if(id > 0) TexStackMap[name].push(id);
+	}
+	else {
+		if (texturePoolMap[name].size() == 0)
+			texturePoolMap.erase(name);
+	}
 }
-ShaderBase* AssetsManager::FetchShader(std::string name) {
-	return shaderPool[name];
+void AssetsManager::UnloadShader(std::string name, ShaderID id) {
+	if (id >= 0 && shaderPoolMap[name].size() > id) {
+		if (shaderPoolMap[name][id].get()) {
+			shaderPoolMap[name][id].reset();
+		}
+		if (id > 0) ShaderStackMap[name].push(id);
+	}
+	else {
+		if (shaderPoolMap[name].size() == 0)
+		shaderPoolMap.erase(name);
+	}
 }
-MeshGeometry* AssetsManager::FetchMesh(std::string name) {
-	return meshPool[name];
+void AssetsManager::UnloadMesh(std::string name, MeshID id) {
+	if (id >= 0 && meshPoolMap[name].size() > id) {
+		if (meshPoolMap[name][id].get()) {
+			meshPoolMap[name][id].reset();
+		}
+		if (id > 0) MeshStackMap[name].push(id);
+	}
+	else {
+		if (meshPoolMap[name].size() == 0)
+			meshPoolMap.erase(name);
+	}
 }
 
-void AssetsManager::UnloadTexture(std::string name) {
-	if(texturePool[name])
-		texturePool.erase(name);
+void AssetsManager::SetRenderer(RendererPtr renderer) {
+	AssetsManager::renderer = renderer;
 }
-void AssetsManager::UnloadShader(std::string name) {
-	if (shaderPool[name])
-		shaderPool.erase(name);
-}
-void AssetsManager::UnloadMesh(std::string name) {
-	if (meshPool[name])
-		meshPool.erase(name);
+
+RendererPtr AssetsManager::GetRenderer() {
+	return renderer;
 }

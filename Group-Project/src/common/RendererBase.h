@@ -30,6 +30,7 @@ namespace NCL {
 			friend class NCL::Window;
 
 			RendererBase(Window& w);
+			RendererBase(RendererBase& b);
 			virtual ~RendererBase();
 
 			virtual bool HasInitialised() const {return true;}

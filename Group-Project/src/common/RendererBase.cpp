@@ -6,6 +6,12 @@ RendererBase::RendererBase(Window& window) : hostWindow(window)	{
 
 }
 
+RendererBase::RendererBase(RendererBase& b) {
+	hostWindow = b.hostWindow;
+	currentWidth = b.currentWidth;
+	currentHeight = b.currentHeight;
+}
+
 
 RendererBase::~RendererBase()
 {

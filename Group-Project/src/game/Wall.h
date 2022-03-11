@@ -6,10 +6,10 @@
 
 class Wall : public GameEntity {
 public:
-	Wall(Transform buildTransform, RendererBase&  r);
+	Wall(Transform buildTransform);
 	~Wall();
 
-	void InitAssets(RendererBase& b); //Temp
+	void InitAssets(); //Temp
 
 	virtual btRigidBody* GetRigidBody() const override {
 		return wallRigidBody;

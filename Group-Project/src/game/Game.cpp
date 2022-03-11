@@ -54,21 +54,25 @@ Game::~Game() {
 void Game::InitWorld() {
 	world = new GameWorld();
 	renderer = new GameTechRenderer(*world);// new GameTechRenderer(*world);
-	AssetsManager::renderer = renderer;
+	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer);
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 }
 
 void Game::InitAssets() {
-	sphereMesh = renderer->LoadMesh("Sphere.msh");
-	cubeMesh = renderer->LoadMesh("Cube.msh");
-	capsuleMesh = renderer->LoadMesh("Capsule.msh");
+	AssetsManager::LoadMeshFromFile("SphereMesh", "Sphere.msh");
+	AssetsManager::LoadMeshFromFile("CubeMesh", "Cube.msh");
+	AssetsManager::LoadMeshFromFile("CapsuleMesh", "Capsule.msh");
+	AssetsManager::LoadShaderFromFile("GameTechShaderSet", "GameTechShader.set");
+	AssetsManager::LoadTextureFromFile("CheckerboardTex", "checkerboard.png");
 
-	basicTex = TextureLoader::LoadAPITexture("checkerboard.png");
-	basicShader = renderer->LoadShader("GameTechShader.set");
+	sphereMesh = AssetsManager::FetchMesh("SphereMesh");
+	cubeMesh = AssetsManager::FetchMesh("CubeMesh");;
+	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
-	//Replace with loadAsset Class
+	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
+	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
 void Game::InitPhysics() {

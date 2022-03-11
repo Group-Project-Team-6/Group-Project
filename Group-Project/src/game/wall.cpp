@@ -6,7 +6,7 @@ Wall::Wall(Transform buildTransform) {
 
 	transform = buildTransform;		
 
-	this->SetRenderObject(new RenderObject(&transform, wallMesh, wallTex, wallShader));
+	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	wallMotion = new btDefaultMotionState(bttransform);
@@ -22,8 +22,8 @@ Wall::~Wall() {
 void Wall::InitAssets() {
 
 	wallMesh = AssetsManager::FetchMesh("CubeMesh");
-
-	wallTex = AssetsManager::FetchTextureUnique("CheckerBoardTex");
+	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex","CheckerBoard.png",false);
+	if(texID != -1) wallTex = AssetsManager::FetchTexture("CheckerBoardTex",texID);
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

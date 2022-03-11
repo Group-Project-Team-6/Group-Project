@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
-#include "AssetsManager.h"
 
 //Namespaces?
 
@@ -31,7 +30,6 @@ Game::~Game() {
 
 	//delete world
 	delete world;
-	delete renderer;
 
 	//delete GameEntities
 	delete ground;
@@ -53,9 +51,9 @@ Game::~Game() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	renderer = new GameTechRenderer(*world);// new GameTechRenderer(*world);
+	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
-	world->SetRenderer(renderer);
+	world->SetRenderer(renderer.get());
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 }
@@ -100,7 +98,7 @@ void Game::InitScene() {
 		.SetScale(Vector3(100, 1, 100))
 		.SetOrientation(Quaternion(0, 0, 0, 1));
 
-	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh, basicTex, basicShader));
+	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
@@ -114,7 +112,7 @@ void Game::InitScene() {
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
 	Transform wallTransform;
-	walls[0] = new Wall(wallTransform,*renderer);
+	walls[0] = new Wall(wallTransform);
 	world->AddGameObject(walls[0]);
 	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
 	//maybe use foreach loops for static objects

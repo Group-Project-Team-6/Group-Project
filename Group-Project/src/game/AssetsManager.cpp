@@ -58,21 +58,24 @@ void AssetsManager::LoadAssets(std::string configFileName) {
 
 TexID AssetsManager::LoadTextureFromFile(std::string name, std::string fileName, bool isShared) {
 	if (renderer) {
-		std::shared_ptr<TextureBase> t = std::make_shared<TextureBase>(TextureLoader::LoadAPITexture(fileName));
+		std::shared_ptr<TextureBase> t;
+		t.reset(TextureLoader::LoadAPITexture(fileName));
 		if (t.get()) return LoadTexture(name,t);
 	}
 	return -1;
 }
 ShaderID AssetsManager::LoadShaderFromFile(std::string name, std::string fileName, bool isShared) {
 	if (renderer) {
-		std::shared_ptr<ShaderBase> s = std::make_shared<ShaderBase>(renderer->LoadShader(fileName));
+		std::shared_ptr<ShaderBase> s;
+		s.reset(renderer->LoadShader(fileName));
 		if (s.get()) return LoadShader(name,s);
 	}
 	return -1;
 }
 MeshID AssetsManager::LoadMeshFromFile(std::string name, std::string fileName, bool isShared) {
 	if (renderer) {
-		MeshPtr m = std::make_shared<MeshGeometry>(renderer->LoadMesh(fileName));
+		MeshPtr m;
+		m.reset(renderer->LoadMesh(fileName));
 		if (m.get()) return LoadMesh(name,m);
 	}
 	return -1;
@@ -80,9 +83,12 @@ MeshID AssetsManager::LoadMeshFromFile(std::string name, std::string fileName, b
 
 TexID AssetsManager::LoadTexture(std::string name, TexturePtr texture, bool isShared) {
 	if (isShared) {
-		if (texturePoolMap[name][0].get()) return -1;
+		if (texturePoolMap[name].size() > 0 && texturePoolMap[name][0].get()) return -1;
 		if (texture.get()) {
-			texturePoolMap[name][0] = texture;
+			if (texturePoolMap[name].size() <= 0)
+				texturePoolMap[name].push_back(texture);
+			else
+				texturePoolMap[name][0] = texture;
 			return 0;
 		}
 		return -1;
@@ -106,9 +112,12 @@ TexID AssetsManager::LoadTexture(std::string name, TexturePtr texture, bool isSh
 }
 ShaderID AssetsManager::LoadShader(std::string name, ShaderPtr shader, bool isShared) {
 	if (isShared) {
-		if (shaderPoolMap[name][0].get()) return -1;
+		if (shaderPoolMap[name].size() > 0 && shaderPoolMap[name][0].get()) return -1;
 		if (shader.get()) {
-			shaderPoolMap[name][0] = shader;
+			if (shaderPoolMap[name].size() <= 0)
+				shaderPoolMap[name].push_back(shader);
+			else
+				shaderPoolMap[name][0] = shader;
 			return 0;
 		}
 		return -1;
@@ -132,9 +141,12 @@ ShaderID AssetsManager::LoadShader(std::string name, ShaderPtr shader, bool isSh
 }
 MeshID AssetsManager::LoadMesh(std::string name, MeshPtr mesh, bool isShared) {
 	if (isShared) {
-		if (meshPoolMap[name][0].get()) return -1;
+		if (meshPoolMap[name].size() > 0 && meshPoolMap[name][0].get()) return -1;
 		if (mesh.get()) {
-			meshPoolMap[name][0] = mesh;
+			if (meshPoolMap[name].size() <= 0)
+				meshPoolMap[name].push_back(mesh);
+			else 
+				meshPoolMap[name][0] = mesh;
 			return 0;
 		}
 		return -1;

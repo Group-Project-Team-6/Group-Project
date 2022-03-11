@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameEntity.h"
+#include "AssetsManager.h"
 //#include "../CSC8503/GameTechRenderer.h"
 //#include "../common/TextureLoader.h"
 
@@ -47,7 +48,7 @@ private:
 	btRigidBody* wallRigidBody;
 
 	//graphics
-	MeshGeometry* wallMesh;
-	TextureBase* wallTex;
-	ShaderBase* wallShader;
+	MeshPtr wallMesh = nullptr;
+	TexturePtr wallTex = nullptr;
+	ShaderPtr wallShader = nullptr;
 };

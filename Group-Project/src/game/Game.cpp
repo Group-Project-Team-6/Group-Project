@@ -130,12 +130,10 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, ""); //Positions set from map data	 
-		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
-		world->AddGameObject(players[i]);
+		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		//world->AddGameObject(players[i]);
 	}
-
-	players[0]->GetTransform().SetPosition({ 0,0,0 });
 }
 
 void Game::UpdateGame(float dt) {
@@ -151,7 +149,7 @@ void Game::UpdateGame(float dt) {
 	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
-	//players[0]->GetBulletPool()->Animate();
+	players[0]->GetBulletPool()->Animate();
 
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +

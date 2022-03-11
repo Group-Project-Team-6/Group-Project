@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-Player::Player(Vector3 position, string newName) {
+Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 
 	name = newName;
@@ -25,7 +25,10 @@ Player::Player(Vector3 position, string newName) {
 
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
-	bullets = new BulletPool();
+	dynamicsWorld.addRigidBody(playerRigidBody);
+	world.AddGameObject(this);
+
+	bullets = new BulletPool(world, dynamicsWorld);
 }
 
 Player::~Player() {

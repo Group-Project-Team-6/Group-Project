@@ -55,7 +55,7 @@ public:
 		//Shoot with freelist
 		Vector3 shootPos({ 0, 0, player.GetTransform().GetPosition().z }); //Local Position;
 		btVector3 force(shootPos.x, shootPos.y, shootPos.z);
-		player.GetBulletPool()->Create(player.GetTransform(), force, 300, world, physicsWorld);
+		player.GetBulletPool()->Create(*player.GetRigidBody(), force, 300, world, physicsWorld);
 
 		//std::cout << &world << std::endl;
 		//std::cout << &physicsWorld << std::endl;

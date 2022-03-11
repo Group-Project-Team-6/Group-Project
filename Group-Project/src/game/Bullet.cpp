@@ -1,9 +1,9 @@
 #include "Bullet.h"
 
-Bullet::Bullet() : framesLeft(0) {
+Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
 	InitAssets(); //Temp, Replace with loadAsset Class
-	//bulletShape = new btSphereShape(0.2);
+	
 	bulletMass = 4;
 	bulletInertia = { 1, 1, 1 };
 	transform.SetPosition({ 0, 5, 0 });
@@ -12,15 +12,14 @@ Bullet::Bullet() : framesLeft(0) {
 	this->SetRenderObject(new RenderObject(&transform, bulletMesh, bulletTex, bulletShader));
 	transformConverter.BTNCLConvert(transform, bttransform);
 	bulletMotion = new btDefaultMotionState(bttransform);
+	bulletShape = new btSphereShape(0.2);
 	btRigidBody::btRigidBodyConstructionInfo playerCI(bulletMass, bulletMotion, bulletShape, bulletInertia);
 	bulletRigidBody = new btRigidBody(playerCI);
-	//this->setActive(0);
-	std::cout << transform.GetPosition().y << std::endl;
-	//bulletRigidBody->setActivationState(true);
-	
-	//this->setActive(true);
-	//needs adding to world
+	world.AddGameObject(this);
+	dynamicsWorld.addRigidBody(bulletRigidBody);
 
+	this->setActive(false);
+	bulletRigidBody->setActivationState(false);
 };
 
 Bullet::~Bullet() {
@@ -45,54 +44,42 @@ void Bullet::InitAssets() {
 	bulletShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 }
 
-void Bullet::Init(Transform& startingTransform, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
+void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
 	//Pos from parameter
-	world.AddGameObject(this);
-	framesLeft = lifeTime; 
-	//transform = startingTransform;
-	//transform.SetPosition({ startingTransform.GetPosition().x, startingTransform.GetPosition().y, startingTransform.GetPosition().z +20000 });
-	this->GetTransform().SetPosition({ 20, 20, 0 });
-	renderObject->GetTransform()->SetPosition({ 20, 20, 0 });
-	//transform.SetOrientation({1, 1, 1, 1});
-	//transform.SetScale({ .2, .2, .2 });
-	transformConverter.BTNCLConvert(transform, bttransform);
-
-	//this->setActive(true);
-	
-	//bulletRigidBody->setActivationState(true);
-	//bulletRigidBody->applyCentralImpulse({0, 0, 1000});
-	//this->setActive(1);
-	
-	std::cout << transform.GetPosition().y << std::endl;
-	std::cout << this->GetTransform().GetPosition().y << std::endl;
-	std::cout << GetRenderObject()->GetTransform()->GetPosition().y << std::endl;
-
-
+	//world.AddGameObject(this);
 	//physicsWorld.addRigidBody(bulletRigidBody);
 
-	//inUse(); //Eventually causes Exception
+	this->setActive(1);
+	bulletRigidBody->setActivationState(1);
 
-	//std::cout << &world << std::endl;
-	//std::cout << &physicsWorld << std::endl;
-	
+	framesLeft = lifeTime; 
+	float x =player.getWorldTransform().getOrigin().x();
+	float y = player.getWorldTransform().getOrigin().y();
+	float z = player.getWorldTransform().getOrigin().z();
+
+	//player.getWorldTransform().getBasis().getColumn(2);
+
+	bulletRigidBody->getWorldTransform().setOrigin({ x, y, z });
+
+	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
+	//player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * -1000);
 }
 
-bool Bullet::Animate() {
-	//if (!inUse()) return false;
+void Bullet::Animate() {
+	if (!inUse()) return;
 
-	/*framesLeft--;
+	framesLeft--;
 	if (framesLeft == 0) { //make while statement
 		RemoveFromPool();
-	}*/
+	}
 
-	return framesLeft;
+	return;
 }
 
 void Bullet::RemoveFromPool() {
-	//bulletRigidBody->clearForces();
-	//this->setActive(0);
-	//bulletRigidBody->setActivationState(0);
+	bulletRigidBody->clearForces();
+	this->setActive(0);
+	bulletRigidBody->setActivationState(0);
 	//set collision flags
-	
-	//!inUse();
+
 }

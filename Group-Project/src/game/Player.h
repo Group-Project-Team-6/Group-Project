@@ -6,7 +6,7 @@
 
 class Player : public GameEntity {
 public:
-	Player(Vector3 position, string name);
+	Player(Vector3 position, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
 	~Player();
 
 	virtual btRigidBody* GetRigidBody() const override{

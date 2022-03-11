@@ -37,6 +37,8 @@ public:
 		if (Window::GetMouse()->GetRelativePosition().x) {
 			return mouseHorizontal;
 		}
+
+
 			
 		return NULL;
 	}

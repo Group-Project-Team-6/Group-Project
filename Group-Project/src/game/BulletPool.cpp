@@ -7,12 +7,10 @@
 
 BulletPool::~BulletPool(){}
 
-void BulletPool::Create(Transform& shootingPos, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
+void BulletPool::Create(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
 	for (int i = 0; i < poolSize; i++) {
-		if (!bullets[i].inUse()) {
-			bullets[i].Init(shootingPos, force, lifeTime, world, physicsWorld);
-			//std::cout << &world << std::endl;
-			//std::cout << &physicsWorld << std::endl;
+		if (!bullets[i]->inUse()) {
+			bullets[i]->Init(player, force, lifeTime, world, physicsWorld);
 			return;
 		}
 	}
@@ -21,6 +19,6 @@ void BulletPool::Create(Transform& shootingPos, btVector3 force, int lifeTime, G
 void BulletPool::Animate() {
 
 	for (int i = 0; i < poolSize; i++) {
-		bullets[i].Animate();
+		bullets[i]->Animate();
 	}
 }

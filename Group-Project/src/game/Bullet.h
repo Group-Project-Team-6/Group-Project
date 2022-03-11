@@ -2,24 +2,26 @@
 #include "../common/Vector3.h"
 #include "GameEntity.h"
 
+
 class Bullet : public GameEntity{
 public:
-	Bullet();
+	Bullet() {
+		bulletMesh = nullptr;
+		bulletTex = nullptr;
+		bulletShader = nullptr;
+		bulletMotion = nullptr;
+		bulletShape = nullptr;
+		bulletRigidBody = nullptr;
+	};
+	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
-	void Init(Transform& startTransform, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
-	bool Animate();
+	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
+	void Animate();
 	void InitAssets();
 	void RemoveFromPool();
 
 	bool inUse() const { return framesLeft > 0; }
-
-	/*Bullet* getNext() const {
-		return state.next;
-	}
-	void SetNext(Bullet* next) {
-		state.next;
-	}*/
 
 	virtual btRigidBody* GetRigidBody() const override {
 		return bulletRigidBody;
@@ -46,8 +48,6 @@ public:
 
 private:
 	int framesLeft;
-	
-	Bullet* next;
 
 	OGLMesh* bulletMesh;
 	OGLTexture* bulletTex;

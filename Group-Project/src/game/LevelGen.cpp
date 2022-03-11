@@ -48,14 +48,12 @@ vector<string> LevelGen::GetLevelStrings() {
 }
 
 void LevelGen::LevelToString(int numLevel) {
-    //levelString.Add("");
     string tempString = "";
 
     for (int i = 0; i < height; i++)
     {
         for (int z = 0; z < length; z++)
         {
-            //levelString[numLevel] = levelString[numLevel] + level[z, i];
             tempString = tempString + level[z][i];
         }
     }
@@ -74,7 +72,6 @@ void LevelGen::AddStairs() {
         right = false;
         optionsCount = 0;
 
-        //int r = Random.Range(0, 3);
         int r = rand() % 4;
 
         if (r == 1)
@@ -132,24 +129,19 @@ bool LevelGen::neighbourStairCheck() {
 }
 
 void LevelGen::StairPositions() {
-    //stairPos = new int[numberOfStairs + 1, 2];
 
-    //int x = 0;
     for (int i = 0; i < height; i++)
     {
         for (int z = 0; z < length; z++)
         {
             if (level[z][i] == "A" || level[z][i] == "V" || level[z][i] == "<" || level[z][i] == ">")
             {
-                //stairPos[x, 0] = z;
-                //stairPos[x, 1] = i;
                 vector<int> tempIntVec;
                 tempIntVec.push_back(z);
                 tempIntVec.push_back(i);
 
                 stairPos.push_back(tempIntVec);
 
-                //x++;
             }
         }
     }
@@ -207,7 +199,6 @@ void LevelGen::PathToStairs() {
                         if (x != (length - 1)) { if (level[x + 1][y] == "#") { right = true; } }
 
 
-                        //int nextDirection = Random.Range(0, 4);
                         int nextDirection = rand() % 5;
 
                         if (nextDirection == 0)
@@ -260,9 +251,7 @@ void LevelGen::MazeGen() {
         }
     }
 
-    //posX = Random.Range(0, length); // pick random start
-    //posY = Random.Range(0, height);
-    posX = rand() % length;
+    posX = rand() % length; // pick random start
     posY = rand() % height;
 
     level[posX][posY] = "P";
@@ -318,7 +307,6 @@ void LevelGen::MazeGen() {
                 check = true;
                 while (check)
                 {
-                    //randInt1 = Random.Range(0, 4); // pick next wall
                     randInt1 = rand() % 5;
 
                     switch (randInt1)
@@ -364,14 +352,12 @@ void LevelGen::MazeGen() {
                 {
                     while (true) // check to not replace wall with path
                     {
-                        //randInt2 = Random.Range(0, 4);
                         randInt2 = rand() % 5;
                         if (randInt2 != randInt1) { break; }
                     }
                 }
                 else
                 {
-                    //randInt2 = Random.Range(0, 4);
                     randInt2 = rand() % 5;
                 }
                 switch (randInt2)
@@ -438,7 +424,6 @@ void LevelGen::MazeGen() {
                 if (z != (length - 1)) { if (level[z + 1][i] == "P") { paths++; } }
 
                 if (paths > 1) {
-                    //int r = Random.Range(0, 3);
                     int r = rand() % 4;
                     if (r == 0)
                     {

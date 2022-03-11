@@ -112,6 +112,7 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
+
 	Transform wallTransform;
 	walls[0] = new Wall(wallTransform);
 	world->AddGameObject(walls[0]);
@@ -170,18 +171,19 @@ void Game::UpdateGame(float dt) {
 
 void Game::LevelGeneration() {
 
-	int length = 5;
-	int width = 5;
+	int length = 15;
+	int width = 15;
 
 	LevelGen* levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
 
-	//create world here
 	Transform wallsTransform;
 	wallsTransform.SetPosition({ 50,2,0 });
-	wallsTransform.SetScale({ 1,1,1 });
+	wallsTransform.SetScale({ 5,5,5 });
 	wallsTransform.SetOrientation({ 1,0,0,1 });
+
+	/*
 	Wall* wall1 = new Wall(wallsTransform);
 	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
 	world->AddGameObject(wall1);
@@ -200,16 +202,19 @@ void Game::LevelGeneration() {
 	Wall* wall4 = new Wall(wallsTransform);
 	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
 	world->AddGameObject(wall4);
-	
+	*/
 
-	int unitLength = 10;
+	vector<Wall*> vecWalls;
+
+	float unitLength = 5; //int
+	int numWalls = 0;
 	for (int i = 0; i < 4; i++)
 	{
-		for (int level = 0; level < maze.size(); level++)
+		for (float level = 0; level < maze.size(); level++) //int
 		{
-			for (int l = 0; l < length; l++)
+			for (float l = 0; l < length; l++) //int
 			{
-				for (int w = 0; w < width; w++)
+				for (float w = 0; w < width; w++) //int
 				{
 					//AddChild(i, GetSymbol(level, l, w), level, l, w);
 					//AddChild(i, maze[level][l * width + w], level, l, w);
@@ -221,6 +226,12 @@ void Game::LevelGeneration() {
 					case 'P':
 						break;
 					case '#':
+						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(wallsTransform));
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+
 						break;
 					case 'S':
 						break;

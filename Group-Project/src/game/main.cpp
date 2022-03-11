@@ -25,7 +25,7 @@ int main() {
 	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();
-
+	bool toggleDebug = false;
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		if (dt > 0.1f) {
@@ -44,6 +44,9 @@ int main() {
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
+			toggleDebug = !toggleDebug;
+		}
+		if (toggleDebug) {
 			d->GetMemoryAllocationSize(*w);
 			d->GetMemoryAllocationSize(*d);
 			d->GetMemoryAllocationSize(*g);

@@ -15,6 +15,7 @@ add_executable(Game
 	Bullet.h
 	BulletPool.h
 	LevelGen.h	
+	DebugMode.h
 
 	main.cpp
 	Game.cpp
@@ -27,4 +28,5 @@ add_executable(Game
 	Bullet.cpp
 	BulletPool.cpp
 	LevelGen.cpp
+	DebugMode.cpp
 )

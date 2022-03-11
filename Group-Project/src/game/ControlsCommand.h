@@ -3,10 +3,11 @@
 #include "../CSC8503/GameWorld.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+#include "../Audio/AudioManager.h"
 
 class ControlsCommand {
 public:
 	virtual ~ControlsCommand() {}
 
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) = 0;
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) = 0;
 };

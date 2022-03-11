@@ -7,6 +7,8 @@
 #include "../game/GameEntity.h"
 #include "../common/RendererBase.h"
 
+#include "../game/DebugMode.h"
+
 class PhysicsTestScene {
 	public:
 		PhysicsTestScene(RendererBase* renderer);
@@ -14,6 +16,8 @@ class PhysicsTestScene {
 		~PhysicsTestScene();
 
 		void UpdateGame(float dt);
+
+		void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 	private:
 		void InitAssets();

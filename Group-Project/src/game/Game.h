@@ -1,13 +1,15 @@
 #pragma once
 
-#include "../game/GameEntity.h"
+#include "GameEntity.h"
 #include "../CSC8503/GameTechRenderer.h"
-#include "../game/TransformConverter.h"
+#include "TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
 #include "Player.h"
 #include "Items.h"
 #include "Wall.h"
+#include "DebugMode.h"
+#include "../Audio/AudioManager.h"
 
 //Encapsulate in namespace?
 
@@ -18,17 +20,19 @@ public:
 	~Game();
 
 	void UpdateGame(float dt);
+	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 protected:
 	void InitWorld();
 	void InitPhysics();
-	//void InitAudio();
+	void InitAudio();
 	void InitAssets();
 	void InitScene();
 	void InitItems();
 	//Build State Machine?
 	void LevelGeneration();
 	void InitCharacter();
+	
 	//void InitHUD
 	//InitNetworking?
 
@@ -38,6 +42,9 @@ protected:
 	//World
 	GameTechRenderer* renderer;
 	GameWorld* world;
+
+	//Audio
+	AudioManager* audioManager;
 
 	//Physics
 	int maxProxies;

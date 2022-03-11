@@ -9,7 +9,7 @@ Game::Game() {
 	command = nullptr;
 	InitWorld();
 	InitPhysics();
-	//void InitAudio();
+	InitAudio();
 	InitAssets();
 	InitScene();
 	InitItems();
@@ -87,6 +87,11 @@ void Game::InitPhysics() {
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
+void Game::InitAudio() {
+	audioManager = new AudioManager();
+	audioManager->InitSystem();
+}
+
 void Game::InitScene() {
 	world->ClearAndErase();
 	dynamicsWorld->clearForces();
@@ -139,12 +144,13 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
+	audioManager->AudioUpdate(world, dt);
 
 	//Networking to tell which player to camera
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
 	command = playerInput.handleInput();
 	if (command) {
-		command->execute(*players[0], *world, *dynamicsWorld); //Learn which player from networking
+		command->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
 	}
 
 	//Anims
@@ -235,5 +241,10 @@ void Game::LevelGeneration() {
 			//collGen.Collectables(level, maze[level], width, length, unitLength);
 		}
 	}
+}
 
+void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
+	d->GetMemoryAllocationSize(*world);
+	d->GetMemoryAllocationSize(*audioManager);
+	d->GetMemoryAllocationSize(*renderer);
 }

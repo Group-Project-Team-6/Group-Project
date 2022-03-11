@@ -11,7 +11,8 @@
 #include "../Common/TextureLoader.h"
 
 #include "../common/Matrix4.h"
-//#include "../CSC8503/GameWorld.h"
+#include "../CSC8503/GameWorld.h"
+#include "../game/Painter.h"
 
 namespace NCL {
 	class Maths::Vector3;
@@ -21,33 +22,38 @@ namespace NCL {
 
 		class VkTechRenderer : public VulkanRenderer {
 		public:
-			VkTechRenderer();
+			VkTechRenderer(GameWorld& world);
 			~VkTechRenderer();
 
 		protected:
+			void	InitVulkan();
 			void	RenderFrame()	override;
 
 			void	InitDefaultRenderPass() override { VulkanRenderer::InitDefaultRenderPass(); };
 			void	InitDefaultDescriptorPool() override { VulkanRenderer::InitDefaultDescriptorPool(); };
 
-
+			void	CreateNewEntityPipeline(GameEntity* entity);
 			//Matrix4 SetupDebugLineMatrix()	const;
 			//Matrix4 SetupDebugStringMatrix()const;
 
 			//VulkanShader* defaultShader;
-
-			//GameWorld& gameWorld;
-
-			//void BuildObjectList();
-			//void SortObjectList();
-			//void RenderShadowMap();
-			//void RenderCamera();
-			//void RenderSkybox();
+			void UpdatePaints();
+			void BuildObjectList();
+			void SortObjectList();
+			void RenderShadowMap();
+			void RenderCamera();
+			void RenderSkybox();
 
 			//void LoadSkybox();
 
+			void BuildPipeline();
 
-			//vector<const RenderObject*> activeObjects;
+
+			GameWorld& gameWorld;
+
+			vector<GameEntity*> activeObjects;
+			map<GameEntity*, VulkanPipeline*> ObjectPipelineMap;
+			vector<VulkanPipeline*> pipelinePool;
 
 			VulkanTexture* basicTex;
 			VulkanShader* skyboxShader;
@@ -78,8 +84,6 @@ namespace NCL {
 			VulkanPipeline pipeline;
 			
 			VulkanShaderBuilder builder;
-
-			float count;
 		};
 	}
 }

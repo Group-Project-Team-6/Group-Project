@@ -260,9 +260,7 @@ void LevelGen::MazeGen() {
         }
     }
 
-    //posX = Random.Range(0, length); // pick random start
-    //posY = Random.Range(0, height);
-    posX = rand() % length;
+    posX = rand() % length; // pick random start
     posY = rand() % height;
 
     level[posX][posY] = "P";

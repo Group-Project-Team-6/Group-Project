@@ -12,10 +12,13 @@ add_executable(Game
 	PlayerInput.h
 	TransformConverter.h
 	Wall.h
-	Bullet.h
-	BulletPool.h
-	LevelGen.h	
+	Bullet.h	
 	DebugMode.h
+	Painter.h
+	BulletPool.h
+	AssetsManager.h
+	LevelGen.h
+
 
 	main.cpp
 	Game.cpp
@@ -27,6 +30,9 @@ add_executable(Game
 	Wall.cpp
 	Bullet.cpp
 	BulletPool.cpp
-	LevelGen.cpp
 	DebugMode.cpp
+	Painter.cpp
+	AssetsManager.cpp
+	LevelGen.cpp
+
 )

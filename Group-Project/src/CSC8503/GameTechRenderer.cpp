@@ -5,6 +5,7 @@
 #include "../Common/Vector3.h"
 #include "../Common/TextureLoader.h"
 #include "Transform.h"
+#include "../game/Painter.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -15,10 +16,13 @@ using namespace CSC8503;
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world)	{
+	painted = false;
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
 	shadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
 
+	// Depth Attachment
 	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -31,11 +35,18 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	//FBO
 	glGenFramebuffers(1, &shadowFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,GL_TEXTURE_2D, shadowTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT ,GL_TEXTURE_2D, shadowTex, 0);
 	glDrawBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glGenFramebuffers(1, &PainterFBO);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		return;
+	}
 
 	glClearColor(1, 1, 1, 1);
 
@@ -43,6 +54,14 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	lightColour = Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 	lightRadius = 1000.0f;
 	lightPosition = Vector3(-200.0f, 60.0f, -200.0f);
+
+	//painter
+	painterShader = dynamic_cast<OGLShader*>(LoadShader("PaintEffectShader.set"));
+	painterMesh = new OGLMesh();
+	painterMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
+	painterMesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	painterMesh->SetVertexTextureCoords({ Vector2(0,1), Vector2(0,0),Vector2(1,0), Vector2(1,1) });
+	painterMesh->UploadToGPU();
 
 	//Skybox!
 	skyboxShader = new OGLShader("skyboxVertex.glsl", "skyboxFragment.glsl");
@@ -103,11 +122,51 @@ void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList();
+	UpdatePaints();
 	SortObjectList();
 	RenderShadowMap();
 	RenderSkybox();
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+}
+
+void GameTechRenderer::UpdatePaints() {
+	glDisable(GL_CULL_FACE);
+	//for (int i = 0; i < activeObjects.size(); i++) {
+	//	Painter::Paint(activeObjects[i], activeObjects[i]->GetTransform().GetPosition());
+	//}
+	PainterMap map = Painter::GetPaintInfos();
+	for (auto& it = map.begin(); it != map.end(); it++) {
+		glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
+		OGLTexture* objTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
+		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
+		GLuint tex = renderTex->GetObjectID();
+		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+
+		BindShader(painterShader);
+
+		BindTextureToShader(objTex, "hitTex", 0);
+
+		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+		glUniform3fv(hitUV,1,it->second.array);
+
+		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+		Matrix4 modelMatrix = it->first->GetTransform().GetMatrix();
+
+		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
+
+		BindMesh(it->first->GetRenderObject()->GetMesh());
+		//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+		//for (int i = 0; i < layerCount; ++i) {
+			DrawBoundMesh();
+		//}
+		glViewport(0, 0, currentWidth, currentHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	}
+	Painter::ClearPaint();
+	glEnable(GL_CULL_FACE);
 }
 
 void GameTechRenderer::BuildObjectList() {
@@ -116,10 +175,7 @@ void GameTechRenderer::BuildObjectList() {
 	gameWorld.OperateOnContents(
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
-				const RenderObject* g = o->GetRenderObject();
-				if (g) {
-					activeObjects.emplace_back(g);
-				}
+				activeObjects.emplace_back(o);
 			}
 		}
 	);
@@ -131,6 +187,7 @@ void GameTechRenderer::SortObjectList() {
 
 void GameTechRenderer::RenderShadowMap() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
@@ -148,11 +205,14 @@ void GameTechRenderer::RenderShadowMap() {
 	shadowMatrix = biasMatrix * mvMatrix; //we'll use this one later on
 
 	for (const auto&i : activeObjects) {
-		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+		Matrix4 modelMatrix = (*i).GetTransform().GetMatrix();
 		Matrix4 mvpMatrix	= mvMatrix * modelMatrix;
 		glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
-		BindMesh((*i).GetMesh());
-		int layerCount = (*i).GetMesh()->GetSubMeshCount();
+		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(i->GetRenderObject()->GetDefaultTexture());
+		BindTextureToShader(renderTex, "mainTex", 0);
+
+		BindMesh((*i).GetRenderObject()->GetMesh());
+		int layerCount = (*i).GetRenderObject()->GetMesh()->GetSubMeshCount();
 		for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh(i);
 		}
@@ -190,7 +250,7 @@ void GameTechRenderer::RenderSkybox() {
 	BindMesh(skyboxMesh);
 	DrawBoundMesh();
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -219,10 +279,11 @@ void GameTechRenderer::RenderCamera() {
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 
 	for (const auto&i : activeObjects) {
-		OGLShader* shader = (OGLShader*)(*i).GetShader();
+		//Draw to Texture
+		OGLShader* shader = (OGLShader*)(*i).GetRenderObject()->GetShader();
 		BindShader(shader);
-		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
-
+		BindTextureToShader((OGLTexture*)(*i).GetRenderObject()->GetDefaultTexture(), "mainTex", 0);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		if (activeShader != shader) {
 			projLocation	= glGetUniformLocation(shader->GetProgramID(), "projMatrix");
 			viewLocation	= glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
@@ -252,21 +313,20 @@ void GameTechRenderer::RenderCamera() {
 			activeShader = shader;
 		}
 
-		Matrix4 modelMatrix = (*i).GetTransform()->GetMatrix();
+		Matrix4 modelMatrix = (*i).GetTransform().GetMatrix();
 		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);			
 		
 		Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
 		glUniformMatrix4fv(shadowLocation, 1, false, (float*)&fullShadowMat);
 
-		glUniform4fv(colourLocation, 1, (float*)&i->GetColour());
+		glUniform4fv(colourLocation, 1, (float*)&i->GetRenderObject()->GetColour());
 
-		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
+		glUniform1i(hasVColLocation, !(*i).GetRenderObject()->GetMesh()->GetColourData().empty());
 
-		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1:0);
+		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetRenderObject()->GetDefaultTexture() ? 1:0);
 
-		BindMesh((*i).GetMesh());
-		int layerCount = (*i).GetMesh()->GetSubMeshCount();
-		
+		BindMesh((*i).GetRenderObject()->GetMesh());
+		int layerCount = (*i).GetRenderObject()->GetMesh()->GetSubMeshCount();
 		for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh(i);
 		}

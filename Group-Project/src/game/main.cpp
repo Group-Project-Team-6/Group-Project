@@ -21,9 +21,8 @@ int main() {
 		return -1;
 	}
 	srand(time(0));
-	w->ShowOSPointer(true);
-	w->LockMouseToWindow(false);
-
+	w->ShowOSPointer(false);
+	w->LockMouseToWindow(true);
 	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();

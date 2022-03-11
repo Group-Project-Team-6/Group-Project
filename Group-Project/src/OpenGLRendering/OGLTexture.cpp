@@ -30,7 +30,8 @@ OGLTexture::~OGLTexture()
 
 TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, int channels) {
 	OGLTexture* tex = new OGLTexture();
-
+	tex->SetHeight(height);
+	tex->SetWidth(width);
 	int dataSize = width * height * channels; //This always assumes data is 1 byte per channel
 
 	int sourceType = GL_RGB;

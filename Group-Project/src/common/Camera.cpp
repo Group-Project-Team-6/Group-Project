@@ -18,6 +18,9 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
 
 	yaw = playerYaw;
 
+	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
+	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
+
 	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);
 	pitch = std::max(pitch, -90.0f);

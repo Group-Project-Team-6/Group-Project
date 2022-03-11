@@ -1,8 +1,10 @@
 #pragma once
 
-#include "GameEntity.h"
+#include "../game/GameEntity.h"
+#include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
-#include "TransformConverter.h"
+#include "../Physics/VkTechRenderer.h"
+#include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
 #include "Player.h"
@@ -10,6 +12,8 @@
 #include "Wall.h"
 #include "DebugMode.h"
 #include "../Audio/AudioManager.h"
+#include "AssetsManager.h"
+
 
 //Encapsulate in namespace?
 
@@ -40,7 +44,7 @@ protected:
 	TransformConverter transformConverter;
 
 	//World
-	GameTechRenderer* renderer;
+	RendererPtr renderer = nullptr;//GameTechRenderer* renderer;
 	GameWorld* world;
 
 	//Audio
@@ -65,12 +69,12 @@ protected:
 	GameEntity* ground;
 
 	//Game Assets? Temp
-	OGLMesh* sphereMesh;
-	OGLMesh* cubeMesh;
-	OGLMesh* capsuleMesh;
+	MeshPtr sphereMesh = nullptr;
+	MeshPtr cubeMesh = nullptr;
+	MeshPtr capsuleMesh = nullptr;
 
-	OGLTexture* basicTex;
-	OGLShader* basicShader;
+	TexturePtr basicTex = nullptr;
+	ShaderPtr basicShader = nullptr;
 
 	//Controls
 	PlayerInput playerInput;

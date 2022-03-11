@@ -1,6 +1,7 @@
 #include "VulkanRenderer.h"
 #include "VulkanMesh.h"
 #include "VulkanTexture.h"
+#include "VulkanShaderBuilder.h"
 
 #include "../Common/TextureLoader.h"
 #include "VulkanUtility.h"
@@ -16,7 +17,7 @@ using namespace NCL;
 using namespace Rendering;
 
 VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
-	
+	std::cout << (int)window.GetScreenSize().x << " , " << (int)window.GetScreenSize().y << std::endl;
 	currentSwap = 0;
 
 	depthBuffer		= nullptr;
@@ -32,7 +33,7 @@ VulkanRenderer::VulkanRenderer(Window& window) : RendererBase(window) {
 	VulkanTexture::SetRenderer(this);
 	TextureLoader::RegisterAPILoadFunction(VulkanTexture::VulkanTextureFromFilename);
 
-	OnWindowResize((int)hostWindow.GetScreenSize().x, (int)hostWindow.GetScreenSize().y);
+	OnWindowResize((int)window.GetScreenSize().x, (int)window.GetScreenSize().y);
 
 	window.SetRenderer(this);	
 	
@@ -63,6 +64,29 @@ VulkanRenderer::~VulkanRenderer() {
 	instance.destroy();
 
 	delete[] frameBuffers;
+}
+
+MeshGeometry* VulkanRenderer::LoadMesh(const std::string& name) {
+	MeshGeometry*  into = new VulkanMesh(name);
+	into->SetPrimitiveType(GeometryPrimitive::Triangles);
+	into->UploadToGPU(this);
+	return into;
+}
+
+ShaderBase* VulkanRenderer::LoadShader(ShaderMap shaderStages) {
+	VulkanShaderBuilder builder = VulkanShaderBuilder()
+		.WithVertexBinary(shaderStages["vertex"])
+		.WithFragmentBinary(shaderStages["fragment"])
+		.WithGeometryBinary(shaderStages["geometry"])
+		.WithTessControlBinary(shaderStages["tessControl"])
+		.WithTessEvalBinary(shaderStages["tessEval"]);
+	return builder.Build(*this);
+}
+
+ShaderBase* VulkanRenderer::LoadShader(const std::string& shaderSet) {
+	ShaderMap map = LoadShaderSet(shaderSet, "Vulkan");
+	if (map.size() > 0) return LoadShader(map);
+	return nullptr;
 }
 
 bool VulkanRenderer::InitInstance() {

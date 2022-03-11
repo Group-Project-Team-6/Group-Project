@@ -12,9 +12,14 @@ _-_-_-_-_-_-_-""  ""
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Window.h"
+#include "MeshGeometry.h"
+#include "ShaderBase.h"
+#include <map>
+#include "..\common\Assets.h"
 
 namespace NCL {
 	namespace Rendering {
+		typedef std::map<std::string,std::string> ShaderMap;
 		enum class VerticalSyncState {
 			VSync_ON,
 			VSync_OFF,
@@ -42,7 +47,13 @@ namespace NCL {
 				return false;
 			}
 
+			virtual MeshGeometry* LoadMesh(const std::string& name) = 0;
+			virtual ShaderBase* LoadShader(ShaderMap shaderStages) = 0;
+			virtual ShaderBase* LoadShader(const std::string& shaderSet) = 0;
+			ShaderMap LoadShaderSet(const std::string& name, const std::string& platformName);
+
 		protected:
+
 			virtual void OnWindowResize(int w, int h) = 0;
 			virtual void OnWindowDetach() {}; //Most renderers won't care about this
 			

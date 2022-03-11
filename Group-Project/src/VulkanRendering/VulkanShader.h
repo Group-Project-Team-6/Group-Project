@@ -16,6 +16,7 @@
 #include "../Common/ShaderBase.h"
 #include <string>
 #include <vector>
+#include "VulkanRenderer.h"
 
 using std::string;
 using std::vector;
@@ -34,6 +35,7 @@ namespace NCL {
 
 		protected:
 			void AddBinaryShaderModule(const string& fromFile, ShaderStages stage);
+
 			vk::ShaderModule GetShaderModule(ShaderStages stage) const;
 
 			void SetSourceDevice(vk::Device d);

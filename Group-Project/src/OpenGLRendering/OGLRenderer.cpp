@@ -96,6 +96,23 @@ OGLRenderer::~OGLRenderer()	{
 #endif
 }
 
+MeshGeometry* OGLRenderer::LoadMesh(const std::string& name) {
+	MeshGeometry* into = new OGLMesh(name);
+	into->SetPrimitiveType(GeometryPrimitive::Triangles);
+	into->UploadToGPU(this);
+	return into;
+}
+
+ShaderBase* OGLRenderer::LoadShader(ShaderMap shaderStages) {
+	return new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+}
+
+ShaderBase* OGLRenderer::LoadShader(const std::string& shaderSet) {
+	ShaderMap map = LoadShaderSet(shaderSet, "OpenGL");
+	if (map.size() > 0) return LoadShader(map);
+	return nullptr;
+}
+
 void OGLRenderer::OnWindowResize(int w, int h)	 {
 	currentWidth	= w;
 	currentHeight	= h;
@@ -209,6 +226,7 @@ void OGLRenderer::BindTextureToShader(const TextureBase*t, const std::string& un
 	GLuint slot = glGetUniformLocation(boundShader->programID, uniform.c_str());
 
 	if (slot < 0) {
+		std::cout << "No slot left" << std::endl;
 		return;
 	}
 

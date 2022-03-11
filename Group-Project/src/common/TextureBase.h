@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace NCL {
 	namespace Rendering {
@@ -8,7 +9,6 @@ namespace NCL {
 			virtual ~TextureBase();
 		protected:
 			TextureBase();
-
 		};
 	}
 }

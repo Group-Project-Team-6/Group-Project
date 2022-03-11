@@ -13,6 +13,8 @@ public:
 	//string[] GetLevelStrings();
     vector<string> GetLevelStrings();
 
+    vector<string> TestMap() { return vector<string> {"AV<>", "S", "S"}; }
+
 private:
 
 	void LevelToString(int numLevel);

@@ -1,14 +1,14 @@
 #pragma once
 
 #include "GameEntity.h"
-#include "../CSC8503/GameTechRenderer.h"
+#include "../common/RendererBase.h"
 #include "../common/TextureLoader.h"
 
 class Item : public GameEntity {
 public:
-	Item(Vector3 position, int score);
+	Item(Vector3 position, int score, RendererBase& r);
 	~Item();
-	void InitAssets(); //Temp
+	void InitAssets(RendererBase& r); //Temp
 	void OnPlayerCollide();
 
 	virtual btRigidBody* GetRigidBody() const override {
@@ -48,7 +48,7 @@ private:
 	//Anim
 
 	//graphics
-	OGLMesh* itemMesh;
-	OGLTexture* itemTex;
-	OGLShader* itemShader;
+	MeshGeometry* itemMesh;
+	TextureBase* itemTex;
+	ShaderBase* itemShader;
 };

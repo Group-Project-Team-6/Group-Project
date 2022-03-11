@@ -9,7 +9,7 @@ Wall::Wall(Transform buildTransform) {
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	wallMotion = new btDefaultMotionState(bttransform);
-	wallShape = new btCapsuleShape(0.5, 1);
+	wallShape = new btBoxShape({ 1,1,1 });
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0, wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
 }

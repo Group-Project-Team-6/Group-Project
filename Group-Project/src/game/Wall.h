@@ -19,6 +19,8 @@ public:
 		wallRigidBody = newRigidBody;
 	}
 
+	void UpdateCollShape(float x, float y, float z) { wallShape->setLocalScaling({(x / 2.0f), (y / 2.0f), (z / 2.0f)}); }
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = wallRigidBody->getWorldTransform();

@@ -181,6 +181,7 @@ void PhysicsTestScene::InitUI(){
 void PhysicsTestScene::SetMainLevel()
 {
 	//Init Main Scene
+	//gameMode.reset(new MainGameMode(this));
 }
 
 void PhysicsTestScene::SetSettingLevel()

@@ -18,10 +18,10 @@ void MainMenu::Draw()
         return;
     }
     ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
-    
+/*    
     if (ImGui::CollapsingHeader("Physics"))
     {
-        /*if (ImGui::BeginTable("PhysicsTable", 3))
+        if (ImGui::BeginTable("PhysicsTable", 3))
         {
             ImGui::TableNextColumn();
 
@@ -39,9 +39,9 @@ void MainMenu::Draw()
         float pScale = game->physics->GetPenaltyScale();
         if (ImGui::SliderFloat("Penalty Scale", &pScale, 0.0f, 5000.0f))
             game->physics->SetPenaltyScale(pScale);
-        */
+        
     }
-
+*/
     if (ImGui::CollapsingHeader("Render"))
     {
         static bool fullscreen = Window::GetWindow()->IsFullScreen();

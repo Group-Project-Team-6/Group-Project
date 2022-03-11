@@ -13,6 +13,7 @@ add_library(GUI
     State.h
     StateMachine.h
     StateTransition.h
+    GameMode.h
 
     GameUI.cpp
     MainMenu.cpp

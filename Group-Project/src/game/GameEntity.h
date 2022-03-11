@@ -8,6 +8,7 @@
 #include "../common/TextureLoader.h"
 
 #include "../CSC8503/Transform.h"
+#include "AssetsManager.h"
 
 #include <vector>
 

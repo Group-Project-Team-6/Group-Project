@@ -6,9 +6,9 @@
 
 class Item : public GameEntity {
 public:
-	Item(Vector3 position, int score, RendererBase& r);
+	Item(Vector3 position, int score);
 	~Item();
-	void InitAssets(RendererBase& r); //Temp
+	void InitAssets(); //Temp
 	void OnPlayerCollide();
 
 	virtual btRigidBody* GetRigidBody() const override {
@@ -48,7 +48,7 @@ private:
 	//Anim
 
 	//graphics
-	MeshGeometry* itemMesh;
-	TextureBase* itemTex;
-	ShaderBase* itemShader;
+	MeshPtr itemMesh;
+	TexturePtr itemTex;
+	ShaderPtr itemShader;
 };

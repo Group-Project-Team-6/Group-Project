@@ -136,34 +136,38 @@ void GameTechRenderer::UpdatePaints() {
 	//	Painter::Paint(activeObjects[i], activeObjects[i]->GetTransform().GetPosition());
 	//}
 	PainterMap map = Painter::GetPaintInfos();
-	for (auto& it = map.begin(); it != map.end(); it++) {
-		glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
-		OGLTexture* objTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
-		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
-		GLuint tex = renderTex->GetObjectID();
-		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+	for (int i = 0; i < activeObjects.size(); i++) {
+		for (auto& it = map.begin(); it != map.end(); it++) {
+			glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
+			OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
+			OGLTexture* renderTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
+			/*OGLTexture* objTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
+			OGLTexture* renderTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());*/
+			GLuint tex = renderTex->GetObjectID();
+			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
 
-		BindShader(painterShader);
+			BindShader(painterShader);
 
-		BindTextureToShader(objTex, "hitTex", 0);
+			BindTextureToShader(objTex, "hitTex", 0);
 
-		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
-		glUniform3fv(hitUV,1,it->second.array);
+			int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+			glUniform3fv(hitUV, 1, it->second.array);
 
-		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
-		Matrix4 modelMatrix = it->first->GetTransform().GetMatrix();
+			int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+			Matrix4 modelMatrix = activeObjects[i]->GetTransform().GetMatrix();
 
-		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
+			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
-		BindMesh(it->first->GetRenderObject()->GetMesh());
-		//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
-		//for (int i = 0; i < layerCount; ++i) {
+			BindMesh(activeObjects[i]->GetRenderObject()->GetMesh());
+			//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+			//for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh();
-		//}
-		glViewport(0, 0, currentWidth, currentHeight);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//}
+			glViewport(0, 0, currentWidth, currentHeight);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		}
 	}
 	Painter::ClearPaint();
 	glEnable(GL_CULL_FACE);

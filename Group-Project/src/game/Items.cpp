@@ -1,14 +1,14 @@
 #include "Items.h"
 
-Item::Item(Vector3 position, int score, RendererBase& r) {
-	InitAssets(r); //Temp, Replace with loadAsset Class
+Item::Item(Vector3 position, int score) {
+	InitAssets(); //Temp, Replace with loadAsset Class
 
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
 		.SetOrientation({ 0, 0, 0, 1 });
 
-	this->SetRenderObject(new RenderObject(&transform, itemMesh, itemTex, itemShader));
+	this->SetRenderObject(new RenderObject(&transform, itemMesh.get(), itemTex.get(), itemShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	itemScore = score;
@@ -22,15 +22,13 @@ Item::~Item() {
 	delete itemMotion;
 	delete itemShape;
 	delete itemRigidBody;
-	
-	delete itemMesh;
-	delete itemShader;
 }
 
-void Item::InitAssets(RendererBase& r) {
-	itemMesh = r.LoadMesh("Cube.msh");
-	itemTex = TextureLoader::LoadAPITexture("checkerboard.png");
-	itemShader = r.LoadShader("GameTechShader.set");;
+void Item::InitAssets() {
+	itemMesh = AssetsManager::FetchMesh("CubeMesh");
+	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
+	if (texID != -1) itemTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	itemShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
 void Item::OnPlayerCollide() {

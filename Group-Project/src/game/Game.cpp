@@ -2,6 +2,7 @@
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
 #include "LevelGen.h"
+#include "Painter.h"
 
 //Namespaces?
 
@@ -126,7 +127,7 @@ void Game::InitScene() {
 }
 
 void Game::InitItems() {
-	items[0] = new Item({ 0, 2, 0 }, 1,*renderer);
+	items[0] = new Item({ 0, 2, 0 }, 1);
 	world->AddGameObject(items[0]);
 	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
 }
@@ -142,6 +143,7 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
+
 	audioManager->AudioUpdate(world, dt);
 
 	//Networking to tell which player to camera

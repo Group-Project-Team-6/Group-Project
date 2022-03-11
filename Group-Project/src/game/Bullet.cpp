@@ -31,7 +31,7 @@ Bullet::~Bullet() {
 
 void Bullet::InitAssets() {
 	bulletMesh = AssetsManager::FetchMesh("CubeMesh");
-	bulletTex = AssetsManager::FetchTexture("CheckerBoardTex");
+	bulletTex = AssetsManager::FetchTexture("CheckerboardTex");
 	bulletShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

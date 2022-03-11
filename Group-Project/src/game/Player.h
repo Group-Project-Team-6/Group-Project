@@ -52,9 +52,9 @@ public:
 
 protected:
 	//Temp
-	OGLMesh* playerMesh;
-	OGLTexture* playerTex;
-	OGLShader* playerShader;
+	MeshPtr playerMesh;
+	TexturePtr playerTex;
+	ShaderPtr playerShader;
 
 	//general
 	string name;

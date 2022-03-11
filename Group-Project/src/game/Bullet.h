@@ -48,11 +48,11 @@ public:
 	}
 
 private:
-	int frameLeft;
-	union {
-		struct {
-			//pos data
-		} live;
+	int framesLeft;
+
+	MeshPtr bulletMesh;
+	TexturePtr bulletTex;
+	ShaderPtr bulletShader;
 
 	//Transform transform;
 	//btTransform bttransform;

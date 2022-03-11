@@ -1,5 +1,4 @@
 #include "../common/Window.h"
-#include "../Physics/PhysicsTestScene.h"
 #include "Game.h"
 #include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"

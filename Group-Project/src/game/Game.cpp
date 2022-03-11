@@ -295,3 +295,9 @@ void Game::LevelGeneration() {
 	}
 
 }
+
+void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
+	d->GetMemoryAllocationSize(*world);
+	d->GetMemoryAllocationSize(*audioManager);
+	d->GetMemoryAllocationSize(*renderer);
+}

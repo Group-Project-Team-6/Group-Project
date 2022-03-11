@@ -1,24 +1,28 @@
 #pragma once
 #include "../common/Vector3.h"
 #include "GameEntity.h"
+#include "AssetsManager.h"
+
 
 class Bullet : public GameEntity{
 public:
-	Bullet() : framesLeft(0) {}; //Intialise variables to null
+	Bullet() {
+		bulletMesh = nullptr;
+		bulletTex = nullptr;
+		bulletShader = nullptr;
+		bulletMotion = nullptr;
+		bulletShape = nullptr;
+		bulletRigidBody = nullptr;
+	};
+	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
-	void Init(Transform startTransform, int lifeTime, RendererBase& renderer);
-	bool Animate();
-	void InitAssets(RendererBase& r);
+	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
+	void Animate();
+	void InitAssets();
+	void RemoveFromPool();
 
 	bool inUse() const { return framesLeft > 0; }
-
-	/*Bullet* getNext() const {
-		return state.next;
-	}
-	void SetNext(Bullet* next) {
-		state.next;
-	}*/
 
 	virtual btRigidBody* GetRigidBody() const override {
 		return bulletRigidBody;
@@ -44,15 +48,14 @@ public:
 	}
 
 private:
-	static bool initialized;
 	int framesLeft;
-	
-	Bullet* next;
 
-	static MeshGeometry* bulletMesh;
-	static TextureBase* bulletTex;
-	static ShaderBase* bulletShader;
+	MeshPtr bulletMesh;
+	TexturePtr bulletTex;
+	ShaderPtr bulletShader;
 
+	//Transform transform;
+	//btTransform bttransform;
 	TransformConverter transformConverter;
 	int bulletMass;
 	btVector3 bulletInertia;

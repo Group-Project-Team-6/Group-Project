@@ -31,14 +31,13 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-		transform.UpdateMatrix();
 
 	}
 
 private:
 	int score;
 	TransformConverter transformConverter;
-	//Transform transform;
+	Transform transform;
 	btTransform bttransform;
 	int itemScore;
 

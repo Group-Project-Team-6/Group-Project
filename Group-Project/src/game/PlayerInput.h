@@ -19,27 +19,26 @@ public:
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 			return spaceBar;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::UP)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::W)) {
 			return wKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::DOWN)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::S)) {
 			return sKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::LEFT)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::A)) {
 			return aKey;
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::D)) {
 			return dKey;
 		}
 		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
 			return leftMouse;
 		}
-		/*if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::E)) {
-			return  mouseHorizontal;
-		}*/
 		if (Window::GetMouse()->GetRelativePosition().x) {
 			return mouseHorizontal;
 		}
+
+
 			
 		return NULL;
 	}

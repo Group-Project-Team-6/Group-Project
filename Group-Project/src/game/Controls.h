@@ -53,20 +53,12 @@ class leftMouseCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
 		//Shoot with freelist
-		//player.Shoot();
-		Bullet* bullet = new Bullet();
-		bullet->Init(player.GetShootingPosition(), 5);
-		world.AddGameObject(bullet);
-		physicsWorld.addRigidBody(bullet->GetRigidBody());
-		float yaw = (player.GetShootingPosition().GetOrientation().x) * 100; //Needs to be euler
-		float pitch = (player.GetShootingPosition().GetOrientation().y) * 100;
-		float roll = (player.GetShootingPosition().GetOrientation().z) * 100;
-		bullet->GetRigidBody()->applyCentralImpulse({ yaw, pitch, roll });
-		//no memory deallocation
-		//memory fragmentation
-		// 
-		//player.GetBulletPool().Create(player.GetShootingPosition(), 5);
-		//world.AddGameObject();
-		//physicsWorld.addRigidBody();
+		Vector3 shootPos({ 0, 0, player.GetTransform().GetPosition().z }); //Local Position;
+		btVector3 force(shootPos.x, shootPos.y, shootPos.z);
+		player.GetBulletPool()->Create(*player.GetRigidBody(), force, 300, world, physicsWorld);
+
+		//std::cout << &world << std::endl;
+		//std::cout << &physicsWorld << std::endl;
+
 	}
 };

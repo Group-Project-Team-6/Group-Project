@@ -266,6 +266,7 @@ void GameTechRenderer::RenderCamera() {
 
 		BindMesh((*i).GetMesh());
 		int layerCount = (*i).GetMesh()->GetSubMeshCount();
+		
 		for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh(i);
 		}

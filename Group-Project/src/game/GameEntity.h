@@ -56,6 +56,10 @@ public:
 		bttransform = newbtTransform;
 	}
 
+	void setActive(bool state) {
+		isActive = state;
+	}
+
 	bool IsActive() const {
 		return isActive;
 	}

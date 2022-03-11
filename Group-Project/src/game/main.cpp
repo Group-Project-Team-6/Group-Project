@@ -17,8 +17,8 @@ int main() {
 		return -1;
 	}
 	srand(time(0));
-	w->ShowOSPointer(true);
-	w->LockMouseToWindow(false);
+	w->ShowOSPointer(false);
+	w->LockMouseToWindow(true);
 
 	//VkTechRenderer* renderer = new VkTechRenderer();
 

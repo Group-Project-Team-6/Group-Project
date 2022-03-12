@@ -141,23 +141,24 @@ void Game::InitCharacter() {
 }
 
 void Game::UpdateGame(float dt) {
+
 	dynamicsWorld->stepSimulation(dt, 0);
 
 	audioManager->AudioUpdate(world, dt);
 
-	//Networking to tell which player to camera
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+
 	std::queue<ControlsCommand*>& command = playerInput.handleInput();
 	while (command.size() > 0) {
 		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
 		command.pop();
 	}
 
-	//Anims
 	world->UpdatePositions(); //Maybe Change
-	renderer->Render();
-	players[0]->GetBulletPool()->Animate(dt);
 
+	renderer->Render();
+
+	players[0]->GetBulletPool()->Animate(dt);
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +
 		std::to_string(character->GetTransform().GetPosition().y) +
@@ -167,6 +168,9 @@ void Game::UpdateGame(float dt) {
 		character->GetbtTransform().getOrigin().x())
 		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
 		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
+	//t.Tick();
+	//float ti = t.GetTimeDeltaSeconds();
+	//if (ti > 0.01) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 }
 
 void Game::LevelGeneration() {

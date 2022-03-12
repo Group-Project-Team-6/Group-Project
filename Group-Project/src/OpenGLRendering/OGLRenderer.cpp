@@ -131,7 +131,7 @@ void OGLRenderer::RenderFrame()		{
 }
 
 void OGLRenderer::EndFrame()		{
-	DrawDebugData();
+	//DrawDebugData();
 }
 
 void OGLRenderer::SwapBuffers()   {

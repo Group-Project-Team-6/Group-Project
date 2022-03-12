@@ -121,6 +121,7 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 void GameTechRenderer::RenderFrame() {
+	GameTimer t;
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList();
@@ -134,6 +135,9 @@ void GameTechRenderer::RenderFrame() {
 	RenderSkybox();
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+	t.Tick();
+	if (t.GetTimeDeltaSeconds() > 1.0f / 40.0f)std::cout << "Rendering Time: " << t.GetTimeDeltaSeconds() << "s -- fps: " << 1.0f / t.GetTimeDeltaSeconds() << std::endl;
+
 }
 
 void GameTechRenderer::initTextures() {

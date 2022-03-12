@@ -21,7 +21,7 @@ void main(void)
 		float AngleX = abs(atan(d.z/d.y));
 		float s = 0;
 		float radius = 0.5;
-		int r = 5;
+		int r = 2;
 		for(int i = 1; i <= r ; i++){
 			s+=(sin(i*AngleZ)+sin(i*AngleY)+sin(i*AngleX))*0.333;
 		}

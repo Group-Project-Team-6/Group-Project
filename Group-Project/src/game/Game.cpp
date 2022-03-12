@@ -7,7 +7,6 @@
 //Namespaces?
 
 Game::Game() {
-	command = nullptr;
 	InitWorld();
 	InitPhysics();
 	InitAudio();
@@ -127,9 +126,9 @@ void Game::InitScene() {
 }
 
 void Game::InitItems() {
-	items[0] = new Item({ 0, 2, 0 }, 1);
+	/*items[0] = new Item({ 0, 2, 0 }, 1);
 	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
+	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
 }
 
 void Game::InitCharacter() {
@@ -148,15 +147,16 @@ void Game::UpdateGame(float dt) {
 
 	//Networking to tell which player to camera
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
-	command = playerInput.handleInput();
-	if (command) {
-		command->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+	std::queue<ControlsCommand*>& command = playerInput.handleInput();
+	while (command.size() > 0) {
+		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+		command.pop();
 	}
 
 	//Anims
 	world->UpdatePositions(); //Maybe Change
 	renderer->Render();
-	players[0]->GetBulletPool()->Animate();
+	players[0]->GetBulletPool()->Animate(dt);
 
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +

@@ -25,11 +25,12 @@ out vec4 fragColor;
 
 void main(void)
 {
+	float alphafactor = clamp(length(cameraPos - IN.worldPos)*0.1,0.0,1.0);
 	if(texture(mainTex, IN.texCoord).a < 0.5) discard;
 	float shadow = 1.0; // New !
 	
 	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
+		shadow = textureProj ( shadowTex , IN.shadowProj);	
 	}
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
@@ -57,7 +58,7 @@ void main(void)
 	
 	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 	
-	fragColor.a = albedo.a;
+	fragColor.a = albedo.a * alphafactor;
 
 //fragColor.rgb = IN.normal;
 

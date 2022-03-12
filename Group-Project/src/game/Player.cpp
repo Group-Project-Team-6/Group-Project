@@ -4,7 +4,7 @@
 Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 
-	name = newName;
+	name = "player" + newName;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -41,7 +41,7 @@ Player::~Player() {
 }
 
 void Player::InitAssets() {
-	playerMesh = AssetsManager::FetchMesh("CubeMesh");
+	playerMesh = AssetsManager::FetchMesh("CapsuleMesh");
 	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
 	if (texID != -1) playerTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
 	playerShader = AssetsManager::FetchShader("GameTechShaderSet");

@@ -27,6 +27,7 @@ namespace NCL {
 
 			GameWorld&	gameWorld;
 
+			void initTextures();
 			void UpdatePaints();
 			void BuildObjectList();
 			void SortObjectList();
@@ -58,6 +59,7 @@ namespace NCL {
 			Vector3		lightPosition;
 
 			bool painted;
+			bool initTexture;
 		};
 	}
 }

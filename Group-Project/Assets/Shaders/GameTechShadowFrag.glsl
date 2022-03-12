@@ -13,5 +13,5 @@ void main(void)
 {
 	vec4 colour = texture(mainTex, IN.texCoord);
 	if(colour.a < 0.5f) discard;
-	fragColor = vec4(1,1,1,1);
+	fragColor = colour;
 }

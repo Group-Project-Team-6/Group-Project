@@ -11,6 +11,7 @@ uniform vec4	lightColour;
 uniform vec3	cameraPos;
 
 uniform bool hasTexture;
+uniform bool isTransparent;
 
 in Vertex
 {
@@ -25,7 +26,8 @@ out vec4 fragColor;
 
 void main(void)
 {
-	float alphafactor = clamp(length(cameraPos - IN.worldPos)*0.1,0.0,1.0);
+	float alphafactor = 1.0;
+	if(isTransparent && length(cameraPos - IN.worldPos) < 11) alphafactor = clamp(length(cameraPos - IN.worldPos)*0.01,0.0,1.0);
 	if(texture(mainTex, IN.texCoord).a < 0.5) discard;
 	float shadow = 1.0; // New !
 	

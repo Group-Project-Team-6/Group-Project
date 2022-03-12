@@ -259,7 +259,7 @@ void Game::LevelGeneration() {
 					case '#':
 						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
 						vecWalls.push_back(new Wall(wallsTransform));
-						wallsTransform.SetScale({ scale, scale, scale });
+						wallsTransform.SetScale({ scale + 0.01f, scale + 0.01f, scale + 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;

@@ -38,6 +38,7 @@ namespace NCL {
 			void LoadSkybox();
 
 			vector<GameEntity*> activeObjects;
+			vector<GameEntity*> activeTransparentObjects;
 
 			OGLMesh* painterMesh;
 			OGLShader* painterShader;

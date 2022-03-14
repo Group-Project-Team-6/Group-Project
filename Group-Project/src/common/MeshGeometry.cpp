@@ -8,6 +8,10 @@
 #include <fstream>
 #include <string>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h> 
+
 using namespace NCL;
 using namespace Maths;
 
@@ -114,6 +118,7 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 	file >> filetype;
 
 	if (filetype != "MeshGeometry") {
+		LoadOtherFileType(Assets::MESHDIR + filename);
 		std::cout << "File is not a MeshGeometry file!" << std::endl;
 		return;
 	}
@@ -159,6 +164,27 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 		}
 	}
 	file.close();
+}
+
+void MeshGeometry::LoadOtherFileType(const std::string& filename) {
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(Assets::MESHDIR + filename, aiProcess_JoinIdenticalVertices);
+	if (scene) {
+		positions.clear();
+		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++) {
+			aiVector3D v = scene->mMeshes[0]->mVertices[i];
+			positions.push_back({ v.x,v.y,v.z });
+		}
+		for (int i = 0; i < scene->mMeshes[0]->mFaces->mNumIndices; i++) {
+			int index = scene->mMeshes[0]->mFaces->mIndices[i];
+			indices.push_back(index);
+		}
+		//if (scene->mMeshes[0]->
+
+		delete scene;
+		return;
+	}
+	std::cout << "Cannot read file! Name: " << Assets::MESHDIR + filename << std::endl;
 }
 
 MeshGeometry::~MeshGeometry()

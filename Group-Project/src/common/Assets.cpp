@@ -5,12 +5,12 @@
 
 using namespace NCL;
 
-std::string Assets::SHADERDIR = "../../../Shaders/";
-std::string Assets::MESHDIR = "../../../Meshes/";
-std::string Assets::TEXTUREDIR = "../../../Textures/";
-std::string Assets::SOUNDSDIR = "../../../Sounds/";
-std::string Assets::FONTSSDIR = "../../../Fonts/";
-std::string Assets::DATADIR = "../../../Data/";
+std::string Assets::SHADERDIR = "../../../Assets/Shaders/";
+std::string Assets::MESHDIR = "../../../Assets/Meshes/";
+std::string Assets::TEXTUREDIR = "../../../Assets/Textures/";
+std::string Assets::SOUNDSDIR = "../../../Assets/Sounds/";
+std::string Assets::FONTSSDIR = "../../../Assets/Fonts/";
+std::string Assets::DATADIR = "../../../Assets/Data/";
 
 bool Assets::ReadTextFile(const std::string &filepath, std::string& result) {
 	std::ifstream file(filepath, std::ios::in);

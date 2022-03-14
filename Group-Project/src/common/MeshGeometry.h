@@ -137,6 +137,7 @@ namespace NCL {
 	protected:
 		MeshGeometry();
 		MeshGeometry(const std::string&filename);
+		void LoadOtherFileType(const std::string& filename);
 
 		void ReadRigPose(std::ifstream& file, vector<Matrix4>& into);
 		void ReadJointParents(std::ifstream& file);

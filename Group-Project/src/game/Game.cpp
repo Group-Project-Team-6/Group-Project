@@ -143,7 +143,7 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 
-	dynamicsWorld->stepSimulation(dt, 1);
+	dynamicsWorld->stepSimulation(dt, 0);
 
 	audioManager->AudioUpdate(world, dt);
 

@@ -59,11 +59,11 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//painter
 	painterShader = dynamic_cast<OGLShader*>(LoadShader("PaintEffectShader.set"));
-	painterMesh = new OGLMesh();
+	/*painterMesh = new OGLMesh();
 	painterMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
 	painterMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	painterMesh->SetVertexTextureCoords({ Vector2(0,1), Vector2(0,0),Vector2(1,0), Vector2(1,1) });
-	painterMesh->UploadToGPU();
+	painterMesh->UploadToGPU();*/
 
 	//Skybox!
 	skyboxShader = new OGLShader("skyboxVertex.glsl", "skyboxFragment.glsl");

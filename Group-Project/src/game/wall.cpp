@@ -22,7 +22,7 @@ Wall::~Wall() {
 
 void Wall::InitAssets() {
 
-	wallMesh = AssetsManager::FetchMesh("CubeMesh");
+	wallMesh = AssetsManager::FetchMesh("WallMesh");
 	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex","CheckerBoard.png",false);
 	if(texID != -1) wallTex = AssetsManager::FetchTexture("CheckerBoardTex",texID);
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");

@@ -128,15 +128,11 @@ void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
-		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
-		//world->AddGameObject(players[i]);
 	}
 }
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
-	
-
 	audioManager->AudioUpdate(world, dt);
 
 	//Networking to tell which player to camera
@@ -145,6 +141,8 @@ void Game::UpdateGame(float dt) {
 	if (command) {
 		command->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
 	}
+
+	dynamicsWorld->se
 
 	//Anims
 	world->UpdatePositions(); //Maybe Change

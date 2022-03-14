@@ -8,7 +8,7 @@ Item::Item(Vector3 position, int score) {
 		.SetScale({ 1, 1, 1 })
 		.SetOrientation({ 0, 0, 0, 1 });
 
-	this->SetRenderObject(new RenderObject(&transform, itemMesh, itemTex, itemShader));
+	this->SetRenderObject(new RenderObject(&transform, itemMesh.get(), itemTex.get(), itemShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	itemScore = score;
@@ -22,22 +22,13 @@ Item::~Item() {
 	delete itemMotion;
 	delete itemShape;
 	delete itemRigidBody;
-	
-	delete itemMesh;
-	delete itemShader;
 }
 
 void Item::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("Cube.msh", &itemMesh);
-
-	itemTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	itemShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	itemMesh = AssetsManager::FetchMesh("CubeMesh");
+	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
+	if (texID != -1) itemTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	itemShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
 void Item::OnPlayerCollide() {

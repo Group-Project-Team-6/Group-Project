@@ -238,7 +238,7 @@ const char *Common_MediaPath(const char *fileName)
     if (!pathPrefix)
     {
         const char *emptyPrefix = "";
-        const char *mediaPrefix = "../Assets/Sounds/";
+        const char *mediaPrefix = "../../../Assets/Sounds/";
         FILE *file = fopen(fileName, "r");
         if (file)
         {

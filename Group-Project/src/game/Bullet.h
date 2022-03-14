@@ -1,6 +1,7 @@
 #pragma once
 #include "../common/Vector3.h"
 #include "GameEntity.h"
+#include "AssetsManager.h"
 
 
 class Bullet : public GameEntity{
@@ -49,9 +50,9 @@ public:
 private:
 	int framesLeft;
 
-	OGLMesh* bulletMesh;
-	OGLTexture* bulletTex;
-	OGLShader* bulletShader;
+	MeshPtr bulletMesh;
+	TexturePtr bulletTex;
+	ShaderPtr bulletShader;
 
 	//Transform transform;
 	//btTransform bttransform;

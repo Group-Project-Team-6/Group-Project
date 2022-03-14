@@ -21,6 +21,10 @@ namespace NCL {
 			 OGLTexture();
 			 OGLTexture(GLuint texToOwn);
 			~OGLTexture();
+			void SetHeight(int height) { this->height = height; }
+			void SetWidth(int width) { this->width = width; }
+			int GetHeight() { return height; }
+			int GetWidth() { return width; }
 
 			static TextureBase* RGBATextureFromData(char* data, int width, int height, int channels);
 
@@ -31,6 +35,8 @@ namespace NCL {
 			}
 		protected:						
 			GLuint texID;
+			int height;
+			int width;
 		};
 	}
 }

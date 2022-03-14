@@ -16,6 +16,7 @@ add_library(Common
 	Mouse.cpp
 	Plane.cpp
 	Quaternion.cpp
+	RenderObject.cpp
 	RendererBase.cpp
 	ShaderBase.cpp
 	SimpleFont.cpp
@@ -46,9 +47,7 @@ add_library(Common
 	Mouse.h
 	Plane.h
 	Quaternion.h
-	RenderObject.cpp
 	RenderObject.h
-	RendererBase.cpp
 	RendererBase.h
 	ShaderBase.h
 	SimpleFont.h

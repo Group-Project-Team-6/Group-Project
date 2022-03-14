@@ -1,13 +1,19 @@
 #pragma once
 
 #include "../game/GameEntity.h"
+#include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
+#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
 #include "Player.h"
 #include "Items.h"
 #include "Wall.h"
+#include "DebugMode.h"
+#include "../Audio/AudioManager.h"
+#include "AssetsManager.h"
+
 
 //Encapsulate in namespace?
 
@@ -18,17 +24,19 @@ public:
 	~Game();
 
 	void UpdateGame(float dt);
+	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 protected:
 	void InitWorld();
 	void InitPhysics();
-	//void InitAudio();
+	void InitAudio();
 	void InitAssets();
 	void InitScene();
 	void InitItems();
 	//Build State Machine?
-	//void LevelGeneration();
+	void LevelGeneration();
 	void InitCharacter();
+	
 	//void InitHUD
 	//InitNetworking?
 
@@ -36,8 +44,11 @@ protected:
 	TransformConverter transformConverter;
 
 	//World
-	GameTechRenderer* renderer;
+	RendererPtr renderer = nullptr;//GameTechRenderer* renderer;
 	GameWorld* world;
+
+	//Audio
+	AudioManager* audioManager;
 
 	//Physics
 	int maxProxies;
@@ -58,12 +69,12 @@ protected:
 	GameEntity* ground;
 
 	//Game Assets? Temp
-	OGLMesh* sphereMesh;
-	OGLMesh* cubeMesh;
-	OGLMesh* capsuleMesh;
+	MeshPtr sphereMesh = nullptr;
+	MeshPtr cubeMesh = nullptr;
+	MeshPtr capsuleMesh = nullptr;
 
-	OGLTexture* basicTex;
-	OGLShader* basicShader;
+	TexturePtr basicTex = nullptr;
+	ShaderPtr basicShader = nullptr;
 
 	//Controls
 	PlayerInput playerInput;

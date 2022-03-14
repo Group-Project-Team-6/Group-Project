@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameEntity.h"
+#include "AssetsManager.h"
 //#include "../CSC8503/GameTechRenderer.h"
 //#include "../common/TextureLoader.h"
 
@@ -31,11 +32,15 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
+		transform.UpdateMatrix();
 
 	}
+
+	void UpdatePaintTex();
+
 private:
 	TransformConverter transformConverter;
-	Transform transform;
+	//Transform transform;
 	btTransform bttransform;
 
 	btDefaultMotionState* wallMotion;
@@ -43,7 +48,7 @@ private:
 	btRigidBody* wallRigidBody;
 
 	//graphics
-	OGLMesh* wallMesh;
-	OGLTexture* wallTex;
-	OGLShader* wallShader;
+	MeshPtr wallMesh = nullptr;
+	TexturePtr wallTex = nullptr;
+	ShaderPtr wallShader = nullptr;
 };

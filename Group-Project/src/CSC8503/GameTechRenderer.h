@@ -27,6 +27,7 @@ namespace NCL {
 
 			GameWorld&	gameWorld;
 
+			void UpdatePaints();
 			void BuildObjectList();
 			void SortObjectList();
 			void RenderShadowMap();
@@ -35,7 +36,11 @@ namespace NCL {
 
 			void LoadSkybox();
 
-			vector<const RenderObject*> activeObjects;
+			vector<GameEntity*> activeObjects;
+
+			OGLMesh* painterMesh;
+			OGLShader* painterShader;
+			GLuint		PainterFBO;
 
 			OGLShader*  skyboxShader;
 			OGLMesh*	skyboxMesh;
@@ -44,12 +49,15 @@ namespace NCL {
 			//shadow mapping things
 			OGLShader*	shadowShader;
 			GLuint		shadowTex;
+			GLuint		shadowColourTex;
 			GLuint		shadowFBO;
 			Matrix4     shadowMatrix;
 
 			Vector4		lightColour;
 			float		lightRadius;
 			Vector3		lightPosition;
+
+			bool painted;
 		};
 	}
 }

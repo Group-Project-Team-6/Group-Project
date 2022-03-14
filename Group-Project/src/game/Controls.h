@@ -1,17 +1,19 @@
 #pragma once
 #include "ControlsCommand.h"
+#include "../Audio/AudioManager.h"
 
 class JumpCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//Needs on Ground Bool
 		player.GetRigidBody()->applyCentralImpulse({ 0, 1000, 0});
+		audioManager.SetJump();
 	}
 };
 
 class moveForwardCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//player.GetRigidBody()->applyCentralImpulse({ 0, 0, 100 });
 		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * -1000);
 	}
@@ -19,7 +21,7 @@ public:
 
 class moveBackwardCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//player.GetRigidBody()->applyCentralImpulse({ 0, 0, -100 });
 		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * 1000);
 	}
@@ -27,7 +29,7 @@ public:
 
 class moveLeftCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//player.GetRigidBody()->applyCentralImpulse({ 100, 0, 0 });
 		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * -1000);
 	}
@@ -35,7 +37,7 @@ public:
 
 class moveRightCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//player.GetRigidBody()->applyCentralImpulse({ -100, 0, 0 });
 		player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * 1000);
 	}
@@ -43,7 +45,7 @@ public:
 
 class MouseHorizontal : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld, AudioManager& audioManager) override {
 		player.GetRigidBody()->setAngularVelocity({ 0, -(Window::GetMouse()->GetRelativePosition().x) , 0 });		
 	}	
 };
@@ -51,7 +53,7 @@ public:
 
 class leftMouseCommand : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) override {
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) override {
 		//Shoot with freelist
 		Vector3 shootPos({ 0, 0, player.GetTransform().GetPosition().z }); //Local Position;
 		btVector3 force(shootPos.x, shootPos.y, shootPos.z);

@@ -10,7 +10,7 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 	transform.SetPosition({ 0, 5, 0 });
 	transform.SetOrientation({ 1, 1, 1, 1 });
 	transform.SetScale({ .2, .2, .2 });
-	this->SetRenderObject(new RenderObject(&transform, bulletMesh, bulletTex, bulletShader));
+	this->SetRenderObject(new RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 	bulletMotion = new btDefaultMotionState(bttransform);
 	bulletShape = new btSphereShape(0.2);
@@ -21,28 +21,19 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 
 	this->setActive(false);
 	bulletRigidBody->setActivationState(false);
+	//set collision flags
 };
 
 Bullet::~Bullet() {
 	delete bulletMotion;
 	delete bulletShape;
 	delete bulletRigidBody;
-
-	delete bulletMesh;
-	delete bulletShader;
 }
 
 void Bullet::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("sphere.msh", &bulletMesh);
-
-	bulletTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	bulletShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	bulletMesh = AssetsManager::FetchMesh("SphereMesh");
+	bulletTex = AssetsManager::FetchTexture("CheckerboardTex");
+	bulletShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
 void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
@@ -51,26 +42,18 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld&
 	bulletRigidBody->setActivationState(1);
 	framesLeft = lifeTime; 
 
-	//float yaw = player.getWorldTransform().getRotation().getY();
-
-	//player.getWorldTransform().getOrigin();
-	//player.getWorldTransform().getRotation().getEulerZYX(player.getWorldTransform().getOrigin().x(), player.getWorldTransform().getOrigin().y(), player.getWorldTransform().getOrigin().z());
 	btScalar x, y, z;
 	player.getWorldTransform().getRotation().getEulerZYX(z,y,x);
-	float test = z > 0 ? (z- y) : y;
+	float angle = z > 0 ? (z- y) : y;
 	
-	bulletRigidBody->getWorldTransform().getOrigin().setX(-sin(test));
+	bulletRigidBody->getWorldTransform().getOrigin().setX(-sin(angle));
 	bulletRigidBody->getWorldTransform().getOrigin().setY(0);
-	bulletRigidBody->getWorldTransform().getOrigin().setZ(-cos(test));
+	bulletRigidBody->getWorldTransform().getOrigin().setZ(-cos(angle));
 
 	bulletRigidBody->getWorldTransform().setOrigin((bulletRigidBody->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
 	btQuaternion quat;
-	quat.setEuler(test, 0, 0);
+	quat.setEuler(angle, 0, 0);
 	bulletRigidBody->getWorldTransform().setRotation(quat);
-	/*position = { playersPosition.x + 10 * sin(Maths::DegreesToRadians(yaw)),
-		playersPosition.y + 5,
-		playersPosition.z + 10 * cos(Maths::DegreesToRadians(yaw)) };*/
-	//bulletRigidBody->getWorldTransform().setBasis(x, y, z);
 
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
 }
@@ -83,6 +66,8 @@ void Bullet::Animate() {
 		RemoveFromPool();
 	}
 
+	//Bullet tick to limit speed of shootiung
+
 	return;
 }
 
@@ -90,6 +75,6 @@ void Bullet::RemoveFromPool() {
 	bulletRigidBody->clearForces();
 	this->setActive(0);
 	bulletRigidBody->setActivationState(0);
-	//set collision flags
+	//needs to be called on collision
 
 }

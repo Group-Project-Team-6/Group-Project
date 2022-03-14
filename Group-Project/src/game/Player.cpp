@@ -10,7 +10,7 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 		.SetScale({ 1, 1, 1 })
 		.SetOrientation({ 0, 1, 0, 1 });
 
-	this->SetRenderObject(new RenderObject(&transform, playerMesh, playerTex, playerShader));
+	this->SetRenderObject(new RenderObject(&transform, playerMesh.get(), playerTex.get(), playerShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	playerMotion = new btDefaultMotionState(bttransform);
@@ -37,22 +37,13 @@ Player::~Player() {
 	delete playerConstraint;
 	delete playerRigidBody;
 
-	delete playerMesh;
-	delete playerShader;
 	delete bullets;
 }
 
 void Player::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("capsule.msh", &playerMesh);
-
-	playerTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	playerShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-
+	playerMesh = AssetsManager::FetchMesh("CapsuleMesh");
+	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
+	if (texID != -1) playerTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	playerShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

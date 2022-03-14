@@ -5,7 +5,7 @@
 using namespace NCL;
 using namespace Win32Code;
 
-Win32Window::Win32Window(const std::string& title, int sizeX, int sizeY, bool fullScreen, int offsetX, int offsetY)	{
+Win32Window::Win32Window(const std::string& title,int sizeX, int sizeY, bool fullScreen, int offsetX, int offsetY)	{
 	forceQuit		= false;
 	init			= false;
 	mouseLeftWindow	= false;
@@ -21,7 +21,6 @@ Win32Window::Win32Window(const std::string& title, int sizeX, int sizeY, bool fu
 
 	fullScreen ? position.x = 0.0f : position.x = (float)offsetX;
 	fullScreen ? position.y = 0.0f : position.y = (float)offsetY;
-
 	windowInstance = GetModuleHandle(NULL);
 
 	WNDCLASSEX windowClass;
@@ -71,7 +70,6 @@ Win32Window::Win32Window(const std::string& title, int sizeX, int sizeY, bool fu
                         NULL,				// No Menus!
 						windowInstance,		// application handle
                         NULL);				// No multiple windows!
-
  	if(!windowHandle) {
 		std::cout << "Window::Window(): Failed to create window!" << std::endl;
 		return;

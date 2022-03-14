@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameEntity.h"
-#include "../CSC8503/GameTechRenderer.h"
+#include "../common/RendererBase.h"
 #include "../common/TextureLoader.h"
 
 class Item : public GameEntity {
@@ -48,7 +48,7 @@ private:
 	//Anim
 
 	//graphics
-	OGLMesh* itemMesh;
-	OGLTexture* itemTex;
-	OGLShader* itemShader;
+	MeshPtr itemMesh;
+	TexturePtr itemTex;
+	ShaderPtr itemShader;
 };

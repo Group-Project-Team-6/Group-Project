@@ -1,16 +1,18 @@
 #include "Wall.h"
+#include "AssetsManager.h"
 
 Wall::Wall(Transform buildTransform) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 
 	transform = buildTransform;		
 
-	this->SetRenderObject(new RenderObject(&transform, wallMesh, wallTex, wallShader));
+	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	wallMotion = new btDefaultMotionState(bttransform);
-	wallShape = new btCapsuleShape(0.5, 1);
-	btRigidBody::btRigidBodyConstructionInfo itemCI(0, wallMotion, wallShape, { 0,0,0 });
+	Vector3 scale = transform.GetScale();
+	wallShape = new btBoxShape({ (scale.x / 2.0f), (scale.y / 2.0f), (scale.z / 2.0f) });
+	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
 }
 
@@ -19,15 +21,10 @@ Wall::~Wall() {
 }
 
 void Wall::InitAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
 
-	loadFunc("Cube.msh", &wallMesh);
-
-	wallTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	wallShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	wallMesh = AssetsManager::FetchMesh("CubeMesh");
+	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex","CheckerBoard.png",false);
+	if(texID != -1) wallTex = AssetsManager::FetchTexture("CheckerBoardTex",texID);
+	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

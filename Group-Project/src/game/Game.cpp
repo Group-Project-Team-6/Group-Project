@@ -61,7 +61,7 @@ void Game::InitWorld() {
 void Game::InitAssets() {
 	AssetsManager::LoadMeshFromFile("SphereMesh", "Sphere.msh");
 	AssetsManager::LoadMeshFromFile("CubeMesh", "Cube.msh");
-	AssetsManager::LoadMeshFromFile("WallMesh", "box3.fbx");
+	AssetsManager::LoadMeshFromFile("WallMesh", "corridor_walls.fbx");
 	AssetsManager::LoadMeshFromFile("CapsuleMesh", "Capsule.msh");
 	AssetsManager::LoadShaderFromFile("GameTechShaderSet", "GameTechShader.set");
 	AssetsManager::LoadTextureFromFile("CheckerboardTex", "checkerboard.png");

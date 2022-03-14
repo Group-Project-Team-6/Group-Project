@@ -47,6 +47,7 @@ int main() {
 			toggleDebug = !toggleDebug;
 		}
 		if (toggleDebug) {
+			std::cout << "\x1B[2J\x1B[H";
 			d->GetMemoryAllocationSize(*w);
 			d->GetMemoryAllocationSize(*d);
 			d->GetMemoryAllocationSize(*g);
@@ -54,7 +55,6 @@ int main() {
 			d->GetFPS(dt);
 		}
 		g->UpdateGame(dt);
-		//d->GetFPS(dt);
 	}
 
 	Window::DestroyGameWindow();

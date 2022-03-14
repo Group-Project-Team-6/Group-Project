@@ -2,6 +2,7 @@
 #include "ControlsCommand.h"
 #include "Controls.h"
 #include "../common/Window.h"
+#include <queue>
 
 class PlayerInput {
 public:
@@ -15,32 +16,32 @@ public:
 		delete dKey;
 	}
 
-	ControlsCommand* handleInput() {
+	std::queue<ControlsCommand*>& handleInput() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
-			return spaceBar;
+			ControlQueue.push(spaceBar);
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::W)) {
-			return wKey;
+			ControlQueue.push(wKey);
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::S)) {
-			return sKey;
+			ControlQueue.push(sKey);
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::A)) {
-			return aKey;
+			ControlQueue.push(aKey);
 		}
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::D)) {
-			return dKey;
+			ControlQueue.push(dKey);
 		}
 		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
-			return leftMouse;
+			ControlQueue.push(leftMouse);
 		}
 		if (Window::GetMouse()->GetRelativePosition().x) {
-			return mouseHorizontal;
+			ControlQueue.push(mouseHorizontal);
 		}
 
 
 			
-		return NULL;
+		return ControlQueue;
 	}
 
 private:
@@ -51,5 +52,5 @@ private:
 	ControlsCommand* dKey = (ControlsCommand*) new moveRightCommand();
 	ControlsCommand* leftMouse = (ControlsCommand*) new leftMouseCommand();
 	ControlsCommand* mouseHorizontal = (ControlsCommand*) new MouseHorizontal();
-
+	std::queue<ControlsCommand*> ControlQueue;
 };

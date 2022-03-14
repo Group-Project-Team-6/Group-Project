@@ -3,11 +3,11 @@
 #include "PlayerInput.h"
 #include "LevelGen.h"
 #include "Painter.h"
+#include <math.h>
 
 //Namespaces?
 
 Game::Game() {
-	command = nullptr;
 	InitWorld();
 	InitPhysics();
 	InitAudio();
@@ -119,9 +119,9 @@ void Game::InitScene() {
 }
 
 void Game::InitItems() {
-	items[0] = new Item({ 0, 2, 0 }, 1);
+	/*items[0] = new Item({ 0, 2, 0 }, 1);
 	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
+	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
 }
 
 void Game::InitCharacter() {
@@ -132,23 +132,27 @@ void Game::InitCharacter() {
 }
 
 void Game::UpdateGame(float dt) {
+
 	dynamicsWorld->stepSimulation(dt, 0);
+
 	audioManager->AudioUpdate(world, dt);
 
-	//Networking to tell which player to camera
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
-	command = playerInput.handleInput();
-	if (command) {
-		command->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+
+	std::queue<ControlsCommand*>& command = playerInput.handleInput();
+	while (command.size() > 0) {
+		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+		command.pop();
 	}
 
-	dynamicsWorld->se
-
-	//Anims
 	world->UpdatePositions(); //Maybe Change
+	GameTimer t;
 	renderer->Render();
-	players[0]->GetBulletPool()->Animate();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 
+	players[0]->GetBulletPool()->Animate(dt);
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +
 		std::to_string(character->GetTransform().GetPosition().y) +
@@ -158,6 +162,9 @@ void Game::UpdateGame(float dt) {
 		character->GetbtTransform().getOrigin().x())
 		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
 		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
+	//t.Tick();
+	//float ti = t.GetTimeDeltaSeconds();
+	//if (ti > 0.01) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 }
 
 void Game::LevelGeneration() {
@@ -230,27 +237,28 @@ void Game::LevelGeneration() {
 
 	float unitLength = scale; //int
 	int numWalls = 0;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level++) //int
+		for (float level = 0; level < maze.size(); level+=1.0f) //int
 		{
-			for (float l = 0; l < length; l++) //int
+			for (float l = 0; l < length; l+=1.0f) //int
 			{
-				for (float w = 0; w < width; w++) //int
+				for (float w = 0; w < width; w+=1.0f) //int
 				{
 					//AddChild(i, GetSymbol(level, l, w), level, l, w);
 					//AddChild(i, maze[level][l * width + w], level, l, w);
 
 					char ch = maze[level][l * width + w];
-
+					Vector3 position ({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40});
 					switch (ch)
 					{
 					case 'P':
 						break;
 					case '#':
-						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						wallsTransform.SetPosition(position);
+						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
 						vecWalls.push_back(new Wall(wallsTransform));
-						wallsTransform.SetScale({ scale, scale, scale });
+						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;

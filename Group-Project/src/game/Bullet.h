@@ -17,8 +17,8 @@ public:
 	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
-	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
-	void Animate();
+	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable);
+	void Animate(float dt);
 	void InitAssets();
 	void RemoveFromPool();
 
@@ -48,7 +48,7 @@ public:
 	}
 
 private:
-	int framesLeft;
+	float framesLeft;
 
 	MeshPtr bulletMesh;
 	TexturePtr bulletTex;
@@ -63,4 +63,6 @@ private:
 	btDefaultMotionState* bulletMotion;
 	btCollisionShape* bulletShape;
 	btRigidBody* bulletRigidBody;
+
+	bool paintable;
 };

@@ -78,5 +78,4 @@ protected:
 
 	//Controls
 	PlayerInput playerInput;
-	ControlsCommand* command;
 };

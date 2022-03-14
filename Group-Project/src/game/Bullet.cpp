@@ -1,10 +1,11 @@
 #include "Bullet.h"
 #include <math.h>
+#include "Painter.h"
 
 Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
 	InitAssets(); //Temp, Replace with loadAsset Class
-	
+	name = "Bullet";
 	bulletMass = 4;
 	bulletInertia = { 1, 1, 1 };
 	transform.SetPosition({ 0, 5, 0 });
@@ -36,11 +37,13 @@ void Bullet::InitAssets() {
 	bulletShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
-void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
+void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable) {
 
 	this->setActive(1);
 	bulletRigidBody->setActivationState(1);
 	framesLeft = lifeTime; 
+
+	this->paintable = paintable;
 
 	btScalar x, y, z;
 	player.getWorldTransform().getRotation().getEulerZYX(z,y,x);
@@ -58,11 +61,11 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld&
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
 }
 
-void Bullet::Animate() {
+void Bullet::Animate(float dt) {
 	if (!inUse()) return;
-
-	framesLeft--;
-	if (framesLeft == 0) { //make while statement
+	if(paintable) Painter::Paint(this, this->GetTransform().GetPosition());
+	framesLeft -=dt;
+	if (framesLeft <= 0.0f) { //make while statement
 		RemoveFromPool();
 	}
 

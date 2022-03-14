@@ -73,6 +73,10 @@ public:
 		return worldID;
 	}
 
+	std::string GetName() {
+		return name;
+	}
+
 	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();

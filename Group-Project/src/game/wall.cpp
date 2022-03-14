@@ -3,7 +3,7 @@
 
 Wall::Wall(Transform buildTransform) {
 	InitAssets(); //Temp, Replace with loadAsset Class
-
+	name = "Wall";
 	transform = buildTransform;		
 
 	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));

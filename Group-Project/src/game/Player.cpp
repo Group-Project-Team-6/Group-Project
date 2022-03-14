@@ -4,7 +4,7 @@
 Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 
-	name = newName;
+	name = "player" + newName;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })

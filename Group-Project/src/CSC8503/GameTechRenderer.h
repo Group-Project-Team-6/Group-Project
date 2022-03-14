@@ -15,7 +15,7 @@ namespace NCL {
 		class GameTechRenderer : public OGLRenderer	{
 		public:
 			GameTechRenderer(GameWorld& world);
-			~GameTechRenderer();
+			~GameTechRenderer();  
 
 		protected:
 			void RenderFrame()	override;
@@ -27,6 +27,7 @@ namespace NCL {
 
 			GameWorld&	gameWorld;
 
+			void initTextures();
 			void UpdatePaints();
 			void BuildObjectList();
 			void SortObjectList();
@@ -37,6 +38,7 @@ namespace NCL {
 			void LoadSkybox();
 
 			vector<GameEntity*> activeObjects;
+			vector<GameEntity*> activeTransparentObjects;
 
 			OGLMesh* painterMesh;
 			OGLShader* painterShader;
@@ -58,6 +60,7 @@ namespace NCL {
 			Vector3		lightPosition;
 
 			bool painted;
+			bool initTexture;
 		};
 	}
 }

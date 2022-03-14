@@ -11,6 +11,7 @@ uniform vec4	lightColour;
 uniform vec3	cameraPos;
 
 uniform bool hasTexture;
+uniform bool isTransparent;
 
 in Vertex
 {
@@ -25,11 +26,13 @@ out vec4 fragColor;
 
 void main(void)
 {
+	float alphafactor = 1.0;
+	if(isTransparent && length(cameraPos - IN.worldPos) < 11) alphafactor = clamp(length(cameraPos - IN.worldPos)*0.01,0.0,1.0);
 	if(texture(mainTex, IN.texCoord).a < 0.5) discard;
 	float shadow = 1.0; // New !
 	
 	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN . shadowProj ) * 0.5f;
+		shadow = textureProj ( shadowTex , IN.shadowProj);	
 	}
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
@@ -57,7 +60,7 @@ void main(void)
 	
 	fragColor.rgb = pow(fragColor.rgb, vec3(1.0 / 2.2f));
 	
-	fragColor.a = albedo.a;
+	fragColor.a = albedo.a * alphafactor;
 
 //fragColor.rgb = IN.normal;
 

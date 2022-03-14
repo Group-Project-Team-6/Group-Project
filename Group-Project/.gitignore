@@ -1,4 +1,5 @@
-/build/
+./build/
+./runtime/
 
 # Prerequisites
 *.d

@@ -121,7 +121,6 @@ void GameTechRenderer::LoadSkybox() {
 }
 
 void GameTechRenderer::RenderFrame() {
-	GameTimer t;
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList();
@@ -135,20 +134,18 @@ void GameTechRenderer::RenderFrame() {
 	RenderSkybox();
 	RenderCamera();
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
-	t.Tick();
-	if (t.GetTimeDeltaSeconds() > 1.0f / 40.0f)std::cout << "Rendering Time: " << t.GetTimeDeltaSeconds() << "s -- fps: " << 1.0f / t.GetTimeDeltaSeconds() << std::endl;
 
 }
 
 void GameTechRenderer::initTextures() {
 	glDisable(GL_CULL_FACE);
 	PainterMap map = Painter::GetPaintInfos();
+	glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
 	for (int i = 0; i < activeObjects.size(); i++) {
 
 		if (activeObjects[i]->GetName() != "Wall") continue;
 
 		activeObjects[i]->GetRenderObject()->SetColour(Vector4(Vector3(activeObjects[i]->GetRenderObject()->GetColour()), 0.0f));
-		glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
 		//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 
@@ -176,9 +173,10 @@ void GameTechRenderer::initTextures() {
 		//for (int i = 0; i < layerCount; ++i) {
 		DrawBoundMesh();
 		//}
-		glViewport(0, 0, currentWidth, currentHeight);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	}
+	glViewport(0, 0, currentWidth, currentHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_CULL_FACE);
 }
 
@@ -366,6 +364,8 @@ void GameTechRenderer::RenderCamera() {
 
 	int cameraLocation = 0;
 
+	int count = 0;
+
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glDepthFunc(GL_LESS);
@@ -436,9 +436,11 @@ void GameTechRenderer::RenderCamera() {
 			int layerCount = (*i).GetRenderObject()->GetMesh()->GetSubMeshCount();
 			for (int i = 0; i < layerCount; ++i) {
 				DrawBoundMesh(i);
+				count++;
 			}
 		}
 	}
+	std::cout << count << std::endl;
 	glDepthMask(GL_TRUE);
 }
 

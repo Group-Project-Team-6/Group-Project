@@ -3,6 +3,7 @@
 #include "PlayerInput.h"
 #include "LevelGen.h"
 #include "Painter.h"
+#include <math.h>
 
 //Namespaces?
 
@@ -142,7 +143,7 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 
-	dynamicsWorld->stepSimulation(dt, 0);
+	dynamicsWorld->stepSimulation(dt, 1);
 
 	audioManager->AudioUpdate(world, dt);
 
@@ -155,8 +156,11 @@ void Game::UpdateGame(float dt) {
 	}
 
 	world->UpdatePositions(); //Maybe Change
-
+	GameTimer t;
 	renderer->Render();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 
 	players[0]->GetBulletPool()->Animate(dt);
 	/*std::cout <<
@@ -243,27 +247,28 @@ void Game::LevelGeneration() {
 
 	float unitLength = scale; //int
 	int numWalls = 0;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level++) //int
+		for (float level = 0; level < maze.size(); level+=1.0f) //int
 		{
-			for (float l = 0; l < length; l++) //int
+			for (float l = 0; l < length; l+=1.0f) //int
 			{
-				for (float w = 0; w < width; w++) //int
+				for (float w = 0; w < width; w+=1.0f) //int
 				{
 					//AddChild(i, GetSymbol(level, l, w), level, l, w);
 					//AddChild(i, maze[level][l * width + w], level, l, w);
 
 					char ch = maze[level][l * width + w];
-
+					Vector3 position ({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40});
 					switch (ch)
 					{
 					case 'P':
 						break;
 					case '#':
-						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						wallsTransform.SetPosition(position);
+						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
 						vecWalls.push_back(new Wall(wallsTransform));
-						wallsTransform.SetScale({ scale + 0.01f, scale + 0.01f, scale + 0.01f });
+						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;

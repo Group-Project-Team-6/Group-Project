@@ -21,12 +21,12 @@ void main(void)
 		float AngleX = abs(atan(d.z/d.y));
 		float s = 0;
 		float radius = 0.5;
-		int r = 2;
+		int r = 5;
 		for(int i = 1; i <= r ; i++){
 			s+=(sin(i*AngleZ)+sin(i*AngleY)+sin(i*AngleX))*0.333;
 		}
 		s = s / float(r);
-		if(length(d) > (s + 1) * radius) discard;
+		if(length(d) > (s + 2) * radius) discard;
 		//vec4 colour = texture(hitTex, IN.texCoord);
 		//colour = colour + vec4(1,0,0,0); //if(distance(hitPos,IN.position)<1.0f)  
 		fragColor = vec4(texture(hitTex, IN.texCoord).xyz,1.0f)*0.9f + vec4(1,0,0,1) * 0.1f;

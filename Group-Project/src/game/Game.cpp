@@ -116,14 +116,6 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
-	Transform wallTransform;
-	walls[0] = new Wall(wallTransform);
-	world->AddGameObject(walls[0]);
-	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
-	//maybe use foreach loops for static objects
-
-	//std::cout << &*world << std::endl;
-	//std::cout << &*dynamicsWorld << std::endl;
 }
 
 void Game::InitItems() {
@@ -143,6 +135,7 @@ void Game::InitCharacter() {
 
 void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
+	
 
 	audioManager->AudioUpdate(world, dt);
 

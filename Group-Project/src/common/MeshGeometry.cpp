@@ -172,7 +172,7 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 
 void MeshGeometry::LoadOtherFileType(const std::string& filename) {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = importer.ReadFile(filename,  aiProcess_Triangulate);
 	if (scene) {
 		positions.clear();
 		texCoords.clear();
@@ -197,7 +197,11 @@ void MeshGeometry::LoadOtherFileType(const std::string& filename) {
 
 				if (scene->mMeshes[mIndex]->HasTextureCoords(0)) {
 					aiVector3D uv = scene->mMeshes[mIndex]->mTextureCoords[0][i];
-					texCoords.push_back({ uv.x, uv.y });
+					Vector3 uuv = { uv.x, uv.y ,uv.z };
+					uuv -= Vector3({ 0.5f,0.5f,0.0f });
+					uuv = Matrix4::Rotation(90, { 0.0f,0.0f,1.0f }) * uuv;
+					uuv += Vector3({ 0.5f,0.5f,0.0f });
+					texCoords.push_back({uuv.y, uuv.x });
 				}
 
 				if (scene->mMeshes[0]->HasNormals()) {

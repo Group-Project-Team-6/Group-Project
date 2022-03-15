@@ -3,7 +3,7 @@
 #include "../game/GameEntity.h"
 #include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
-#include "../Physics/VkTechRenderer.h"
+//#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"

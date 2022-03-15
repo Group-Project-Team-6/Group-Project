@@ -84,6 +84,8 @@ void Game::InitPhysics() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	//dynamicsWorld->getPairCache()->setInternalGhostPairCallback();
+	//btOverlappingPairCallback* test = new btOverlappingPairCallback();
 }
 
 void Game::InitAudio() {
@@ -115,7 +117,7 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-
+	
 }
 
 void Game::InitItems() {
@@ -134,9 +136,7 @@ void Game::InitCharacter() {
 void Game::UpdateGame(float dt) {
 
 	dynamicsWorld->stepSimulation(dt, 0);
-
 	audioManager->AudioUpdate(world, dt);
-
 	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
 
 	std::queue<ControlsCommand*>& command = playerInput.handleInput();
@@ -153,18 +153,34 @@ void Game::UpdateGame(float dt) {
 	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 
 	players[0]->GetBulletPool()->Animate(dt);
-	/*std::cout <<
-		std::to_string(character->GetTransform().GetPosition().x) +
-		std::to_string(character->GetTransform().GetPosition().y) +
-		std::to_string(character->GetTransform().GetPosition().z) << std::endl;
 
-	std::cout << std::to_string(
-		character->GetbtTransform().getOrigin().x())
-		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
-		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
-	//t.Tick();
-	//float ti = t.GetTimeDeltaSeconds();
-	//if (ti > 0.01) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
+	//Step Simulation been called, find required collision information with callbacks by iterating over all manifolds
+	//try to use btGhostObjects
+	int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
+	for (int i = 0; i < numManifolds; i++) {
+		btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
+
+		int numContacts = contactManifold->getNumContacts();
+		for (int j = 0; j < numContacts; j++) {
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance() < 0.f) {
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				//Collision Code
+			}
+		}
+	}
+
+	void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
+		//collision Logic
+		//if physics
+		dispatcher.defaultNearCallback(collisionPair, dispatcher, btDispatcherInfo);
+	}
+
+	//dispatcher->setNearCallBack(MyNearCallBack)
 }
 
 void Game::LevelGeneration() {

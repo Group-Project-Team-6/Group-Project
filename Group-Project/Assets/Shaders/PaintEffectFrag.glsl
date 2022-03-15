@@ -29,7 +29,7 @@ void main(void)
 		if(length(d) > (s + 2) * radius) discard;
 		//vec4 colour = texture(hitTex, IN.texCoord);
 		//colour = colour + vec4(1,0,0,0); //if(distance(hitPos,IN.position)<1.0f)  
-		fragColor = vec4(texture(hitTex, IN.texCoord).xyz,1.0f)*0.9f + vec4(1,0,0,1) * 0.1f;
+		fragColor = vec4(texture(hitTex, IN.texCoord).xyz,1.0f);//*0.9f + vec4(1,0,0,1) * 0.1f;
 		fragColor.r = clamp(fragColor.r,0,1);
 	}else{
 		fragColor = vec4(texture(hitTex, IN.texCoord).xyz,0.0f);

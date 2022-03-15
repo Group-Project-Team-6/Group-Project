@@ -180,43 +180,48 @@ void MeshGeometry::LoadOtherFileType(const std::string& filename) {
 		indices.clear();
 		colours.clear();
 		float largest = 0.0f;
-		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++) {
-			aiVector3D v = scene->mMeshes[0]->mVertices[i];
-			if (v.x > largest) largest = v.x;
-			if (v.y > largest) largest = v.y;
-			if (v.z > largest) largest = v.z;
+		for (int mIndex = 0; mIndex < scene->mNumMeshes; mIndex++) {
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumVertices; i++) {
+				aiVector3D v = scene->mMeshes[mIndex]->mVertices[i];
+				if (v.x > largest) largest = v.x;
+				if (v.y > largest) largest = v.y;
+				if (v.z > largest) largest = v.z;
+			}
 		}
 		largest = 0.5f / largest;
-		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++) {
-			aiVector3D v = scene->mMeshes[0]->mVertices[i];
-			positions.push_back({ v.x * largest,v.y * largest,v.z * largest });
+		int count = 0;
+		for (int mIndex = 0; mIndex < scene->mNumMeshes; mIndex++){
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumVertices; i++) {
+				aiVector3D v = scene->mMeshes[mIndex]->mVertices[i];
+				positions.push_back({ v.x * largest,v.y * largest,v.z * largest });
 
-			if (scene->mMeshes[0]->HasTextureCoords(0)){
-				aiVector3D uv = scene->mMeshes[0]->mTextureCoords[0][i];
-				texCoords.push_back({ uv.x, uv.y });
-			}
+				if (scene->mMeshes[mIndex]->HasTextureCoords(0)) {
+					aiVector3D uv = scene->mMeshes[mIndex]->mTextureCoords[0][i];
+					texCoords.push_back({ uv.x, uv.y });
+				}
 
-			if (scene->mMeshes[0]->HasNormals()) {
-				aiVector3D normal = scene->mMeshes[0]->mNormals[i];
-				normals.push_back({ normal.x, normal.y, normal.z });
+				if (scene->mMeshes[0]->HasNormals()) {
+					aiVector3D normal = scene->mMeshes[mIndex]->mNormals[i];
+					normals.push_back({ normal.x, normal.y, normal.z });
+				}
+				if (scene->mMeshes[0]->HasVertexColors(0)) {
+					aiColor4D colour = scene->mMeshes[mIndex]->mColors[0][i];
+					colours.push_back({ colour.r, colour.g, colour.b, colour.a });
+				}
 			}
-			if (scene->mMeshes[0]->HasVertexColors(0)) {
-				aiColor4D colour = scene->mMeshes[0]->mColors[0][i];
-				colours.push_back({ colour.r, colour.g, colour.b, colour.a });
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumFaces; i++) {
+				for (int j = 0; j < 3; j++) {
+					int index = scene->mMeshes[mIndex]->mFaces[i].mIndices[j];
+					indices.push_back(index);
+				}
 			}
+			SubMesh m;
+			m.start = count;
+			m.count = scene->mMeshes[mIndex]->mNumFaces * 3;
+			count += m.count;
+			subMeshes.push_back(m);
+			subMeshNames.push_back("Mesh"+ std::to_string(mIndex));
 		}
-		for (int i = 0; i < scene->mMeshes[0]->mNumFaces; i++) {
-			for (int j = 0; j < 3; j++) {
-				int index = scene->mMeshes[0]->mFaces[i].mIndices[j];
-				indices.push_back(index);
-			}
-		}
-		SubMesh m;
-		m.start = 0;
-		m.count = scene->mMeshes[0]->mNumFaces * 3;
-		subMeshes.push_back(m);
-		subMeshNames.push_back("Mesh0");
-		//if (scene->mMeshes[0]->
 		return;
 	}
 	std::cout << "Cannot read file! Name: " << Assets::MESHDIR + filename << std::endl;

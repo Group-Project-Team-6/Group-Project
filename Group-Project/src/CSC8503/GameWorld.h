@@ -38,6 +38,10 @@ namespace NCL {
 				return mainCamera;
 			}
 
+			vector<GameEntity*> GetGameObjects() const {
+				return gameObjects;
+			}
+
 			void ShuffleConstraints(bool state) {
 				shuffleConstraints = state;
 			}

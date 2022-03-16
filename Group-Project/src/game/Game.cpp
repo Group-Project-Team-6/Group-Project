@@ -21,11 +21,6 @@ Game::Game() {
 	//void InitHUD
 	//InitNetworking?
 
-	btGhostObject* ghost = new btGhostObject();
-	int test = ghost->getNumOverlappingObjects();
-
-	//btCollisionObject* test = ghost->getOverlappingObject(0);
-
 }
 
 Game::~Game() {
@@ -56,6 +51,7 @@ Game::~Game() {
 
 }
 
+/////////////////Build Game///////////////////////////
 void Game::InitWorld() {
 	world = new GameWorld();
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
@@ -91,7 +87,9 @@ void Game::InitPhysics() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+	btGhostPairCallback* ghostPair = new btGhostPairCallback();
+	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
 void Game::InitAudio() {
@@ -138,57 +136,9 @@ void Game::InitCharacter() {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 	}
 }
+/////////////////Build Game///////////////////////////
 
-void Game::UpdateGame(float dt) {
-
-	dynamicsWorld->stepSimulation(dt, 0);
-	audioManager->AudioUpdate(world, dt);
-	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
-
-	std::queue<ControlsCommand*>& command = playerInput.handleInput();
-	while (command.size() > 0) {
-		command.front()->execute(*players[0], *world->GetMainCamera(), *audioManager); //Learn which player from networking
-		command.pop();
-	}
-
-	world->UpdatePositions(); //Maybe Change
-	GameTimer t;
-	renderer->Render();
-	t.Tick();
-	float ti = t.GetTimeDeltaSeconds();
-	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-
-	players[0]->GetBulletPool()->Animate(dt);
-
-	//Step Simulation been called, find required collision information with callbacks by iterating over all manifolds
-	//try to use btGhostObjects
-	/*int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
-	for (int i = 0; i < numManifolds; i++) {
-		btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-		const btCollisionObject* obA = contactManifold->getBody0();
-		const btCollisionObject* obB = contactManifold->getBody1();
-
-		int numContacts = contactManifold->getNumContacts();
-		for (int j = 0; j < numContacts; j++) {
-			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance() < 0.f) {
-				const btVector3& ptA = pt.getPositionWorldOnA();
-				const btVector3& ptB = pt.getPositionWorldOnB();
-				const btVector3& normalOnB = pt.m_normalWorldOnB;
-				//Collision Code
-			}
-		}
-	}*/
-
-	/*void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
-		//collision Logic
-		//if physics
-		dispatcher.defaultNearCallback(collisionPair, dispatcher, btDispatcherInfo);
-	}*/
-
-	//dispatcher->setNearCallBack(MyNearCallBack)
-}
-
+/////////////////Build Level//////////////////////////
 void Game::LevelGeneration() {
 
 	int length = 10;
@@ -261,24 +211,24 @@ void Game::LevelGeneration() {
 	int numWalls = 0;
 	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level+=1.0f) //int
+		for (float level = 0; level < maze.size(); level += 1.0f) //int
 		{
-			for (float l = 0; l < length; l+=1.0f) //int
+			for (float l = 0; l < length; l += 1.0f) //int
 			{
-				for (float w = 0; w < width; w+=1.0f) //int
+				for (float w = 0; w < width; w += 1.0f) //int
 				{
 					//AddChild(i, GetSymbol(level, l, w), level, l, w);
 					//AddChild(i, maze[level][l * width + w], level, l, w);
 
 					char ch = maze[level][l * width + w];
-					Vector3 position ({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40});
+					Vector3 position({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
 					switch (ch)
 					{
 					case 'P':
 						break;
 					case '#':
 						wallsTransform.SetPosition(position);
-						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
+						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0, i * 90, 0));
 						vecWalls.push_back(new Wall(wallsTransform, *world, *dynamicsWorld));
 						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
@@ -318,9 +268,105 @@ void Game::LevelGeneration() {
 	}
 
 }
+/////////////////Build Level//////////////////////////
 
+/////////////////Other Functions//////////////////////
 void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
 	d->GetMemoryAllocationSize(*world);
 	d->GetMemoryAllocationSize(*audioManager);
 	d->GetMemoryAllocationSize(*renderer);
 }
+/////////////////Other Functions///////////////////////
+
+/////////////////Update Game//////////////////////////
+void Game::UpdateGame(float dt) {
+
+	dynamicsWorld->stepSimulation(dt, 0);
+	audioManager->AudioUpdate(world, dt);
+	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+
+	std::queue<ControlsCommand*>& command = playerInput.handleInput();
+	while (command.size() > 0) {
+		command.front()->execute(*players[0], *world->GetMainCamera(), *audioManager); //Learn which player from networking
+		command.pop();
+	}
+
+	world->UpdatePositions(); //Maybe Change
+	GameTimer t;
+	renderer->Render();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
+
+	players[0]->GetBulletPool()->Animate(dt);
+
+
+
+	GameEntity frog;
+	frog.getGhostBody.getNumOverlappingObjects;
+	btGhostObject* test = new btGhostObject();
+	for (int i = 0; i < world->GetGameObjects().size(); i++) {
+		if(world->GetGameObjects()[0]->getTrigger()){
+			for (int j; j < test->getNumOverlappingObjects(); j++) {
+				if (test->getOverlappingObject(j))
+				{
+					//execute Renderering listener
+					//execture audio listener
+				}
+			}
+		}
+		
+	}
+
+	test->getNumOverlappingObjects();
+	test->getOverlappingObject(0);
+
+	//ghost triggers
+
+	/*for (int j = 0; j < dynamicsWorld->; j++) {
+		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
+		btRigidBody* body = btRigidBody::upcast(obj);
+
+		btAlignedObjectArray<btCollisionObject*> objsInsidePairCacheGhostObject;
+		btAlignedObjectArray<btCollisionObject*> objsInsideGhostPair;
+		btGhostObject* ghost = btGhostObject::upcast(obj);
+
+		if (ghost) {
+			objsInsidePairCacheGhostObject.resize(0);
+			objsInsideGhostPair = &ghost->getOverlappingPairs();
+
+			
+		}
+	}*/
+
+	//Step Simulation been called, find required collision information with callbacks by iterating over all manifolds
+	//try to use btGhostObjects
+	/*int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
+	for (int i = 0; i < numManifolds; i++) {
+		btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
+
+		int numContacts = contactManifold->getNumContacts();
+		for (int j = 0; j < numContacts; j++) {
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance() < 0.f) {
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				//Collision Code
+			}
+		}
+	}*/
+
+	/*void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
+		//collision Logic
+		//if physics
+		dispatcher.defaultNearCallback(collisionPair, dispatcher, btDispatcherInfo);
+	}*/
+
+	//dispatcher->setNearCallBack(MyNearCallBack)
+}
+/////////////////Update Game//////////////////////////
+
+

@@ -77,6 +77,10 @@ public:
 		return name;
 	}
 
+	bool getTrigger() {
+		return isTrigger;
+	}
+
 	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();
@@ -111,6 +115,7 @@ protected:
 	string name;
 
 	bool isActive;
+	bool isTrigger;
 	int	worldID;
 };
 

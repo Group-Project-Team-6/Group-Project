@@ -6,6 +6,7 @@ GameEntity::GameEntity(string objectName) {
 	renderObject = nullptr;
 	rigidBody = nullptr;
 	isActive = true;
+	isTrigger = false;
 
 }
 

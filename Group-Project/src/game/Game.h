@@ -33,12 +33,11 @@ protected:
 	void InitAssets();
 	void InitScene();
 	void InitItems();
-	//Build State Machine?
 	void LevelGeneration();
 	void InitCharacter();
 	
-	//void InitHUD
-	//InitNetworking?
+	void exectureListeners();
+
 
 	//Tools
 	TransformConverter transformConverter;

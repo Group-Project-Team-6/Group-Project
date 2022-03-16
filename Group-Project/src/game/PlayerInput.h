@@ -20,26 +20,24 @@ public:
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 			ControlQueue.push(spaceBar);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::W)) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {
 			ControlQueue.push(wKey);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::S)) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::S)) {
 			ControlQueue.push(sKey);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::A)) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::A)) {
 			ControlQueue.push(aKey);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::D)) {
+		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::D)) {
 			ControlQueue.push(dKey);
 		}
 		if (Window::GetMouse()->ButtonDown(MouseButtons::LEFT)) {
 			ControlQueue.push(leftMouse);
 		}
-		if (Window::GetMouse()->GetRelativePosition().x) {
+		if (Window::GetMouse()->GetRelativePosition().x ) {
 			ControlQueue.push(mouseHorizontal);
 		}
-
-
 			
 		return ControlQueue;
 	}

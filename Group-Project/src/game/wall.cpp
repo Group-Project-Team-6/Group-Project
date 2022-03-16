@@ -1,7 +1,7 @@
 #include "Wall.h"
 #include "AssetsManager.h"
 
-Wall::Wall(Transform buildTransform) {
+Wall::Wall(Transform buildTransform, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 	name = "Wall";
 	transform = buildTransform;		
@@ -14,10 +14,13 @@ Wall::Wall(Transform buildTransform) {
 	wallShape = new btBoxShape({ (scale.x / 2.0f), (scale.y / 2.0f), (scale.z / 2.0f) });
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
+	wallRigidBody->isStaticObject();
 }
 
 Wall::~Wall() {
-
+	delete wallMotion;
+	delete wallShape;
+	delete wallRigidBody;
 }
 
 void Wall::InitAssets() {

@@ -37,7 +37,7 @@ void Bullet::InitAssets() {
 	bulletShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
-void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable) {
+void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable) {
 
 	this->setActive(1);
 	bulletRigidBody->setActivationState(1);
@@ -59,6 +59,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld&
 	bulletRigidBody->getWorldTransform().setRotation(quat);
 
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
+
 }
 
 void Bullet::Animate(float dt) {

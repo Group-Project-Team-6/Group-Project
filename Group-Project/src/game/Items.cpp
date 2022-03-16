@@ -1,6 +1,6 @@
 #include "Items.h"
 
-Item::Item(Vector3 position, int score) {
+Item::Item(Vector3 position, int score, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 	name = "Item";
 	transform
@@ -16,6 +16,7 @@ Item::Item(Vector3 position, int score) {
 	itemShape = new btCapsuleShape(0.5, 1);
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0, itemMotion, itemShape, {0,0,0});
 	itemRigidBody = new btRigidBody(itemCI);
+	itemRigidBody->isStaticObject();
 }
 
 Item::~Item() {

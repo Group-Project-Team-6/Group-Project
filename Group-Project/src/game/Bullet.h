@@ -17,7 +17,7 @@ public:
 	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
-	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable);
+	void Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable);
 	void Animate(float dt);
 	void InitAssets();
 	void RemoveFromPool();

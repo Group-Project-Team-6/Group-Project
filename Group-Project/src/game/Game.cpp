@@ -3,6 +3,8 @@
 #include "PlayerInput.h"
 #include "LevelGen.h"
 #include "Painter.h"
+#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
+
 #include <math.h>
 
 //Namespaces?
@@ -18,6 +20,11 @@ Game::Game() {
 	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
+
+	btGhostObject* ghost = new btGhostObject();
+	int test = ghost->getNumOverlappingObjects();
+
+	//btCollisionObject* test = ghost->getOverlappingObject(0);
 
 }
 
@@ -84,8 +91,7 @@ void Game::InitPhysics() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-	//dynamicsWorld->getPairCache()->setInternalGhostPairCallback();
-	//btOverlappingPairCallback* test = new btOverlappingPairCallback();
+	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 }
 
 void Game::InitAudio() {
@@ -117,7 +123,7 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-	
+
 }
 
 void Game::InitItems() {
@@ -141,7 +147,7 @@ void Game::UpdateGame(float dt) {
 
 	std::queue<ControlsCommand*>& command = playerInput.handleInput();
 	while (command.size() > 0) {
-		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+		command.front()->execute(*players[0], *world->GetMainCamera(), *audioManager); //Learn which player from networking
 		command.pop();
 	}
 
@@ -156,7 +162,7 @@ void Game::UpdateGame(float dt) {
 
 	//Step Simulation been called, find required collision information with callbacks by iterating over all manifolds
 	//try to use btGhostObjects
-	int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
+	/*int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
 	for (int i = 0; i < numManifolds; i++) {
 		btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		const btCollisionObject* obA = contactManifold->getBody0();
@@ -172,13 +178,13 @@ void Game::UpdateGame(float dt) {
 				//Collision Code
 			}
 		}
-	}
+	}*/
 
-	void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
+	/*void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
 		//collision Logic
 		//if physics
 		dispatcher.defaultNearCallback(collisionPair, dispatcher, btDispatcherInfo);
-	}
+	}*/
 
 	//dispatcher->setNearCallBack(MyNearCallBack)
 }
@@ -273,7 +279,7 @@ void Game::LevelGeneration() {
 					case '#':
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
-						vecWalls.push_back(new Wall(wallsTransform));
+						vecWalls.push_back(new Wall(wallsTransform, *world, *dynamicsWorld));
 						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);

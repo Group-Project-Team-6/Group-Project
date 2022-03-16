@@ -7,7 +7,7 @@
 
 class Wall : public GameEntity {
 public:
-	Wall(Transform buildTransform);
+	Wall(Transform buildTransform, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Wall();
 
 	void InitAssets(); //Temp
@@ -22,18 +22,7 @@ public:
 
 	virtual void UpdateRenderPositions() override {
 
-		bttransform = wallRigidBody->getWorldTransform();
-
-		btRot = bttransform.getRotation();
-		btPos = bttransform.getOrigin();
-
-		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
-		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
-
-		transform.SetOrientation(nclRot);
-		transform.SetPosition(nclPos);
-		transform.UpdateMatrix();
-
+		return;
 	}
 
 	void UpdatePaintTex();

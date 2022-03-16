@@ -10,11 +10,7 @@ public:
 	~LevelGen();
 
 	void Generate(int l, int w);
-	//string[] GetLevelStrings();
     vector<string> GetLevelStrings();
-
-    //TEST
-    vector<string> TestMap() { return vector<string> {"AV<>", "S", "S"}; }
 
 private:
 
@@ -26,7 +22,6 @@ private:
 	void PathToStairs();
 	void MazeGen();
 
-    //string[, ] level;
     vector<vector<string>> level;
 
     bool up = false;
@@ -51,10 +46,8 @@ private:
     int optionsCount;
 
     int numberOfStairs;
-    //int[, ] stairPos;
     vector<vector<int>> stairPos;
 
-    //List<string> levelString;
     vector<string> levelString;
 
 };

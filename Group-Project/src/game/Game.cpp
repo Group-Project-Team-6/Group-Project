@@ -171,15 +171,18 @@ void Game::UpdateGame(float dt) {
 
 void Game::LevelGeneration() {
 
-	int length = 10;
-	int width = 10;
+	int length = 9;
+	int width = 9;
 
 	float scale = 5;
 
 	LevelGen* levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
-	//vector<string> maze = levelGenerator->TestMap();
+	//TEST
+	// length = 2;
+	// width = 2;
+	//vector<string> maze = {"#P<P", "#VSP", "#SPP"};
 
 
 	Transform wallsTransform;
@@ -191,33 +194,12 @@ void Game::LevelGeneration() {
 	stairsTransform.SetScale({ scale, scale ,0.5 });
 	stairsTransform.SetOrientation({0.5,0,0,1});
 	stairsTransform.SetPosition({ 10,2,0 });
-	
-	/*
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs = new Wall(stairsTransform);
-	stairs->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs->GetRigidBody());
-	world->AddGameObject(stairs);
-	
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs1 = new Wall(stairsTransform);
-	stairs1->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs1->GetRigidBody());
-	world->AddGameObject(stairs1);
 
-	stairsTransform.SetScale({ 0.5, scale ,scale });
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs2 = new Wall(stairsTransform);
-	stairs2->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs2->GetRigidBody());
-	world->AddGameObject(stairs2);
-
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs3 = new Wall(stairsTransform);
-	stairs3->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs3->GetRigidBody());
-	world->AddGameObject(stairs3);
-	*/
+	Transform floorsTransform;
+	floorsTransform.SetScale({ scale, scale ,0.1 });
+	floorsTransform.SetOrientation({ 1,0,0,1 });
+	//float height = scale + 2;
+	//floorsTransform.SetPosition({ 10,height,0 });
 	
 	/*
 	Wall* wall1 = new Wall(wallsTransform);
@@ -241,9 +223,11 @@ void Game::LevelGeneration() {
 	*/
 
 	vector<Wall*> vecWalls;
+	vector<Wall*> floors;
 
 	float unitLength = scale; //int
 	int numWalls = 0;
+	int numFloors = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		for (float level = 0; level < maze.size(); level++) //int
@@ -252,14 +236,19 @@ void Game::LevelGeneration() {
 			{
 				for (float w = 0; w < width; w++) //int
 				{
-					//AddChild(i, GetSymbol(level, l, w), level, l, w);
-					//AddChild(i, maze[level][l * width + w], level, l, w);
-
 					char ch = maze[level][l * width + w];
 
 					switch (ch)
 					{
 					case 'P':
+						if (level >= 0) {
+							floorsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, ((level * unitLength) + 3) - (scale / 2), ((w + 0.5f) * unitLength) - 40 });
+							floors.push_back(new Wall(floorsTransform));
+							floors[numFloors]->UpdateCollShape(scale, scale, 0.1);
+							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
+							world->AddGameObject(floors[numFloors]);
+							numFloors++;
+						}
 						break;
 					case '#':
 						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
@@ -272,25 +261,45 @@ void Game::LevelGeneration() {
 						break;
 					case 'S':
 						break;
-					case 'A':
-						/*
-						stairsTransform.SetOrientation({ 0.5,0,0,1 });
+					case '<':
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
 						vecWalls.push_back(new Wall(stairsTransform));
-						vecWalls[numWalls]->UpdateCollShape(scale, scale, 0.5);
+						vecWalls[numWalls]->UpdateCollShape(scale, scale + (scale / 2.5f), 0.5);
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
-						*/
-						break;
-					case 'V':
-						
-						break;
-					case '<':
-						
 						break;
 					case '>':
-						
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ -0.42,0,0,1 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls[numWalls]->UpdateCollShape(scale, scale + (scale / 2.5f), 0.5);
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'V':
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls[numWalls]->UpdateCollShape(scale + (scale / 2.5f), scale, 0.5);
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'A':
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls[numWalls]->UpdateCollShape(scale + (scale / 2.5f), scale, 0.5);
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
 						break;
 					}
 

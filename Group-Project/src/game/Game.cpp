@@ -61,7 +61,7 @@ void Game::InitWorld() {
 void Game::InitAssets() {
 	AssetsManager::LoadMeshFromFile("SphereMesh", "Sphere.msh");
 	AssetsManager::LoadMeshFromFile("CubeMesh", "Cube.msh");
-	AssetsManager::LoadMeshFromFile("WallMesh", "corridor_wall3.fbx");
+	AssetsManager::LoadMeshFromFile("WallMesh", "corridor_wall_6.fbx");
 	AssetsManager::LoadMeshFromFile("CapsuleMesh", "Capsule.msh");
 	AssetsManager::LoadShaderFromFile("GameTechShaderSet", "GameTechShader.set");
 	AssetsManager::LoadTextureFromFile("CheckerboardTex", "checkerboard.png");
@@ -270,7 +270,7 @@ void Game::LevelGeneration() {
 						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
 						vecWalls.push_back(new Wall(wallsTransform));
 						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 

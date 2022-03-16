@@ -59,11 +59,11 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//painter
 	painterShader = dynamic_cast<OGLShader*>(LoadShader("PaintEffectShader.set"));
-	/*painterMesh = new OGLMesh();
+	painterMesh = new OGLMesh();
 	painterMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
 	painterMesh->SetVertexIndices({ 0,1,2,2,3,0 });
 	painterMesh->SetVertexTextureCoords({ Vector2(0,1), Vector2(0,0),Vector2(1,0), Vector2(1,1) });
-	painterMesh->UploadToGPU();*/
+	painterMesh->UploadToGPU();
 
 	//Skybox!
 	skyboxShader = new OGLShader("skyboxVertex.glsl", "skyboxFragment.glsl");
@@ -78,6 +78,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 GameTechRenderer::~GameTechRenderer()	{
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
+	glDeleteFramebuffers(1, &PainterFBO);
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -161,7 +162,6 @@ void GameTechRenderer::initTextures() {
 			GLuint tex = renderTex->GetObjectID();
 			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
-
 			BindShader(painterShader);
 
 			BindTextureToShader(renderTex, "hitTex", 0);
@@ -177,7 +177,7 @@ void GameTechRenderer::initTextures() {
 
 			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
-			BindMesh((*list)[i]->GetRenderObject()->GetMesh());
+			BindMesh(painterMesh);
 			//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
 			//for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh();
@@ -393,7 +393,7 @@ void GameTechRenderer::RenderCamera() {
 		}
 
 		for (const auto& i : *list) {
-			if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
+			//if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
 			//Draw to Texture
 			OGLShader* shader = (OGLShader*)(*i).GetRenderObject()->GetShader();
 			BindShader(shader);
@@ -412,7 +412,7 @@ void GameTechRenderer::RenderCamera() {
 				lightPosLocation = glGetUniformLocation(shader->GetProgramID(), "lightPos");
 				lightColourLocation = glGetUniformLocation(shader->GetProgramID(), "lightColour");
 				lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
-
+				GLuint timeLocation = glGetUniformLocation(shader->GetProgramID(), "dt");
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 				glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
 
@@ -422,6 +422,7 @@ void GameTechRenderer::RenderCamera() {
 				glUniform3fv(lightPosLocation, 1, (float*)&lightPosition);
 				glUniform4fv(lightColourLocation, 1, (float*)&lightColour);
 				glUniform1f(lightRadiusLocation, lightRadius);
+				glUniform1f(timeLocation, Window::GetTimer()->GetTotalTimeSeconds());
 
 				int shadowTexLocation = glGetUniformLocation(shader->GetProgramID(), "shadowTex");
 				glUniform1i(shadowTexLocation, 1);

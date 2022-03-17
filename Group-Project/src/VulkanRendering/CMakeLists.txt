@@ -1,4 +1,4 @@
-add_library(VulkanRendering
+add_library(VulkanRendering STATIC
     VulkanTexture.cpp
     VulkanShaderBuilder.cpp
     VulkanShader.cpp

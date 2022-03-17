@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(Group-Project)
 
-#Common Component
-add_library(Common
+add_library(Common STATIC
 	Assets.cpp
 	Camera.cpp
 	GameTimer.cpp

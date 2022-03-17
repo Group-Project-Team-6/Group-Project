@@ -1,10 +1,8 @@
-# This module is shared; use include blocker.
 if( _PS4_TOOLCHAIN_ )
 	return()
 endif()
 set(_PS4_TOOLCHAIN_ 1)
 
-# PS4 SCE version requirement
 set(REQUIRED_PS4_VERSION "8.500")
 
 # Get PS4 SCE environment

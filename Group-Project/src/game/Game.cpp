@@ -4,18 +4,20 @@
 #include "LevelGen.h"
 #include "Painter.h"
 #include <math.h>
+#include <thread>
+#include <mutex>
 
 //Namespaces?
 
 Game::Game() {
+	loading = true;
 	InitWorld();
-	InitPhysics();
-	InitAudio();
-	InitAssets();
-	InitScene();
-	InitItems();
-	LevelGeneration();
-	InitCharacter();
+	std::thread loadScreenThread(&Game::RenderLoading,this);
+	Init();
+	//std::thread initThread(&Game::Init,this);
+
+	//initThread.join();
+	loadScreenThread.join();
 	//void InitHUD
 	//InitNetworking?
 
@@ -49,6 +51,17 @@ Game::~Game() {
 
 }
 
+void Game::Init() {
+	InitPhysics();
+	InitAudio();
+	InitAssets();
+	InitScene();
+	InitItems();
+	LevelGeneration();
+	InitCharacter();
+	loading = false;
+}
+
 void Game::InitWorld() {
 	world = new GameWorld();
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
@@ -56,6 +69,15 @@ void Game::InitWorld() {
 	world->SetRenderer(renderer.get());
 	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+}
+
+void Game::RenderLoading() {
+	RendererPtr loadingRenderer;
+	loadingRenderer.reset(new GameLoadingRenderer());
+	while (loading) {
+		loadingRenderer.get()->Render();
+		Sleep(10);
+	}
 }
 
 void Game::InitAssets() {

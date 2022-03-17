@@ -35,15 +35,14 @@ void main(void)
 	if( IN . shadowProj . w > 0.0) { // New !
 		shadow = textureProj ( shadowTex , IN.shadowProj);	
 	}
-	;
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
-	float lambert  = max (0.0 , dot ( incident , IN.normal * sin(dt*10 + 10*IN.worldPos.x) )) * 0.9; 
+	float lambert  = max (0.0 , dot ( incident , IN.normal )) * 0.9; 
 	
 	vec3 viewDir = normalize ( cameraPos - IN . worldPos );
 	vec3 halfDir = normalize ( incident + viewDir );
 
-	float rFactor = max (0.0 , dot ( halfDir , IN.normal * sin(dt*10 + 10*IN.worldPos.x) ));
+	float rFactor = max (0.0 , dot ( halfDir , IN.normal ));
 	float sFactor = pow ( rFactor , 80.0 );
 	
 	vec4 albedo = IN.colour;

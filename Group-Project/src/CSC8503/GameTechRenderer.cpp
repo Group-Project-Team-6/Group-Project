@@ -122,16 +122,20 @@ void GameTechRenderer::LoadSkybox() {
 void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
 	glClearColor(1, 1, 1, 1);
-	BuildObjectList();
+	BuildObjectList(false,0);
 	if (!initTexture) {
 		initTextures();
 		initTexture = true;
 	}
 	UpdatePaints();
-	SortObjectList();
+	SortObjectList(false, 0);
 	RenderShadowMap();
-	RenderSkybox();
-	RenderCamera();
+	for (int i = 0; i < 2; i++) {
+		BuildObjectList(true, i);
+		glViewport(i * currentWidth / 2, 0, currentWidth / 2, currentHeight);
+		RenderSkybox(i);
+		RenderCamera(i);
+	}
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
 
 }
@@ -139,51 +143,41 @@ void GameTechRenderer::RenderFrame() {
 void GameTechRenderer::initTextures() {
 	glDisable(GL_CULL_FACE);
 	PainterMap map = Painter::GetPaintInfos();
-	for (int j = 0; j < 2; j++) {
-		vector<GameEntity*>* list;
+	for (int i = 0; i < (activeObjects).size(); i++) {
+		GameTimer t;
+		if ((activeObjects)[i]->GetName() != "Wall") continue;
 
-		if (j == 1) {
-			list = &activeTransparentObjects;
-		}
-		else {
-			list = &activeObjects;
-		}
-		for (int i = 0; i < (*list).size(); i++) {
-			GameTimer t;
-			if ((*list)[i]->GetName() != "Wall") continue;
+		(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
+		//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
+		OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
 
-			(*list)[i]->GetRenderObject()->SetColour(Vector4(Vector3((*list)[i]->GetRenderObject()->GetColour()), 0.0f));
-			//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
-			OGLTexture* renderTex = dynamic_cast<OGLTexture*>((*list)[i]->GetRenderObject()->GetDefaultTexture());
+		GLuint tex = renderTex->GetObjectID();
+		if(renderTex->GetFBO()) glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
+		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 
-			GLuint tex = renderTex->GetObjectID();
-			if(renderTex->GetFBO()) glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
-			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
+		BindShader(painterShader);
 
-			BindShader(painterShader);
+		BindTextureToShader(renderTex, "hitTex", 0);
 
-			BindTextureToShader(renderTex, "hitTex", 0);
+		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+		glUniform3fv(hitUV, 1, Vector3(0, 0, 0).array);
 
-			int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
-			glUniform3fv(hitUV, 1, Vector3(0, 0, 0).array);
+		int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
+		glUniform1i(initID, 1);
 
-			int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
-			glUniform1i(initID, 1);
+		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+		Matrix4 modelMatrix = (activeObjects)[i]->GetTransform().GetMatrix();
 
-			int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
-			Matrix4 modelMatrix = (*list)[i]->GetTransform().GetMatrix();
+		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
-			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
-
-			BindMesh(painterMesh);
-			//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
-			//for (int i = 0; i < layerCount; ++i) {
-			DrawBoundMesh();
-			//}
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			t.Tick();
-			std::cout << "InitTextures: " << t.GetTimeDeltaMSec() << std::endl;
-		}
+		BindMesh(painterMesh);
+		//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+		//for (int i = 0; i < layerCount; ++i) {
+		DrawBoundMesh();
+		//}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		t.Tick();
+		std::cout << "InitTextures: " << t.GetTimeDeltaMSec() << std::endl;
 	}
 	glViewport(0, 0, currentWidth, currentHeight);
 	glEnable(GL_CULL_FACE);
@@ -193,67 +187,61 @@ void GameTechRenderer::UpdatePaints() {
 	glDisable(GL_CULL_FACE);
 	PainterMap map = Painter::GetPaintInfos();
 	for (auto& it = map.begin(); it != map.end(); it++) {
-		for (int j = 0; j < 2; j++) {
-			vector<GameEntity*>* list;
+		for (int i = 0; i < (activeObjects).size(); i++) {
+			if ((activeObjects)[i]->GetName() == "Bullet") continue;
+			if ((it->second - (activeObjects)[i]->GetTransform().GetPosition()).Length() > (1.0f + (activeObjects)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
+			(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 1.0f));
 
-			if (j == 1) {
-				list = &activeTransparentObjects;
-			}
-			else {
-				list = &activeObjects;
-			}
-			for (int i = 0; i < (*list).size(); i++) {
+			OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
+			if (renderTex->GetFBO() == 0) continue;
 
-				if ((*list)[i]->GetName() == "Bullet") continue;
+			glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
+			GLuint tex = renderTex->GetObjectID();
+			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 
-				if ((it->second - (*list)[i]->GetTransform().GetPosition()).Length() > (1.0f + (*list)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
-				(*list)[i]->GetRenderObject()->SetColour(Vector4(Vector3((*list)[i]->GetRenderObject()->GetColour()), 1.0f));
-				//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
-				OGLTexture* renderTex = dynamic_cast<OGLTexture*>((*list)[i]->GetRenderObject()->GetDefaultTexture());
+			BindShader(painterShader);
 
-				glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
-				GLuint tex = renderTex->GetObjectID();
-				glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
+			BindTextureToShader(renderTex, "hitTex", 0);
 
-				BindShader(painterShader);
+			int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+			glUniform3fv(hitUV, 1, it->second.array);
 
-				BindTextureToShader(renderTex, "hitTex", 0);
+			int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
+			glUniform1i(initID, 0);
 
-				int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
-				glUniform3fv(hitUV, 1, it->second.array);
+			int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+			Matrix4 modelMatrix = (activeObjects)[i]->GetTransform().GetMatrix();
 
-				int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
-				glUniform1i(initID, 0);
+			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
-				int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
-				Matrix4 modelMatrix = (*list)[i]->GetTransform().GetMatrix();
+			BindMesh((activeObjects)[i]->GetRenderObject()->GetMesh());
+			//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+			//for (int i = 0; i < layerCount; ++i) {
+			DrawBoundMesh();
+			//}
+			glViewport(0, 0, currentWidth, currentHeight);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-				glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
-
-				BindMesh((*list)[i]->GetRenderObject()->GetMesh());
-				//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
-				//for (int i = 0; i < layerCount; ++i) {
-				DrawBoundMesh();
-				//}
-				glViewport(0, 0, currentWidth, currentHeight);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			}
 		}
 	}
 	Painter::ClearPaint();
 	glEnable(GL_CULL_FACE);
 }
 
-void GameTechRenderer::BuildObjectList() {
+void GameTechRenderer::BuildObjectList(bool isCameraBased, int cameraNum) {
 	activeObjects.clear();
 	activeTransparentObjects.clear();
 
 	gameWorld.OperateOnContents(
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
-				if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera()->GetPosition()).Length() < 11.0f) {
-					activeTransparentObjects.emplace_back(o);
+				if (isCameraBased) {
+					if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < 11.0f) {
+						activeTransparentObjects.emplace_back(o);
+					}
+					else {
+						activeObjects.emplace_back(o);
+					}
 				}
 				else {
 					activeObjects.emplace_back(o);
@@ -261,11 +249,9 @@ void GameTechRenderer::BuildObjectList() {
 			}
 		}
 	);
-
-
 }
 
-void GameTechRenderer::SortObjectList() {
+void GameTechRenderer::SortObjectList(bool isCameraBased, int cameraNum) {
 	//Who cares!
 
 }
@@ -290,15 +276,7 @@ void GameTechRenderer::RenderShadowMap() {
 	shadowMatrix = biasMatrix * mvMatrix; //we'll use this one later on
 
 	for (int j = 0; j < 2; j++) {
-		vector<GameEntity*>* list;
-
-		if (j == 1) {
-			list = &activeTransparentObjects;
-		}
-		else {
-			list = &activeObjects;
-		}
-		for (const auto& i : *list) {
+		for (const auto& i : activeObjects) {
 			if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
 			Matrix4 modelMatrix = (*i).GetTransform().GetMatrix();
 			Matrix4 mvpMatrix = mvMatrix * modelMatrix;
@@ -321,14 +299,14 @@ void GameTechRenderer::RenderShadowMap() {
 	glCullFace(GL_BACK);
 }
 
-void GameTechRenderer::RenderSkybox() {
+void GameTechRenderer::RenderSkybox(int cameraNum) {
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 
 	float screenAspect = (float)currentWidth / (float)currentHeight;
-	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
-	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
+	Matrix4 viewMatrix = gameWorld.GetMainCamera(cameraNum)->BuildViewMatrix();
+	Matrix4 projMatrix = gameWorld.GetMainCamera(cameraNum)->BuildProjectionMatrix(screenAspect);
 
 	BindShader(skyboxShader);
 
@@ -351,10 +329,10 @@ void GameTechRenderer::RenderSkybox() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void GameTechRenderer::RenderCamera() {
-	float screenAspect = (float)currentWidth / (float)currentHeight;
-	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
-	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
+void GameTechRenderer::RenderCamera(int cameraNum) {
+	float screenAspect = (float)(currentWidth/ 2) / (float)currentHeight;
+	Matrix4 viewMatrix = gameWorld.GetMainCamera(cameraNum)->BuildViewMatrix();
+	Matrix4 projMatrix = gameWorld.GetMainCamera(cameraNum)->BuildProjectionMatrix(screenAspect);
 
 	OGLShader* activeShader = nullptr;
 	int projLocation	= 0;
@@ -377,7 +355,6 @@ void GameTechRenderer::RenderCamera() {
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glDepthFunc(GL_LESS);
-
 	for (int j = 0; j < 2; j++) {
 		vector<GameEntity*>* list;
 
@@ -391,7 +368,7 @@ void GameTechRenderer::RenderCamera() {
 		}
 
 		for (const auto& i : *list) {
-			//if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
+			if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
 			//Draw to Texture
 			OGLShader* shader = (OGLShader*)(*i).GetRenderObject()->GetShader();
 			BindShader(shader);
@@ -412,7 +389,7 @@ void GameTechRenderer::RenderCamera() {
 				lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 				GLuint timeLocation = glGetUniformLocation(shader->GetProgramID(), "dt");
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
-				glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
+				glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera(cameraNum)->GetPosition());
 
 				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
@@ -455,8 +432,8 @@ void GameTechRenderer::RenderCamera() {
 
 Matrix4 GameTechRenderer::SetupDebugLineMatrix()	const  {
 	float screenAspect = (float)currentWidth / (float)currentHeight;
-	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
-	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
+	Matrix4 viewMatrix = gameWorld.GetMainCamera(0)->BuildViewMatrix();
+	Matrix4 projMatrix = gameWorld.GetMainCamera(0)->BuildProjectionMatrix(screenAspect);
 
 	return projMatrix * viewMatrix;
 }

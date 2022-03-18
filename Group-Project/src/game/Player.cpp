@@ -2,6 +2,7 @@
 
 
 Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
+	pitch = 0;
 	InitAssets(); //Temp, Replace with loadAsset Class
 
 	name = "player" + newName;

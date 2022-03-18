@@ -67,8 +67,6 @@ void Game::InitWorld() {
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
-	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
-	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 }
 
 void Game::RenderLoading() {
@@ -161,6 +159,10 @@ void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		world->AddPlayer(players[i]);
+		world->AddMainCamera();
+		world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
+		world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		//world->AddGameObject(players[i]);
 	}
@@ -172,7 +174,9 @@ void Game::UpdateGame(float dt) {
 
 	audioManager->AudioUpdate(world, dt);
 
-	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+	for (int i = 0; i < 4; i++) {
+		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+	}
 
 	std::queue<ControlsCommand*>& command = playerInput.handleInput();
 	while (command.size() > 0) {
@@ -272,6 +276,7 @@ void Game::LevelGeneration() {
 
 	float unitLength = scale; //int
 	int numWalls = 0;
+	int numItems = 0;
 	for (int i = 0; i < 1; i++)
 	{
 		for (float level = 0; level < maze.size(); level+=1.0f) //int
@@ -288,6 +293,11 @@ void Game::LevelGeneration() {
 					switch (ch)
 					{
 					case 'P':
+						if (numItems > 36) continue;
+						items[numItems] = new Item(position, 1);
+						world->AddGameObject(items[numItems]);
+						dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
+						numItems++;
 						break;
 					case '#':
 						wallsTransform.SetPosition(position);

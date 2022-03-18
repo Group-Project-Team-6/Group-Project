@@ -11,17 +11,14 @@ Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...)
 */
-void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
+void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playerPitch, float dt) {
 	//Update the mouse by how much
-	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
+	//pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
+	pitch = playerPitch;
 	yaw = playerYaw;
 
-	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
-	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
-
-	//Bounds check the pitch, to be between straight up and straight down ;)
 	pitch = std::min(pitch, 90.0f);
 	pitch = std::max(pitch, -90.0f);
 

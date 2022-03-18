@@ -29,11 +29,11 @@ namespace NCL {
 
 			void initTextures();
 			void UpdatePaints();
-			void BuildObjectList();
-			void SortObjectList();
+			void BuildObjectList(bool isCameraBased, int cameraNum);
+			void SortObjectList(bool isCameraBased, int cameraNum);
 			void RenderShadowMap();
-			void RenderCamera(); 
-			void RenderSkybox();
+			void RenderCamera(int cameraNum);
+			void RenderSkybox(int cameraNum);
 
 			void LoadSkybox();
 

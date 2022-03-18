@@ -37,7 +37,7 @@ public:
 private:
 	int score;
 	TransformConverter transformConverter;
-	Transform transform;
+	//Transform transform;
 	btTransform bttransform;
 	int itemScore;
 

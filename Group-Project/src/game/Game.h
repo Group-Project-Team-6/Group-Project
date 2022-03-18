@@ -37,7 +37,7 @@ protected:
 	void LevelGeneration();
 	void InitCharacter();
 	
-	void exectureListeners();
+	void exectureTriggers();
 
 
 	//Tools

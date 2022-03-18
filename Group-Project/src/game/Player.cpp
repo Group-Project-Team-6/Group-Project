@@ -4,7 +4,8 @@
 Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 
-	name = "player" + newName;
+	//name = "player" + newName;
+	name = "Player";
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -24,6 +25,7 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
+	playerRigidBody->setUserPointer(this);
 
 	dynamicsWorld.addRigidBody(playerRigidBody);
 	world.AddGameObject(this);

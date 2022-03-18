@@ -6,6 +6,7 @@
 #include "../Common/RenderObject.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "../common/TextureLoader.h"
+#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
 
 #include "../CSC8503/Transform.h"
 #include "AssetsManager.h"
@@ -85,6 +86,13 @@ public:
 		isTrigger = state;
 	}
 
+	btGhostObject* getGhostObject()
+	{
+		if (isTrigger)
+			return ghost;
+		else return false;
+	}
+
 	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();
@@ -107,6 +115,7 @@ public:
 protected:
 	RenderObject* renderObject;
 	btRigidBody* rigidBody;
+	btGhostObject* ghost;
 	
 	Transform transform;
 	btTransform bttransform;

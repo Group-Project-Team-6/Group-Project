@@ -121,19 +121,17 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-	ground->setTrigger(1);
+	ground->setTrigger(0);
 }
 
 void Game::InitItems() {
-	/*items[0] = new Item({ 0, 2, 0 }, 1);
-	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
+	items[0] = new Item({ 20,2, -25 }, 1, *world, *dynamicsWorld);
 }
 
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new Player({25 + 2.0f*i, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 	}
 }
 /////////////////Build Game///////////////////////////
@@ -231,8 +229,8 @@ void Game::LevelGeneration() {
 						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0, i * 90, 0));
 						vecWalls.push_back(new Wall(wallsTransform, *world, *dynamicsWorld));
 						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
-						world->AddGameObject(vecWalls[numWalls]);
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						//world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 
 						break;
@@ -277,19 +275,30 @@ void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
 	d->GetMemoryAllocationSize(*renderer);
 }
 
-void Game::exectureListeners() {
+void Game::exectureTriggers() {
 	for (int i = 0; i < world->GetGameObjects().size(); i++) {
-		btGhostObject* ghost = btGhostObject::upcast(world->GetGameObjects()[i]->GetRigidBody());
-		if (ghost) {			
-			for (int j = 0; j < ghost->getNumOverlappingObjects(); j++) {
-				if (ghost->getOverlappingObject(j))
+		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
+			GameEntity* objA = world->GetGameObjects()[i];
+			for (int j = 0; j < world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects(); j++) {
 				{
+					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(j)->getUserPointer();
+					std::cout << objA->GetName() << std::endl;
+					std::cout << objB->GetName() << std::endl;
+						//Execute triggers
+					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
+						std::cout << "Player has picked up item" << std::endl;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
+						std::cout << "Wall Painted" << std::endl;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+					}
 					//execute Renderering listener
 					//execture audio listener
 				}
-			}
+			}			
 		}
-
 	}
 }
 /////////////////Other Functions///////////////////////
@@ -316,7 +325,7 @@ void Game::UpdateGame(float dt) {
 
 	players[0]->GetBulletPool()->Animate(dt);
 
-	exectureListeners();
+	exectureTriggers();
 
 	//ghost triggers
 

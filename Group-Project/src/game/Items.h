@@ -28,9 +28,9 @@ public:
 private:
 	int score;
 	TransformConverter transformConverter;
-	Transform transform;
 	btTransform bttransform;
 	int itemScore;
+
 
 	btDefaultMotionState* itemMotion;
 	btCollisionShape* itemShape;

@@ -3,7 +3,6 @@
 #include "../common/TextureLoader.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "BulletPool.h"
-#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
 
 class Player : public GameEntity {
 public:
@@ -58,7 +57,6 @@ protected:
 	ShaderPtr playerShader;
 
 	//general
-	string name;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;

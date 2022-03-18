@@ -17,6 +17,8 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 	bulletShape = new btSphereShape(0.2);
 	btRigidBody::btRigidBodyConstructionInfo playerCI(bulletMass, bulletMotion, bulletShape, bulletInertia);
 	bulletRigidBody = new btRigidBody(playerCI);
+	bulletRigidBody->setUserPointer(this);
+
 	world.AddGameObject(this);
 	dynamicsWorld.addRigidBody(bulletRigidBody);
 

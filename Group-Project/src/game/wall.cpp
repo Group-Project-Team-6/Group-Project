@@ -15,6 +15,10 @@ Wall::Wall(Transform buildTransform, GameWorld& world, btDiscreteDynamicsWorld& 
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
 	wallRigidBody->isStaticObject();
+	wallRigidBody->setUserPointer(this);
+
+	world.AddGameObject(this);
+	physicsWorld.addRigidBody(wallRigidBody);
 }
 
 Wall::~Wall() {

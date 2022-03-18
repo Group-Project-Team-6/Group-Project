@@ -1,5 +1,6 @@
 #include "Items.h"
 
+
 Item::Item(Vector3 position, int score, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 	name = "Item";
@@ -12,11 +13,23 @@ Item::Item(Vector3 position, int score, GameWorld& world, btDiscreteDynamicsWorl
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	itemScore = score;
-	itemMotion = new btDefaultMotionState(bttransform);
+	itemShape = new btBoxShape({ 0.5, 0.5, 0.5 });
+
+	ghost = new btGhostObject();
+	ghost->setWorldTransform(bttransform);
+	ghost->setCollisionShape(itemShape);
+	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	isTrigger = true;
+	ghost->setUserPointer(this);
+
+	dynamicsWorld.addCollisionObject(ghost);
+	world.AddGameObject(this);
+
+	/*itemMotion = new btDefaultMotionState(bttransform);
 	itemShape = new btCapsuleShape(0.5, 1);
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0, itemMotion, itemShape, {0,0,0});
 	itemRigidBody = new btRigidBody(itemCI);
-	itemRigidBody->isStaticObject();
+	itemRigidBody->isStaticObject();*/
 }
 
 Item::~Item() {

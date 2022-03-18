@@ -2,9 +2,11 @@
 
 
 GameEntity::GameEntity(string objectName) {
-	name = objectName;
+	name = "test";
+	//name = objectName;
 	renderObject = nullptr;
 	rigidBody = nullptr;
+	ghost = nullptr;
 	isActive = true;
 	isTrigger = false;
 

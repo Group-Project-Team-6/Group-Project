@@ -81,6 +81,10 @@ public:
 		return isTrigger;
 	}
 
+	void setTrigger(bool state) {
+		isTrigger = state;
+	}
+
 	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();

@@ -121,7 +121,7 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-
+	ground->setTrigger(1);
 }
 
 void Game::InitItems() {
@@ -276,6 +276,22 @@ void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
 	d->GetMemoryAllocationSize(*audioManager);
 	d->GetMemoryAllocationSize(*renderer);
 }
+
+void Game::exectureListeners() {
+	for (int i = 0; i < world->GetGameObjects().size(); i++) {
+		btGhostObject* ghost = btGhostObject::upcast(world->GetGameObjects()[i]->GetRigidBody());
+		if (ghost) {			
+			for (int j = 0; j < ghost->getNumOverlappingObjects(); j++) {
+				if (ghost->getOverlappingObject(j))
+				{
+					//execute Renderering listener
+					//execture audio listener
+				}
+			}
+		}
+
+	}
+}
 /////////////////Other Functions///////////////////////
 
 /////////////////Update Game//////////////////////////
@@ -300,26 +316,7 @@ void Game::UpdateGame(float dt) {
 
 	players[0]->GetBulletPool()->Animate(dt);
 
-
-
-	GameEntity frog;
-	frog.getGhostBody.getNumOverlappingObjects;
-	btGhostObject* test = new btGhostObject();
-	for (int i = 0; i < world->GetGameObjects().size(); i++) {
-		if(world->GetGameObjects()[0]->getTrigger()){
-			for (int j; j < test->getNumOverlappingObjects(); j++) {
-				if (test->getOverlappingObject(j))
-				{
-					//execute Renderering listener
-					//execture audio listener
-				}
-			}
-		}
-		
-	}
-
-	test->getNumOverlappingObjects();
-	test->getOverlappingObject(0);
+	exectureListeners();
 
 	//ghost triggers
 

@@ -22,9 +22,9 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
 	playerRigidBody = new btRigidBody(playerCI);
 	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
-
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
+
 	dynamicsWorld.addRigidBody(playerRigidBody);
 	world.AddGameObject(this);
 

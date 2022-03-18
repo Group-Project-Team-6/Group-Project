@@ -26,7 +26,8 @@ TexID AssetsManager::LoadTextureFromFile(std::string name, std::string fileName,
 	if (renderer) {
 		std::shared_ptr<TextureBase> t;
 		t.reset(TextureLoader::LoadAPITexture(fileName));
-		if (t.get()) return LoadTexture(name,t,isShared);
+		
+		if (t.get()) return LoadTexture(name,t, isShared);
 	}
 	return -1;
 }

@@ -43,8 +43,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glDrawBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//FBO3
-	glGenFramebuffers(1, &PainterFBO);
+
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		return;
@@ -78,7 +77,6 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 GameTechRenderer::~GameTechRenderer()	{
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
-	glDeleteFramebuffers(1, &PainterFBO);
 }
 
 void GameTechRenderer::LoadSkybox() {
@@ -141,7 +139,6 @@ void GameTechRenderer::RenderFrame() {
 void GameTechRenderer::initTextures() {
 	glDisable(GL_CULL_FACE);
 	PainterMap map = Painter::GetPaintInfos();
-	glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
 	for (int j = 0; j < 2; j++) {
 		vector<GameEntity*>* list;
 
@@ -152,7 +149,7 @@ void GameTechRenderer::initTextures() {
 			list = &activeObjects;
 		}
 		for (int i = 0; i < (*list).size(); i++) {
-
+			GameTimer t;
 			if ((*list)[i]->GetName() != "Wall") continue;
 
 			(*list)[i]->GetRenderObject()->SetColour(Vector4(Vector3((*list)[i]->GetRenderObject()->GetColour()), 0.0f));
@@ -160,8 +157,9 @@ void GameTechRenderer::initTextures() {
 			OGLTexture* renderTex = dynamic_cast<OGLTexture*>((*list)[i]->GetRenderObject()->GetDefaultTexture());
 
 			GLuint tex = renderTex->GetObjectID();
+			if(renderTex->GetFBO()) glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
 			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+
 			BindShader(painterShader);
 
 			BindTextureToShader(renderTex, "hitTex", 0);
@@ -182,11 +180,12 @@ void GameTechRenderer::initTextures() {
 			//for (int i = 0; i < layerCount; ++i) {
 			DrawBoundMesh();
 			//}
-
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			t.Tick();
+			std::cout << "InitTextures: " << t.GetTimeDeltaMSec() << std::endl;
 		}
 	}
 	glViewport(0, 0, currentWidth, currentHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_CULL_FACE);
 }
 
@@ -209,13 +208,12 @@ void GameTechRenderer::UpdatePaints() {
 
 				if ((it->second - (*list)[i]->GetTransform().GetPosition()).Length() > (1.0f + (*list)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
 				(*list)[i]->GetRenderObject()->SetColour(Vector4(Vector3((*list)[i]->GetRenderObject()->GetColour()), 1.0f));
-				glBindFramebuffer(GL_FRAMEBUFFER, PainterFBO);
 				//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 				OGLTexture* renderTex = dynamic_cast<OGLTexture*>((*list)[i]->GetRenderObject()->GetDefaultTexture());
 
+				glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
 				GLuint tex = renderTex->GetObjectID();
 				glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
 
 				BindShader(painterShader);
 

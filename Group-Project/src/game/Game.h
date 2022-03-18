@@ -82,6 +82,5 @@ protected:
 
 	//Controls
 	PlayerInput playerInput;
-
 	std::atomic<bool> loading;
 };

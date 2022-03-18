@@ -44,6 +44,7 @@ void Player::InitAssets() {
 	playerMesh = AssetsManager::FetchMesh("CapsuleMesh");
 	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
 	if (texID != -1) playerTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	playerTex.get()->Init({ "FBO" });
 	playerShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

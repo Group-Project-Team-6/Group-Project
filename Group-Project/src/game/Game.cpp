@@ -76,6 +76,7 @@ void Game::RenderLoading() {
 	loadingRenderer.reset(new GameLoadingRenderer());
 	while (loading) {
 		loadingRenderer.get()->Render();
+		//wglMakeCurrent(NULL, NULL);
 		Sleep(10);
 	}
 }
@@ -93,6 +94,7 @@ void Game::InitAssets() {
 	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
 	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
+	basicTex.get()->Init({ "FBO" });
 	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

@@ -64,6 +64,7 @@ void Game::Init() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
+	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -160,9 +161,12 @@ void Game::InitCharacter() {
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		world->AddMainCamera();
-		world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
-		world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+		if ((world->IsLocalGame() || i == 0) && i < 2) {
+			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
+			world->AddMainCamera();
+			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
+			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+		}
 		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		//world->AddGameObject(players[i]);
 	}
@@ -174,11 +178,13 @@ void Game::UpdateGame(float dt) {
 
 	audioManager->AudioUpdate(world, dt);
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
 		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+		players[i]->GetBulletPool()->Animate(dt);
 	}
 
-	std::queue<ControlsCommand*>& command = playerInput.handleInput();
+	//still needed to add local multiplayer control
+	std::queue<ControlsCommand*>& command = playerInput[0].handleInput();
 	while (command.size() > 0) {
 		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
 		command.pop();
@@ -190,8 +196,6 @@ void Game::UpdateGame(float dt) {
 	t.Tick();
 	float ti = t.GetTimeDeltaSeconds();
 	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-
-	players[0]->GetBulletPool()->Animate(dt);
 	/*std::cout <<
 		std::to_string(character->GetTransform().GetPosition().x) +
 		std::to_string(character->GetTransform().GetPosition().y) +

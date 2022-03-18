@@ -81,6 +81,6 @@ protected:
 	ShaderPtr basicShader = nullptr;
 
 	//Controls
-	PlayerInput playerInput;
+	PlayerInput playerInput[4];
 	std::atomic<bool> loading;
 };

@@ -79,6 +79,12 @@ namespace NCL {
 				GameObjectIterator& first,
 				GameObjectIterator& last) const;
 
+			void SetLocalGame(bool isLocal) { isLocalGame = isLocal; }
+			bool IsLocalGame() { return isLocalGame; }
+
+			void SetLocalPlayerCount(int count) { localPlayerCount = count; }
+			int GetLocalPlayerCount() { return localPlayerCount; }
+
 		protected:
 			std::vector<GameEntity*> gameObjects;
 			std::vector<GameEntity*> players;
@@ -88,6 +94,8 @@ namespace NCL {
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
+			bool	isLocalGame;
+			int		localPlayerCount;
 			int		worldIDCounter;
 
 			TransformConverter transformConverter;

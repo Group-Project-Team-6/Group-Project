@@ -11,6 +11,8 @@ GameWorld::GameWorld()	{
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
+	localPlayerCount = 0;
+	isLocalGame = true;
 }
 
 GameWorld::~GameWorld()	{

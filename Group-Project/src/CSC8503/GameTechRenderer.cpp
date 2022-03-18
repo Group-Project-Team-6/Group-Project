@@ -16,6 +16,7 @@ using namespace CSC8503;
 Matrix4 biasMatrix = Matrix4::Translation(Vector3(0.5, 0.5, 0.5)) * Matrix4::Scale(Vector3(0.5, 0.5, 0.5));
 
 GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetWindow()), gameWorld(world)	{
+	viewportDimension = { currentWidth,currentHeight };
 	initTexture = false;
 	painted = false;
 	glEnable(GL_DEPTH_TEST);
@@ -130,9 +131,15 @@ void GameTechRenderer::RenderFrame() {
 	UpdatePaints();
 	SortObjectList(false, 0);
 	RenderShadowMap();
-	for (int i = 0; i < 2; i++) {
+	glClearColor(0.2, 0.2, 0.2, 1);
+	viewportDimension = { currentWidth / min(gameWorld.GetLocalPlayerCount(), 2) , currentHeight / ((gameWorld.GetLocalPlayerCount() - 1) / 2 + 1) };
+	for (int i = 0; i < gameWorld.GetLocalPlayerCount(); i++) {
 		BuildObjectList(true, i);
-		glViewport(i * currentWidth / 2, 0, currentWidth / 2, currentHeight);
+		glViewport(
+			(i%2) * viewportDimension.x,
+			(i / 2) * viewportDimension.y,
+			viewportDimension.x,
+			viewportDimension.y);
 		RenderSkybox(i);
 		RenderCamera(i);
 	}
@@ -304,7 +311,7 @@ void GameTechRenderer::RenderSkybox(int cameraNum) {
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 
-	float screenAspect = (float)currentWidth / (float)currentHeight;
+	float screenAspect = (float)viewportDimension.x / (float)viewportDimension.y;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera(cameraNum)->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera(cameraNum)->BuildProjectionMatrix(screenAspect);
 
@@ -330,7 +337,7 @@ void GameTechRenderer::RenderSkybox(int cameraNum) {
 }
 
 void GameTechRenderer::RenderCamera(int cameraNum) {
-	float screenAspect = (float)(currentWidth/ 2) / (float)currentHeight;
+	float screenAspect = (float)viewportDimension.x / (float)viewportDimension.y;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera(cameraNum)->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera(cameraNum)->BuildProjectionMatrix(screenAspect);
 

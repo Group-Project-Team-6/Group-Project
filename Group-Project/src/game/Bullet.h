@@ -18,7 +18,7 @@ public:
 	~Bullet();
 
 	void Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable);
-	void Animate(float dt);
+	void Animate(btRigidBody& player, float dt);
 	void InitAssets();
 	void RemoveFromPool();
 

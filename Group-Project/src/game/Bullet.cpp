@@ -18,9 +18,15 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 	btRigidBody::btRigidBodyConstructionInfo playerCI(bulletMass, bulletMotion, bulletShape, bulletInertia);
 	bulletRigidBody = new btRigidBody(playerCI);
 	bulletRigidBody->setUserPointer(this);
+	//ghost = new btGhostObject();
+	//ghost->setWorldTransform(bttransform);
+	//ghost->setCollisionShape(bulletShape);
+	//ghost->setUserPointer(this);
+	//ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	world.AddGameObject(this);
-	dynamicsWorld.addRigidBody(bulletRigidBody);
+	dynamicsWorld.addRigidBody(bulletRigidBody, 1, 4);
+	//dynamicsWorld.addCollisionObject(ghost, 4, 1);
 
 	this->setActive(false);
 	bulletRigidBody->setActivationState(false);
@@ -64,13 +70,14 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 }
 
-void Bullet::Animate(float dt) {
+void Bullet::Animate(btRigidBody& player, float dt) {
 	if (!inUse()) return;
 	if(paintable) Painter::Paint(this, this->GetTransform().GetPosition());
 	framesLeft -=dt;
 	if (framesLeft <= 0.0f) { //make while statement
 		RemoveFromPool();
 	}
+
 
 	//Bullet tick to limit speed of shootiung
 

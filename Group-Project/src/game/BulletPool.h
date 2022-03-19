@@ -13,7 +13,7 @@ public:
 	~BulletPool();
 
 	void Create(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera);
-	void Animate(float dt);
+	void Animate(btRigidBody& player, float dt);
 
 private:
 

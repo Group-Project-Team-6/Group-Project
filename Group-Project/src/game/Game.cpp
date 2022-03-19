@@ -114,14 +114,12 @@ void Game::InitScene() {
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
-	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer static objects btTransforms work differently
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-	ground->setTrigger(0);
 }
 
 void Game::InitItems() {
@@ -229,8 +227,6 @@ void Game::LevelGeneration() {
 						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0, i * 90, 0));
 						vecWalls.push_back(new Wall(wallsTransform, *world, *dynamicsWorld));
 						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
-						//world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 
 						break;
@@ -294,8 +290,6 @@ void Game::exectureTriggers() {
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
 					}
-					//execute Renderering listener
-					//execture audio listener
 				}
 			}			
 		}
@@ -323,55 +317,9 @@ void Game::UpdateGame(float dt) {
 	float ti = t.GetTimeDeltaSeconds();
 	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 
-	players[0]->GetBulletPool()->Animate(dt);
+	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
 
 	exectureTriggers();
-
-	//ghost triggers
-
-	/*for (int j = 0; j < dynamicsWorld->; j++) {
-		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-		btRigidBody* body = btRigidBody::upcast(obj);
-
-		btAlignedObjectArray<btCollisionObject*> objsInsidePairCacheGhostObject;
-		btAlignedObjectArray<btCollisionObject*> objsInsideGhostPair;
-		btGhostObject* ghost = btGhostObject::upcast(obj);
-
-		if (ghost) {
-			objsInsidePairCacheGhostObject.resize(0);
-			objsInsideGhostPair = &ghost->getOverlappingPairs();
-
-			
-		}
-	}*/
-
-	//Step Simulation been called, find required collision information with callbacks by iterating over all manifolds
-	//try to use btGhostObjects
-	/*int numManifolds = broadphase->getOverlappingPairCache()->getNumOverlappingPairs();
-	for (int i = 0; i < numManifolds; i++) {
-		btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-		const btCollisionObject* obA = contactManifold->getBody0();
-		const btCollisionObject* obB = contactManifold->getBody1();
-
-		int numContacts = contactManifold->getNumContacts();
-		for (int j = 0; j < numContacts; j++) {
-			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance() < 0.f) {
-				const btVector3& ptA = pt.getPositionWorldOnA();
-				const btVector3& ptB = pt.getPositionWorldOnB();
-				const btVector3& normalOnB = pt.m_normalWorldOnB;
-				//Collision Code
-			}
-		}
-	}*/
-
-	/*void MyNearCallBack(btBroadphasePair & collisionPair, btCollisionDispatcher & dispatcher, btDispatcherInfo & dispatchInfo) {
-		//collision Logic
-		//if physics
-		dispatcher.defaultNearCallback(collisionPair, dispatcher, btDispatcherInfo);
-	}*/
-
-	//dispatcher->setNearCallBack(MyNearCallBack)
 }
 /////////////////Update Game//////////////////////////
 

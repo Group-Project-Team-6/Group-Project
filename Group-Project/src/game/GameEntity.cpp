@@ -2,8 +2,7 @@
 
 
 GameEntity::GameEntity(string objectName) {
-	name = "test";
-	//name = objectName;
+	name = "";
 	renderObject = nullptr;
 	rigidBody = nullptr;
 	ghost = nullptr;
@@ -15,4 +14,5 @@ GameEntity::GameEntity(string objectName) {
 GameEntity::~GameEntity() {
 	delete renderObject;
 	delete rigidBody;
+	delete ghost;
 }

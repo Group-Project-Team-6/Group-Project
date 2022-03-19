@@ -16,9 +16,9 @@ void BulletPool::Create(btRigidBody& player, btVector3 force, int lifeTime, Came
 	}
 }
 
-void BulletPool::Animate(float dt) {
+void BulletPool::Animate(btRigidBody& player, float dt) {
 
 	for (int i = 0; i < poolSize; i++) {
-		bullets[i]->Animate(dt);
+		bullets[i]->Animate(player, dt);
 	}
 }

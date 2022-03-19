@@ -143,14 +143,14 @@ void Common_Update()
         COORD bufferCoord = {0, 0};
         SMALL_RECT writeRegion = {0, 0, NUM_COLUMNS - 1, NUM_ROWS - 1};
         WriteConsoleOutput(gConsoleHandle, gConsoleBuffer, bufferSize, bufferCoord, &writeRegion);
-        fflush(stdout);
+        //fflush(stdout);
     }
 
     /*
         Reset the write buffer
     */
     gYPos = 0;
-    memset(gWriteBuffer, ' ', sizeof(gWriteBuffer));
+    //memset(gWriteBuffer, ' ', sizeof(gWriteBuffer));
 
     if (Common_Private_Update)
     {

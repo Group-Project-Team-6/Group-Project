@@ -265,12 +265,15 @@ void Game::exectureTriggers() {
 						//Execute triggers
 					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
 						std::cout << "Player has picked up item" << std::endl;
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
-						std::cout << "Wall Painted" << std::endl;
+						return;
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
+						return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
+						std::cout << "Wall Painted" << std::endl;
+						return;
 					}
 				}
 			}			
@@ -298,8 +301,7 @@ void Game::UpdateGame(float dt) {
 	renderer->Render();
 	t.Tick();
 	float ti = t.GetTimeDeltaSeconds();
-	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-
+	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
 
 	exectureTriggers();

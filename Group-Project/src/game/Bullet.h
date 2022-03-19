@@ -34,7 +34,7 @@ public:
 
 	virtual void UpdateRenderPositions() override {
 
-		bttransform = bulletRigidBody->getWorldTransform();
+		bttransform = ghost->getWorldTransform();
 
 		btRot = bttransform.getRotation();
 		btPos = bttransform.getOrigin();
@@ -49,6 +49,7 @@ public:
 
 private:
 	float framesLeft;
+	float speed;
 
 	MeshPtr bulletMesh;
 	TexturePtr bulletTex;

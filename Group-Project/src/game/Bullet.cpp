@@ -78,7 +78,7 @@ void Bullet::Animate(btRigidBody& player, float dt) {
 		RemoveFromPool();
 	}
 
-
+	//bulletRigidBody->getWorldTransform().setOrigin();
 	//Bullet tick to limit speed of shootiung
 
 	return;

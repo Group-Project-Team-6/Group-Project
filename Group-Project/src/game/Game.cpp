@@ -66,7 +66,7 @@ void Game::Init() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(true);
+	world->SetLocalGame(false);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -164,32 +164,6 @@ void Game::InitCharacter() {
 }
 /////////////////Build Game///////////////////////////
 
-void Game::UpdateGame(float dt) {
-
-	dynamicsWorld->stepSimulation(dt, 0);
-
-	audioManager->AudioUpdate(world, dt);
-
-	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
-		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
-		players[i]->GetBulletPool()->Animate(dt);
-	}
-
-	//still needed to add local multiplayer control
-	std::queue<ControlsCommand*>& command = playerInput[0].handleInput();
-	while (command.size() > 0) {
-		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
-		command.pop();
-	}
-
-	world->UpdatePositions(); //Maybe Change
-	GameTimer t;
-	renderer->Render();
-	t.Tick();
-	float ti = t.GetTimeDeltaSeconds();
-	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-}
-
 void Game::LevelGeneration() {
 
 	int length = 10;
@@ -213,49 +187,6 @@ void Game::LevelGeneration() {
 	stairsTransform.SetOrientation({ 0.5,0,0,1 });
 	stairsTransform.SetPosition({ 10,2,0 });
 
-	/*
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs = new Wall(stairsTransform);
-	stairs->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs->GetRigidBody());
-	world->AddGameObject(stairs);
-
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs1 = new Wall(stairsTransform);
-	stairs1->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs1->GetRigidBody());
-	world->AddGameObject(stairs1);
-	stairsTransform.SetScale({ 0.5, scale ,scale });
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs2 = new Wall(stairsTransform);
-	stairs2->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs2->GetRigidBody());
-	world->AddGameObject(stairs2);
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs3 = new Wall(stairsTransform);
-	stairs3->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs3->GetRigidBody());
-	world->AddGameObject(stairs3);
-	*/
-
-	/*
-	Wall* wall1 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
-	world->AddGameObject(wall1);
-	wallsTransform.SetPosition({ 0,2,50 });
-	Wall* wall2 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
-	world->AddGameObject(wall2);
-	wallsTransform.SetPosition({ 0,2,-50 });
-	Wall* wall3 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
-	world->AddGameObject(wall3);
-	wallsTransform.SetPosition({ -50,2,0 });
-	Wall* wall4 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
-	world->AddGameObject(wall4);
-	*/
-
 	vector<Wall*> vecWalls;
 
 	float unitLength = scale; //int
@@ -278,9 +209,7 @@ void Game::LevelGeneration() {
 					{
 					case 'P':
 						if (numItems > 36) continue;
-						items[numItems] = new Item(position, 1);
-						world->AddGameObject(items[numItems]);
-						dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
+						items[numItems] = new Item(position, 1, *world, *dynamicsWorld);
 						numItems++;
 						break;
 					case '#':
@@ -294,15 +223,7 @@ void Game::LevelGeneration() {
 					case 'S':
 						break;
 					case 'A':
-						/*
-						stairsTransform.SetOrientation({ 0.5,0,0,1 });
-						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
-						vecWalls.push_back(new Wall(stairsTransform));
-						vecWalls[numWalls]->UpdateCollShape(scale, scale, 0.5);
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
-						world->AddGameObject(vecWalls[numWalls]);
-						numWalls++;
-						*/
+						//stairs
 						break;
 					case 'V':
 
@@ -363,11 +284,12 @@ void Game::UpdateGame(float dt) {
 
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
-	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
+	world->GetMainCamera(0)->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y,
+		players[0]->GetTransform().GetOrientation().ToEuler().x, dt);
 
-	std::queue<ControlsCommand*>& command = playerInput.handleInput();
+	std::queue<ControlsCommand*>& command = playerInput[0].handleInput();
 	while (command.size() > 0) {
-		command.front()->execute(*players[0], *world->GetMainCamera(), *audioManager); //Learn which player from networking
+		command.front()->execute(*players[0], *world->GetMainCamera(0), *audioManager); //Learn which player from networking
 		command.pop();
 	}
 
@@ -381,6 +303,7 @@ void Game::UpdateGame(float dt) {
 	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
 
 	exectureTriggers();
+
 }
 /////////////////Update Game//////////////////////////
 

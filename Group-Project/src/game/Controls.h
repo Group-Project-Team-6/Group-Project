@@ -57,7 +57,7 @@ public:
 
 class MouseVertical : ControlsCommand {
 public:
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld, AudioManager& audioManager) override {
+	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		player.SetPitch(player.GetPitch() - Window::GetMouse()->GetRelativePosition().y);
 	}
 };//Update the mouse by how much

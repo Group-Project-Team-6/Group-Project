@@ -10,6 +10,7 @@ uniform float	lightRadius;
 uniform vec4	lightColour;
 
 uniform vec3	cameraPos;
+uniform vec3	playerPos;
 
 uniform bool hasTexture;
 uniform bool isTransparent;

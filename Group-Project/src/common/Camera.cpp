@@ -19,7 +19,7 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playe
 	pitch = playerPitch;
 	yaw = playerYaw;
 
-	pitch = std::min(pitch, 90.0f);
+	pitch = std::min(pitch, 0.0f);
 	pitch = std::max(pitch, -90.0f);
 
 	if (yaw <0) {
@@ -28,10 +28,12 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playe
 	if (yaw > 360.0f) {
 		yaw -= 360.0f;
 	}	
-
-	position = { playersPosition.x + 10*sin(Maths::DegreesToRadians(yaw)),
-		playersPosition.y + 5,
-		playersPosition.z + 10*cos(Maths::DegreesToRadians(yaw))};
+	float r = 5 * cos(Maths::DegreesToRadians(pitch));
+	position = {
+		playersPosition.x + r * sin(Maths::DegreesToRadians(yaw)),
+		playersPosition.y - 5 * sin(Maths::DegreesToRadians(pitch)),
+		playersPosition.z + r * cos(Maths::DegreesToRadians(yaw))
+	};
 
 	/*
 	float frameSpeed = 100 * dt;

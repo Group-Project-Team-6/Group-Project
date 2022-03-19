@@ -243,7 +243,7 @@ void GameTechRenderer::BuildObjectList(bool isCameraBased, int cameraNum) {
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
 				if (isCameraBased) {
-					if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < 11.0f) {
+					if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()*1.1f) {
 						activeTransparentObjects.emplace_back(o);
 					}
 					else {
@@ -396,7 +396,9 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 				lightRadiusLocation = glGetUniformLocation(shader->GetProgramID(), "lightRadius");
 				GLuint timeLocation = glGetUniformLocation(shader->GetProgramID(), "dt");
 				cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
+				GLuint playerLocation = glGetUniformLocation(shader->GetProgramID(), "playerPos");
 				glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera(cameraNum)->GetPosition());
+				glUniform3fv(playerLocation, 1, (float*)&gameWorld.GetPlayer(cameraNum)->GetTransform().GetPosition());
 
 				glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 				glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);

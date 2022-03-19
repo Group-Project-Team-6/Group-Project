@@ -3,7 +3,8 @@
 #include "../game/GameEntity.h"
 #include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
-//#include "../Physics/VkTechRenderer.h"
+#include "../CSC8503/GameLoadingRenderer.h"
+#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
@@ -13,6 +14,7 @@
 #include "DebugMode.h"
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
+#include <atomic>
 
 
 //Encapsulate in namespace?
@@ -29,6 +31,8 @@ public:
 
 protected:
 	void InitWorld();
+	void RenderLoading();
+	void Init();
 	void InitPhysics();
 	void InitAudio();
 	void InitAssets();
@@ -77,5 +81,6 @@ protected:
 	ShaderPtr basicShader = nullptr;
 
 	//Controls
-	PlayerInput playerInput;
+	PlayerInput playerInput[4];
+	std::atomic<bool> loading;
 };

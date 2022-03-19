@@ -38,6 +38,12 @@ public:
 		if (Window::GetMouse()->GetRelativePosition().x ) {
 			ControlQueue.push(mouseHorizontal);
 		}
+
+		if (Window::GetMouse()->GetRelativePosition().y) {
+			ControlQueue.push(mouseVertical);
+		}
+
+
 			
 		return ControlQueue;
 	}
@@ -50,5 +56,6 @@ private:
 	ControlsCommand* dKey = (ControlsCommand*) new moveRightCommand();
 	ControlsCommand* leftMouse = (ControlsCommand*) new leftMouseCommand();
 	ControlsCommand* mouseHorizontal = (ControlsCommand*) new MouseHorizontal();
+	ControlsCommand* mouseVertical = (ControlsCommand*) new MouseVertical();
 	std::queue<ControlsCommand*> ControlQueue;
 };

@@ -6,18 +6,20 @@
 #include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
 
 #include <math.h>
+#include <thread>
+#include <mutex>
 
 //Namespaces?
 
 Game::Game() {
+	loading = true;
 	InitWorld();
-	InitPhysics();
-	InitAudio();
-	InitAssets();
-	InitScene();
-	InitItems();
-	LevelGeneration();
-	InitCharacter();
+	std::thread loadScreenThread(&Game::RenderLoading,this);
+	Init();
+	//std::thread initThread(&Game::Init,this);
+
+	//initThread.join();
+	loadScreenThread.join();
 	//void InitHUD
 	//InitNetworking?
 
@@ -51,19 +53,39 @@ Game::~Game() {
 
 }
 
-/////////////////Build Game///////////////////////////
+void Game::Init() {
+	InitPhysics();
+	InitAudio();
+	InitAssets();
+	InitScene();
+	InitItems();
+	LevelGeneration();
+	InitCharacter();
+	loading = false;
+}
+
 void Game::InitWorld() {
 	world = new GameWorld();
+	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
-	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
-	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+}
+
+void Game::RenderLoading() {
+	RendererPtr loadingRenderer;
+	loadingRenderer.reset(new GameLoadingRenderer());
+	while (loading) {
+		loadingRenderer.get()->Render();
+		//wglMakeCurrent(NULL, NULL);
+		Sleep(10);
+	}
 }
 
 void Game::InitAssets() {
 	AssetsManager::LoadMeshFromFile("SphereMesh", "Sphere.msh");
 	AssetsManager::LoadMeshFromFile("CubeMesh", "Cube.msh");
+	AssetsManager::LoadMeshFromFile("WallMesh", "corridor_wall_6.fbx");
 	AssetsManager::LoadMeshFromFile("CapsuleMesh", "Capsule.msh");
 	AssetsManager::LoadShaderFromFile("GameTechShaderSet", "GameTechShader.set");
 	AssetsManager::LoadTextureFromFile("CheckerboardTex", "checkerboard.png");
@@ -73,6 +95,7 @@ void Game::InitAssets() {
 	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
 	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
+	basicTex.get()->Init({ "FBO" });
 	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
@@ -129,12 +152,44 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25 + 2.0f*i, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new Player({25 * 2.f*i, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		world->AddPlayer(players[i]);
+		if ((world->IsLocalGame() || i == 0) && i < 5) {
+			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
+			world->AddMainCamera();
+			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
+			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+		}
 	}
 }
 /////////////////Build Game///////////////////////////
 
-/////////////////Build Level//////////////////////////
+void Game::UpdateGame(float dt) {
+
+	dynamicsWorld->stepSimulation(dt, 0);
+
+	audioManager->AudioUpdate(world, dt);
+
+	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+		players[i]->GetBulletPool()->Animate(dt);
+	}
+
+	//still needed to add local multiplayer control
+	std::queue<ControlsCommand*>& command = playerInput[0].handleInput();
+	while (command.size() > 0) {
+		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+		command.pop();
+	}
+
+	world->UpdatePositions(); //Maybe Change
+	GameTimer t;
+	renderer->Render();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
+}
+
 void Game::LevelGeneration() {
 
 	int length = 10;
@@ -205,6 +260,7 @@ void Game::LevelGeneration() {
 
 	float unitLength = scale; //int
 	int numWalls = 0;
+	int numItems = 0;
 	for (int i = 0; i < 1; i++)
 	{
 		for (float level = 0; level < maze.size(); level += 1.0f) //int
@@ -221,6 +277,11 @@ void Game::LevelGeneration() {
 					switch (ch)
 					{
 					case 'P':
+						if (numItems > 36) continue;
+						items[numItems] = new Item(position, 1);
+						world->AddGameObject(items[numItems]);
+						dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
+						numItems++;
 						break;
 					case '#':
 						wallsTransform.SetPosition(position);

@@ -40,8 +40,7 @@ Item::~Item() {
 
 void Item::InitAssets() {
 	itemMesh = AssetsManager::FetchMesh("CubeMesh");
-	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
-	if (texID != -1) itemTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	itemTex = AssetsManager::FetchTexture("CheckerboardTex");
 	itemShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

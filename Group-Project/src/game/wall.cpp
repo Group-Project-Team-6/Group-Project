@@ -29,9 +29,10 @@ Wall::~Wall() {
 
 void Wall::InitAssets() {
 
-	wallMesh = AssetsManager::FetchMesh("CubeMesh");
-	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex","CheckerBoard.png",false);
-	if(texID != -1) wallTex = AssetsManager::FetchTexture("CheckerBoardTex",texID);
+	wallMesh = AssetsManager::FetchMesh("WallMesh");
+	TexID texID = AssetsManager::LoadTextureFromFile("WallTex","corridor_walls_and_floor_c_2.png",false);
+	if(texID != -1) wallTex = AssetsManager::FetchTexture("WallTex",texID);
+	wallTex.get()->Init({ "FBO" });
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

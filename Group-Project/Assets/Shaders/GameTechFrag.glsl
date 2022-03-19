@@ -3,12 +3,14 @@
 uniform vec4 		objectColour;
 uniform sampler2D 	mainTex;
 uniform sampler2DShadow shadowTex;
+uniform float dt;
 
 uniform vec3	lightPos;
 uniform float	lightRadius;
 uniform vec4	lightColour;
 
 uniform vec3	cameraPos;
+uniform vec3	playerPos;
 
 uniform bool hasTexture;
 uniform bool isTransparent;

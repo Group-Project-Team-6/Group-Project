@@ -5,6 +5,7 @@ add_subdirectory(OpenGLRendering)
 add_subdirectory(VulkanRendering)
 add_subdirectory(Physics)
 add_subdirectory(game)
+add_subdirectory(assimp)
 
 #Targeting Directories & Linking Libraries
 find_package(Bullet CONFIG REQUIRED)
@@ -14,6 +15,7 @@ else()
 	message(WARNING "Bullet Physics Engine Cannot Be Found, Build Might Not Work Properly")
 endif()
 
+#FMOD
 add_library(FMOD SHARED IMPORTED)
 set_property(TARGET FMOD PROPERTY
 	IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/FMOD/api/core/lib/x64/fmod.dll"
@@ -24,6 +26,21 @@ set_property(TARGET FMOD PROPERTY
 set_property(TARGET FMOD PROPERTY
 	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/FMOD/api/core/inc"
 )
+
+#Assimp
+#add_library(ASSIMP SHARED IMPORTED)
+#set_property(TARGET ASSIMP PROPERTY
+#	IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/assimp/bin/Debug/assimp-vc142-mtd.dll"
+#)
+#set_property(TARGET ASSIMP PROPERTY
+#	IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/assimp/lib/Debug/assimp-vc142-mtd.lib"
+#)
+#set_property(TARGET ASSIMP PROPERTY
+#	IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/assimp/contrib/zlib/Debug/zlibstaticd.lib"
+#)
+#set_property(TARGET ASSIMP PROPERTY
+#	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/assimp/include"
+#)
 
 if (DEFINED VULKAN_SDK_PATH)
   set(Vulkan_INCLUDE_DIRS "${VULKAN_SDK_PATH}/Include") # 1.1 Make sure this include path is correct
@@ -44,7 +61,7 @@ target_link_libraries(Physics VulkanRendering ${BULLET_LIBRARIES} Common OpenGLR
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common)
 target_link_libraries(VulkanRendering Vulkan::Vulkan Common)
-target_link_libraries(Common ${BULLET_LIBRARIES})
+target_link_libraries(Common ${BULLET_LIBRARIES} assimp)
 target_link_libraries(Audio FMOD CSC8503)
 
 #Copy fmod.dll to Output Directory

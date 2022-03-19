@@ -53,7 +53,14 @@ public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		player.GetRigidBody()->setAngularVelocity({ 0, -(Window::GetMouse()->GetRelativePosition().x) , 0 });		
 	}	
-};
+};//Update the mouse by how much
+
+class MouseVertical : ControlsCommand {
+public:
+	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsworld, AudioManager& audioManager) override {
+		player.SetPitch(player.GetPitch() - Window::GetMouse()->GetRelativePosition().y);
+	}
+};//Update the mouse by how much
 
 
 class leftMouseCommand : ControlsCommand {

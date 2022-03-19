@@ -11,6 +11,10 @@ namespace NCL {
 	class Maths::Vector3;
 	class Maths::Vector4;
 	namespace CSC8503 {
+		struct Dimension {
+			int x;
+			int y;
+		};
 		class RenderObject;
 		class GameTechRenderer : public OGLRenderer	{
 		public:
@@ -29,11 +33,11 @@ namespace NCL {
 
 			void initTextures();
 			void UpdatePaints();
-			void BuildObjectList();
-			void SortObjectList();
+			void BuildObjectList(bool isCameraBased, int cameraNum);
+			void SortObjectList(bool isCameraBased, int cameraNum);
 			void RenderShadowMap();
-			void RenderCamera(); 
-			void RenderSkybox();
+			void RenderCamera(int cameraNum);
+			void RenderSkybox(int cameraNum);
 
 			void LoadSkybox();
 
@@ -58,6 +62,8 @@ namespace NCL {
 			Vector4		lightColour;
 			float		lightRadius;
 			Vector3		lightPosition;
+
+			Dimension		viewportDimension;
 
 			bool painted;
 			bool initTexture;

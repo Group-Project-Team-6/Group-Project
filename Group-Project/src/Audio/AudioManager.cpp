@@ -68,7 +68,7 @@ void AudioManager::SetVolume() {
 void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
     Common_Update();
 
-    NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
+    NCL::Vector3 cameraPos = world->GetMainCamera(0)->GetPosition();
 
     FMOD_VECTOR pos = { 0.0f, 25.0f, -200.0f };
     FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
@@ -97,7 +97,7 @@ void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
         FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
         FMOD_VECTOR vel;
         
-        float yaw = world->GetMainCamera()->GetYaw();
+        float yaw = world->GetMainCamera(0)->GetYaw();
 
         float radians = yaw * ( 3.14159265 / 180 );
 

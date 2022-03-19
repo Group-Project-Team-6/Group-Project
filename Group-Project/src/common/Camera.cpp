@@ -11,18 +11,15 @@ Polls the camera for keyboard / mouse movement.
 Should be done once per frame! Pass it the msec since
 last frame (default value is for simplicities sake...)
 */
-void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
+void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playerPitch, float dt) {
 	//Update the mouse by how much
-	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
+	//pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	//yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
+	pitch = playerPitch;
 	yaw = playerYaw;
 
-	//yaw -= Window::GetKeyboard()->KeyDown(KeyboardKeys::Q);
-	//yaw += Window::GetKeyboard()->KeyDown(KeyboardKeys::E);
-
-	//Bounds check the pitch, to be between straight up and straight down ;)
-	pitch = std::min(pitch, 90.0f);
+	pitch = std::min(pitch, 0.0f);
 	pitch = std::max(pitch, -90.0f);
 
 	if (yaw <0) {
@@ -31,10 +28,12 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float dt) {
 	if (yaw > 360.0f) {
 		yaw -= 360.0f;
 	}	
-
-	position = { playersPosition.x + 10*sin(Maths::DegreesToRadians(yaw)),
-		playersPosition.y + 5,
-		playersPosition.z + 10*cos(Maths::DegreesToRadians(yaw))};
+	float r = 5 * cos(Maths::DegreesToRadians(pitch));
+	position = {
+		playersPosition.x + r * sin(Maths::DegreesToRadians(yaw)),
+		playersPosition.y - 5 * sin(Maths::DegreesToRadians(pitch)),
+		playersPosition.z + r * cos(Maths::DegreesToRadians(yaw))
+	};
 
 	/*
 	float frameSpeed = 100 * dt;

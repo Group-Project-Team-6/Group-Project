@@ -41,7 +41,7 @@ namespace NCL {
 
 		~Camera(void) {};
 
-		void UpdateCamera(Vector3& playerTransform, float playerYaw, float dt);
+		void UpdateCamera(Vector3& playerTransform, float playerYaw, float playerPitch, float dt);
 
 		float GetFieldOfVision() const {
 			return fov;

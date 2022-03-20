@@ -144,6 +144,7 @@ void GameTechRenderer::RenderFrame() {
 		RenderCamera(i);
 	}
 	glDisable(GL_CULL_FACE); //Todo - text indices are going the wrong way...
+	viewportDimension = { currentWidth, currentHeight };
 
 }
 

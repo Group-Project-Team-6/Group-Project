@@ -35,6 +35,11 @@ Game::~Game() {
 	//delete world
 	delete world;
 
+	for (int i = 0; i < 4; i++) {
+		if(playerInput[i]) 
+			delete playerInput[i];
+	}
+
 	//delete GameEntities
 	delete ground;
 	for (auto i : players) {
@@ -59,6 +64,7 @@ void Game::Init() {
 	InitItems();
 	LevelGeneration();
 	InitCharacter();
+	InitPlayerInput();
 	loading = false;
 }
 
@@ -166,10 +172,18 @@ void Game::InitCharacter() {
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+
 		}
 		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		//world->AddGameObject(players[i]);
 	}
+}
+
+void Game::InitPlayerInput() {
+	playerInput[0] = new PlayerInput();
+	playerInput[1] = new PlayerInput2();
+	playerInput[2] = nullptr;
+	playerInput[3] = nullptr;
 }
 
 void Game::UpdateGame(float dt) {
@@ -181,13 +195,14 @@ void Game::UpdateGame(float dt) {
 	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
 		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
 		players[i]->GetBulletPool()->Animate(dt);
-	}
-
-	//still needed to add local multiplayer control
-	std::queue<ControlsCommand*>& command = playerInput[0].handleInput();
-	while (command.size() > 0) {
-		command.front()->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
-		command.pop();
+		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
+		if (playerInput[i]) {
+			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
+			while (command.size() > 0) {
+				command.front()->execute(*players[i], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
+				command.pop();
+			}
+		}
 	}
 
 	world->UpdatePositions(); //Maybe Change

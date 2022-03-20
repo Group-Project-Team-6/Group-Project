@@ -40,11 +40,11 @@ int main() {
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T)) {
-			w->SetWindowPosition(0, 0);
+			//w->SetWindowPosition(0, 0);
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-			toggleDebug = !toggleDebug;
+			//toggleDebug = !toggleDebug;
 		}
 		if (toggleDebug) {
 			d->GetMemoryAllocationSize(*w);

@@ -40,6 +40,7 @@ protected:
 	//Build State Machine?
 	void LevelGeneration();
 	void InitCharacter();
+	void InitPlayerInput();
 	
 	//void InitHUD
 	//InitNetworking?
@@ -81,6 +82,6 @@ protected:
 	ShaderPtr basicShader = nullptr;
 
 	//Controls
-	PlayerInput playerInput[4];
+	PlayerInput* playerInput[4];
 	std::atomic<bool> loading;
 };

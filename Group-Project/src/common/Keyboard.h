@@ -150,6 +150,7 @@ namespace NCL {
 		COMMA = 0xBC,  // Comma Key  (,)
 		MINUS = 0xBD,  // Minus Key  (-)
 		PERIOD = 0xBE,  // Period Key (.)
+		INTlBACKSlASH = 0xE2,
 		ATTN = 0xF6,  // Attn key 
 		CRSEL = 0xF7,  // CrSel key 
 		EXSEL = 0xF8,  // ExSel key 

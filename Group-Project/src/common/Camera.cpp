@@ -28,10 +28,10 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playe
 	if (yaw > 360.0f) {
 		yaw -= 360.0f;
 	}	
-	float r = 5 * cos(Maths::DegreesToRadians(pitch));
+	float r = 8 * cos(Maths::DegreesToRadians(pitch));
 	position = {
 		playersPosition.x + r * sin(Maths::DegreesToRadians(yaw)),
-		playersPosition.y - 5 * sin(Maths::DegreesToRadians(pitch)),
+		playersPosition.y - 8 * sin(Maths::DegreesToRadians(pitch)),
 		playersPosition.z + r * cos(Maths::DegreesToRadians(yaw))
 	};
 

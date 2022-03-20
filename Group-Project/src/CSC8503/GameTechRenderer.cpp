@@ -134,10 +134,10 @@ void GameTechRenderer::RenderFrame() {
 	glClearColor(0.2, 0.2, 0.2, 1);
 	viewportDimension = { currentWidth / min(gameWorld.GetLocalPlayerCount(), 2) , currentHeight / ((gameWorld.GetLocalPlayerCount() - 1) / 2 + 1) };
 	for (int i = 0; i < gameWorld.GetLocalPlayerCount(); i++) {
-		BuildObjectList(true, i);
+		BuildObjectList(true, i); 
 		glViewport(
-			(i%2) * viewportDimension.x,
-			(i / 2) * viewportDimension.y,
+			(i % 2) * viewportDimension.x,
+			(((gameWorld.GetLocalPlayerCount()-1) / 2) - (i / 2)) * viewportDimension.y,
 			viewportDimension.x,
 			viewportDimension.y);
 		RenderSkybox(i);

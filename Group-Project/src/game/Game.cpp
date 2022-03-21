@@ -167,11 +167,12 @@ void Game::InitCharacter() {
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		if ((world->IsLocalGame() || i == 0) && i < 1) {
+		if ((world->IsLocalGame() || i == 0) && i < 4) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+			world->GetMainCamera(i)->SetDistance(8.0f);
 
 		}
 		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());

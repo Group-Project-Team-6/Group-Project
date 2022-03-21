@@ -24,6 +24,8 @@ namespace NCL {
 			nearPlane	= 1.0f;
 			farPlane	= 100.0f;
 
+			distance = 8.0f;
+
 			camType		= CameraType::Perspective;
 		};
 
@@ -84,6 +86,14 @@ namespace NCL {
 		//Sets pitch, in degrees
 		void	SetPitch(float p) { pitch = p; }
 
+		void	SetDistance(float d) {
+			distance = d;
+		}
+
+		float	GateDistance() {
+			return distance;
+		}
+
 		static Camera BuildPerspectiveCamera(const Vector3& pos, float pitch, float yaw, float fov, float near, float far);
 		static Camera BuildOrthoCamera(const Vector3& pos, float pitch, float yaw, float left, float right, float top, float bottom, float near, float far);
 	protected:
@@ -99,6 +109,8 @@ namespace NCL {
 		float	fov;
 		float	yaw;
 		float	pitch;
+
+		float distance;
 		Vector3 position;
 	};
 }

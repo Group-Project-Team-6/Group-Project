@@ -18,6 +18,7 @@ add_executable(Game
 	BulletPool.h
 	AssetsManager.h
 	LevelGen.h
+	Tasks.h
 
 
 	main.cpp

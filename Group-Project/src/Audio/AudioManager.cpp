@@ -66,7 +66,7 @@ void AudioManager::SetVolume() {
 }
 
 void AudioManager::AudioUpdate(NCL::CSC8503::GameWorld* world, float dt) {
-    Common_Update();
+    //Common_Update();
 
     NCL::Vector3 cameraPos = world->GetMainCamera()->GetPosition();
 

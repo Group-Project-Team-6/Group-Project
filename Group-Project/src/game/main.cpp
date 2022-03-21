@@ -15,6 +15,8 @@ int main() {
 
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 	std::shared_ptr<DebugMode> d(new(DebugMode));
+
+	//DebugMode* d = new(DebugMode);
 	
 	if (!w->HasInitialised()) {
 		return -1;
@@ -23,6 +25,7 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 	Game* g = new Game();
+	//std::shared_ptr<Game> g(Debug_NEW(Game));
 
 	w->GetTimer()->GetTimeDeltaSeconds();
 	bool toggleDebug = false;
@@ -47,7 +50,7 @@ int main() {
 			toggleDebug = !toggleDebug;
 		}
 		if (toggleDebug) {
-			std::cout << "\x1B[2J\x1B[H";
+			//std::cout << "\x1B[2J\x1B[H";
 			d->GetMemoryAllocationSize(*w);
 			d->GetMemoryAllocationSize(*d);
 			d->GetMemoryAllocationSize(*g);

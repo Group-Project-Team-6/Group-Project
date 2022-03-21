@@ -4,6 +4,7 @@ add_subdirectory(CSC8503)
 add_subdirectory(OpenGLRendering)
 add_subdirectory(VulkanRendering)
 add_subdirectory(Physics)
+add_subdirectory(PlayStation4)
 add_subdirectory(game)
 
 #Targeting Directories & Linking Libraries
@@ -39,7 +40,7 @@ else()
     message(STATUS "Using vulkan lib at: ${Vulkan_LIBRARIES}")
 endif()
 
-target_link_libraries(Game VulkanRendering Physics OpenGLRendering CSC8503 Common Audio)
+target_link_libraries(Game VulkanRendering Physics OpenGLRendering CSC8503 Common Audio PlayStation4)
 target_link_libraries(Physics VulkanRendering ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503)
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common)

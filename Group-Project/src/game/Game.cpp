@@ -171,8 +171,8 @@ void Game::UpdateGame(float dt) {
 
 void Game::LevelGeneration() {
 
-	int length = 9;
-	int width = 9;
+	int length = 10;
+	int width = 10;
 
 	float scale = 5;
 
@@ -198,8 +198,6 @@ void Game::LevelGeneration() {
 	Transform floorsTransform;
 	floorsTransform.SetScale({ scale, scale ,0.1 });
 	floorsTransform.SetOrientation({ 1,0,0,1 });
-	//float height = scale + 2;
-	//floorsTransform.SetPosition({ 10,height,0 });
 	
 	/*
 	Wall* wall1 = new Wall(wallsTransform);
@@ -225,16 +223,16 @@ void Game::LevelGeneration() {
 	vector<Wall*> vecWalls;
 	vector<Wall*> floors;
 
-	float unitLength = scale; //int
+	float unitLength = scale; 
 	int numWalls = 0;
 	int numFloors = 0;
 	for (int i = 0; i < 4; i++)
 	{
-		for (float level = 0; level < maze.size(); level++) //int
+		for (float level = 0; level < maze.size(); level++)
 		{
-			for (float l = 0; l < length; l++) //int
+			for (float l = 0; l < length; l++)
 			{
-				for (float w = 0; w < width; w++) //int
+				for (float w = 0; w < width; w++)
 				{
 					char ch = maze[level][l * width + w];
 
@@ -306,8 +304,41 @@ void Game::LevelGeneration() {
 
 				}
 			}
-			//collGen.Collectables(level, maze[level], width, length, unitLength);
+
 		}
+	}
+
+	Transform collectablesTransform;
+	collectablesTransform.SetScale({ scale / 5,scale / 5,scale / 5});
+	collectablesTransform.SetOrientation({ 1,0,0,1 });
+
+	vector<vector<int>> collectablePos;
+	vector<Wall*> vecCollectables;
+	int numCollectablesPlaced = 0;
+	for (int i = 0; i < maze.size(); i++) {
+
+		int numCollectables = ((length * width) / 50);
+
+		for (int x = 0; x < numCollectables; x++) {
+
+			int randomNum = rand() % maze[i].length();
+
+			if (maze[i][randomNum] == 'P') {
+				int posLength = randomNum / length;
+				int posWidth = randomNum - (posLength * width);
+
+				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
+				vecCollectables.push_back(new Wall(collectablesTransform));
+				vecCollectables[numCollectablesPlaced]->UpdateCollShape(0.1, 0.1, 0.1);
+				dynamicsWorld->addRigidBody(vecCollectables[numCollectablesPlaced]->GetRigidBody());
+				world->AddGameObject(vecCollectables[numCollectablesPlaced]);
+				numCollectablesPlaced++;
+
+			}
+			else { x--; }
+
+		}
+
 	}
 
 }

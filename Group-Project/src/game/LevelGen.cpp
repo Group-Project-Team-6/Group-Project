@@ -3,6 +3,8 @@ using namespace std;
 #include <stdlib.h>
 #include <string>
 
+#include <fstream> // TEST
+
 LevelGen::LevelGen() {
 
 }
@@ -16,9 +18,6 @@ void LevelGen::Generate(int l, int w) {
     length = w;
     height = l;
 
-    //level = new string[length, height];  //vectors or array
-    //levelString = new List<string>(3);
-
     level.resize(l);
     for (int i = 0; i < l; i++) {
         level[i].resize(w);
@@ -27,16 +26,19 @@ void LevelGen::Generate(int l, int w) {
     numberOfStairs = 0;
     MazeGenCheck();
     AddStairs();
+    LevelTextFile("map1"); //TEST
     LevelToString(0);
 
     MazeGenCheck();
     numberOfStairs = 0;
     AddStairs();
     PathToStairs();
+    LevelTextFile("map2"); //TEST
     LevelToString(1);
 
     MazeGenCheck();
     PathToStairs();
+    LevelTextFile("map3"); //TEST
     LevelToString(2);
 
 }
@@ -58,6 +60,23 @@ void LevelGen::LevelToString(int numLevel) {
         }
     }
     levelString.push_back(tempString);
+}
+
+void LevelGen::LevelTextFile(string fileName) { //TEST
+    string mapline = "";
+
+    ofstream File(fileName + ".txt");
+    
+    for (int i = 0; i < height; i++)
+    {
+        for (int z = 0; z < length; z++)
+        {
+            mapline = mapline + level[z][i];
+        }
+
+        File << (mapline + "\n");
+        mapline = "";
+    }
 }
 
 void LevelGen::AddStairs() {
@@ -129,6 +148,8 @@ bool LevelGen::neighbourStairCheck() {
 }
 
 void LevelGen::StairPositions() {
+
+    stairPos.clear();
 
     for (int i = 0; i < height; i++)
     {

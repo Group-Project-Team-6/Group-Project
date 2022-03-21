@@ -17,6 +17,6 @@ public:
 
 private:
 
-	static const int poolSize = 100;
+	static const int poolSize = 10;
 	Bullet* bullets[poolSize];
 };

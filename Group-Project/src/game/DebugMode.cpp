@@ -1,4 +1,17 @@
 #include "DebugMode.h"
+
+void DebugMode::ToggleDebugMode() {
+    isDebug = !isDebug;
+}
+
+void DebugMode::DebugUpdate() {
+    if (!isDebug) {
+        return;
+    }
+}
+
+
+
 /*
 #ifndef DISABLE_DEFAULT_ALLOCATORS
 static void*   MallocWrapper(size_t size, void* user_data)    { Debug_UNUSED(user_data); return malloc(size); }
@@ -40,3 +53,4 @@ void Debug::MemFree(void* ptr)
 }
 
 */
+

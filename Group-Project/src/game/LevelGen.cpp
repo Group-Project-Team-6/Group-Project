@@ -3,6 +3,8 @@ using namespace std;
 #include <stdlib.h>
 #include <string>
 
+#include <fstream> // TEST
+
 LevelGen::LevelGen() {
 
 }
@@ -16,9 +18,6 @@ void LevelGen::Generate(int l, int w) {
     length = w;
     height = l;
 
-    //level = new string[length, height];  //vectors or array
-    //levelString = new List<string>(3);
-
     level.resize(l);
     for (int i = 0; i < l; i++) {
         level[i].resize(w);
@@ -27,16 +26,19 @@ void LevelGen::Generate(int l, int w) {
     numberOfStairs = 0;
     MazeGenCheck();
     AddStairs();
+    //LevelTextFile("map1"); //TEST
     LevelToString(0);
 
     MazeGenCheck();
     numberOfStairs = 0;
     AddStairs();
     PathToStairs();
+    //LevelTextFile("map2"); //TEST
     LevelToString(1);
 
     MazeGenCheck();
     PathToStairs();
+    //LevelTextFile("map3"); //TEST
     LevelToString(2);
 
 }
@@ -48,19 +50,34 @@ vector<string> LevelGen::GetLevelStrings() {
 }
 
 void LevelGen::LevelToString(int numLevel) {
-    //levelString.Add("");
     string tempString = "";
 
     for (int i = 0; i < height; i++)
     {
         for (int z = 0; z < length; z++)
         {
-            //levelString[numLevel] = levelString[numLevel] + level[z, i];
             tempString = tempString + level[z][i];
         }
     }
     levelString.push_back(tempString);
 }
+
+/*
+void LevelGen::LevelTextFile(string fileName) { //TEST
+    string mapline = "";
+    ofstream File(fileName + ".txt");
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int z = 0; z < length; z++)
+        {
+            mapline = mapline + level[z][i];
+        }
+        File << (mapline + "\n");
+        mapline = "";
+    }
+}
+*/
 
 void LevelGen::AddStairs() {
     tempX = 0;
@@ -74,7 +91,6 @@ void LevelGen::AddStairs() {
         right = false;
         optionsCount = 0;
 
-        //int r = Random.Range(0, 3);
         int r = rand() % 4;
 
         if (r == 1)
@@ -132,24 +148,21 @@ bool LevelGen::neighbourStairCheck() {
 }
 
 void LevelGen::StairPositions() {
-    //stairPos = new int[numberOfStairs + 1, 2];
 
-    //int x = 0;
+    stairPos.clear();
+
     for (int i = 0; i < height; i++)
     {
         for (int z = 0; z < length; z++)
         {
             if (level[z][i] == "A" || level[z][i] == "V" || level[z][i] == "<" || level[z][i] == ">")
             {
-                //stairPos[x, 0] = z;
-                //stairPos[x, 1] = i;
                 vector<int> tempIntVec;
                 tempIntVec.push_back(z);
                 tempIntVec.push_back(i);
 
                 stairPos.push_back(tempIntVec);
 
-                //x++;
             }
         }
     }
@@ -207,7 +220,6 @@ void LevelGen::PathToStairs() {
                         if (x != (length - 1)) { if (level[x + 1][y] == "#") { right = true; } }
 
 
-                        //int nextDirection = Random.Range(0, 4);
                         int nextDirection = rand() % 5;
 
                         if (nextDirection == 0)
@@ -316,7 +328,6 @@ void LevelGen::MazeGen() {
                 check = true;
                 while (check)
                 {
-                    //randInt1 = Random.Range(0, 4); // pick next wall
                     randInt1 = rand() % 5;
 
                     switch (randInt1)
@@ -362,14 +373,12 @@ void LevelGen::MazeGen() {
                 {
                     while (true) // check to not replace wall with path
                     {
-                        //randInt2 = Random.Range(0, 4);
                         randInt2 = rand() % 5;
                         if (randInt2 != randInt1) { break; }
                     }
                 }
                 else
                 {
-                    //randInt2 = Random.Range(0, 4);
                     randInt2 = rand() % 5;
                 }
                 switch (randInt2)
@@ -436,7 +445,6 @@ void LevelGen::MazeGen() {
                 if (z != (length - 1)) { if (level[z + 1][i] == "P") { paths++; } }
 
                 if (paths > 1) {
-                    //int r = Random.Range(0, 3);
                     int r = rand() % 4;
                     if (r == 0)
                     {
@@ -461,4 +469,3 @@ void LevelGen::MazeGen() {
     }
 
 }
-

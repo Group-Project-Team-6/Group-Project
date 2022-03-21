@@ -202,7 +202,10 @@ void Game::LevelGeneration() {
 	LevelGen* levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
-	//vector<string> maze = levelGenerator->TestMap();
+	//TEST
+	// length = 2;
+	// width = 2;
+	//vector<string> maze = {"#P<P", "#VSP", "#SPP"};
 
 
 	Transform wallsTransform;
@@ -215,38 +218,67 @@ void Game::LevelGeneration() {
 	stairsTransform.SetOrientation({ 0.5,0,0,1 });
 	stairsTransform.SetPosition({ 10,2,0 });
 
-	vector<Wall*> vecWalls;
+	Transform floorsTransform;
+	floorsTransform.SetScale({ scale, scale ,0.1 });
+	floorsTransform.SetOrientation({ 1,0,0,1 });
 
-	float unitLength = scale; //int
+	/*
+	Wall* wall1 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
+	world->AddGameObject(wall1);
+	wallsTransform.SetPosition({ 0,2,50 });
+	Wall* wall2 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
+	world->AddGameObject(wall2);
+	wallsTransform.SetPosition({ 0,2,-50 });
+	Wall* wall3 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
+	world->AddGameObject(wall3);
+	wallsTransform.SetPosition({ -50,2,0 });
+	Wall* wall4 = new Wall(wallsTransform);
+	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
+	world->AddGameObject(wall4);
+	*/
+	/* ***Itemn Gen ***********
+	if (numItems > 36) continue;
+	items[numItems] = new Item(position, 1);
+	world->AddGameObject(items[numItems]);
+	dynamicsWorld->addCollisionObject(items[numItems]->getGhostObject());
+	numItems++;
+	break;*/
+
+	vector<Wall*> vecWalls;
+	vector<Wall*> floors;
+
+	float unitLength = scale;
 	int numWalls = 0;
-	int numItems = 0;
+	int numFloors = 0;
 	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level+=1.0f) //int
+		for (float level = 0; level < maze.size(); level++)
 		{
-			for (float l = 0; l < length; l+=1.0f) //int
+			for (float l = 0; l < length; l++)
 			{
-				for (float w = 0; w < width; w+=1.0f) //int
+				for (float w = 0; w < width; w++)
 				{
-					//AddChild(i, GetSymbol(level, l, w), level, l, w);
-					//AddChild(i, maze[level][l * width + w], level, l, w);
-
 					char ch = maze[level][l * width + w];
-					Vector3 position ({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40});
+
 					switch (ch)
 					{
 					case 'P':
-						if (numItems > 36) continue;
-						items[numItems] = new Item(position, 1);
-						world->AddGameObject(items[numItems]);
-						dynamicsWorld->addCollisionObject(items[numItems]->getGhostObject());
-						numItems++;
+						if (level >= 0) {
+							floorsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, ((level * unitLength) + 3) - (scale / 2), ((w + 0.5f) * unitLength) - 40 });
+							floorsTransform.SetScale({ scale, scale, 0.1f });
+							floors.push_back(new Wall(floorsTransform));
+							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
+							world->AddGameObject(floors[numFloors]);
+							numFloors++;
+						}
 						break;
 					case '#':
-						wallsTransform.SetPosition(position);
-						wallsTransform.SetOrientation(NCL::Maths::Quaternion::EulerAnglesToQuaternion(0,i*90,0));
+						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
-						wallsTransform.SetScale({ scale - 0.01f, scale - 0.01f, scale - 0.01f });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
@@ -254,33 +286,82 @@ void Game::LevelGeneration() {
 						break;
 					case 'S':
 						break;
-					case 'A':
-						/*
-						stairsTransform.SetOrientation({ 0.5,0,0,1 });
+					case '<':
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
 						vecWalls.push_back(new Wall(stairsTransform));
-						vecWalls[numWalls]->UpdateCollShape(scale, scale, 0.5);
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
-						*/
-						break;
-					case 'V':
-
-						break;
-					case '<':
-
 						break;
 					case '>':
-
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ -0.42,0,0,1 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'V':
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'A':
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
+						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
 						break;
 					}
 
 
 				}
 			}
-			//collGen.Collectables(level, maze[level], width, length, unitLength);
+
 		}
+	}
+
+	Transform collectablesTransform;
+	collectablesTransform.SetScale({ scale / 5,scale / 5,scale / 5 });
+	collectablesTransform.SetOrientation({ 1,0,0,1 });
+
+	vector<vector<int>> collectablePos;
+	vector<Item*> vecCollectables;
+	int numCollectablesPlaced = 0;
+	for (int i = 0; i < maze.size(); i++) {
+
+		int numCollectables = ((length * width) / 50);
+
+		for (int x = 0; x < numCollectables; x++) {
+
+			int randomNum = rand() % maze[i].length();
+
+			if (maze[i][randomNum] == 'P') {
+				int posLength = randomNum / length;
+				int posWidth = randomNum - (posLength * width);
+
+				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
+				collectablesTransform.SetScale({ 0.1, 0.1, 0.1 });
+				vecCollectables.push_back(new Item(collectablesTransform.GetPosition(),1));
+				dynamicsWorld->addCollisionObject(vecCollectables[numCollectablesPlaced]->getGhostObject());
+				world->AddGameObject(vecCollectables[numCollectablesPlaced]);
+				numCollectablesPlaced++;
+
+			}
+			else { x--; }
+
+		}
+
 	}
 
 }

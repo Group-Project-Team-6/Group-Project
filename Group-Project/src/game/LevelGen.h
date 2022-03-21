@@ -6,26 +6,24 @@ using namespace std;
 class LevelGen {
 public:
 
-	LevelGen();
-	~LevelGen();
+    LevelGen();
+    ~LevelGen();
 
-	void Generate(int l, int w);
-	//string[] GetLevelStrings();
+    void Generate(int l, int w);
     vector<string> GetLevelStrings();
-
-    vector<string> TestMap() { return vector<string> {"AV<>", "S", "S"}; }
 
 private:
 
-	void LevelToString(int numLevel);
-	void AddStairs();
-	bool neighbourStairCheck();
-	void StairPositions();
-	void MazeGenCheck();
-	void PathToStairs();
-	void MazeGen();
+    void LevelToString(int numLevel);
+    void AddStairs();
+    bool neighbourStairCheck();
+    void StairPositions();
+    void MazeGenCheck();
+    void PathToStairs();
+    void MazeGen();
 
-    //string[, ] level;
+    //void LevelTextFile(string fileName);
+
     vector<vector<string>> level;
 
     bool up = false;
@@ -50,10 +48,8 @@ private:
     int optionsCount;
 
     int numberOfStairs;
-    //int[, ] stairPos;
     vector<vector<int>> stairPos;
 
-    //List<string> levelString;
     vector<string> levelString;
 
 };

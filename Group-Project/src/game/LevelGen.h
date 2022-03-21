@@ -22,7 +22,7 @@ private:
 	void PathToStairs();
 	void MazeGen();
 
-    void LevelTextFile(string fileName);
+    //void LevelTextFile(string fileName);
 
     vector<vector<string>> level;
 

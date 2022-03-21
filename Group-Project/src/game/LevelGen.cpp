@@ -26,19 +26,19 @@ void LevelGen::Generate(int l, int w) {
     numberOfStairs = 0;
     MazeGenCheck();
     AddStairs();
-    LevelTextFile("map1"); //TEST
+    //LevelTextFile("map1"); //TEST
     LevelToString(0);
 
     MazeGenCheck();
     numberOfStairs = 0;
     AddStairs();
     PathToStairs();
-    LevelTextFile("map2"); //TEST
+    //LevelTextFile("map2"); //TEST
     LevelToString(1);
 
     MazeGenCheck();
     PathToStairs();
-    LevelTextFile("map3"); //TEST
+    //LevelTextFile("map3"); //TEST
     LevelToString(2);
 
 }
@@ -62,6 +62,7 @@ void LevelGen::LevelToString(int numLevel) {
     levelString.push_back(tempString);
 }
 
+/*
 void LevelGen::LevelTextFile(string fileName) { //TEST
     string mapline = "";
 
@@ -78,6 +79,7 @@ void LevelGen::LevelTextFile(string fileName) { //TEST
         mapline = "";
     }
 }
+*/
 
 void LevelGen::AddStairs() {
     tempX = 0;

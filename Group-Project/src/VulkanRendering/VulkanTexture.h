@@ -23,6 +23,8 @@ namespace NCL {
 			static VulkanTexture* GenerateDepthTexture(int width, int height, std::string debugName = "DefaultDepth", bool hasStencil = true, bool mips = false);
 			static VulkanTexture* GenerateColourTexture(int width, int height, std::string debugName = "DefaultColour", bool isFloat = false, bool mips = false);
 
+			void Init(std::vector<std::string> args) override {}
+
 			vk::ImageView GetDefaultView() const {
 				return defaultView;
 			}

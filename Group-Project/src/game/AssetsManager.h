@@ -16,7 +16,7 @@ typedef std::shared_ptr<RendererBase> RendererPtr;
 class AssetsManager {
 public:
 	~AssetsManager();
-	static void LoadAssets(std::string setFile);
+	static void LoadAssets(std::string label, std::string jsonFile);
 
 	static TexID LoadTextureFromFile(std::string name, std::string fileName, bool isShared = true);
 	static ShaderID LoadShaderFromFile(std::string name, std::string fileName, bool isShared = true);

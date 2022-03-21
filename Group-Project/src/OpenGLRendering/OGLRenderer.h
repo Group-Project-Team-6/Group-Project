@@ -69,6 +69,10 @@ namespace NCL {
 			virtual Matrix4 SetupDebugLineMatrix()	const;
 			virtual Matrix4 SetupDebugStringMatrix()const;
 
+			void MakeCurrent() {
+				wglMakeCurrent(deviceContext, renderContext);
+			}
+
 		protected:			
 			void BeginFrame()	override;
 			void RenderFrame()	override;

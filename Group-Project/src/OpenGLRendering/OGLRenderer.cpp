@@ -131,7 +131,7 @@ void OGLRenderer::RenderFrame()		{
 }
 
 void OGLRenderer::EndFrame()		{
-	DrawDebugData();
+	//DrawDebugData();
 }
 
 void OGLRenderer::SwapBuffers()   {
@@ -139,6 +139,7 @@ void OGLRenderer::SwapBuffers()   {
 }
 
 void OGLRenderer::BindShader(ShaderBase*s) {
+	if (s == boundShader) return;
 	if (!s) {
 		glUseProgram(0);
 		boundShader = nullptr;
@@ -154,6 +155,7 @@ void OGLRenderer::BindShader(ShaderBase*s) {
 }
 
 void OGLRenderer::BindMesh(MeshGeometry*m) {
+	if (m == boundMesh) return;
 	if (!m) {
 		glBindVertexArray(0);
 		boundMesh = nullptr;

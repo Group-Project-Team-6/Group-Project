@@ -1,7 +1,6 @@
 #pragma once
 #include "../common/Camera.h"
 #include "../game/TransformConverter.h"
-#include "../game/TransformConverter.h"
 #include "../common/RendererBase.h"
 
 #include <vector>
@@ -26,6 +25,16 @@ namespace NCL {
 			void AddGameObject(GameEntity* o);
 			void RemoveGameObject(GameEntity* o, bool andDelete = false);
 
+			void AddPlayer(GameEntity* o);
+			void RemovePlayer(GameEntity* o, bool andDelete = false);
+
+			GameEntity* GetPlayer(int index) {
+				if (index < players.size() && index >= 0) {
+					return players[index];
+				}
+				return nullptr;
+			}
+
 			void SetRenderer(RendererBase* renderer) {
 				this->renderer = renderer;
 			}
@@ -34,8 +43,26 @@ namespace NCL {
 				return renderer;
 			}
 
-			Camera* GetMainCamera() const {
-				return mainCamera;
+			void AddMainCamera() {
+				Camera* c = new Camera();
+				mainCameras.push_back(c);
+			}
+
+			void RemoveMainCamera(Camera* c, bool andDelete = false) {
+				mainCameras.erase(std::remove(mainCameras.begin(), mainCameras.end(), c), mainCameras.end());
+				if (andDelete) {
+					delete c;
+				}
+			}
+
+			Camera* GetMainCamera(int i) const {
+				if(i < mainCameras.size() && i >= 0)
+					return mainCameras[i];
+				return nullptr;
+			}
+
+			vector<GameEntity*> GetGameObjects() const {
+				return gameObjects;
 			}
 
 			void ShuffleConstraints(bool state) {
@@ -56,14 +83,23 @@ namespace NCL {
 				GameObjectIterator& first,
 				GameObjectIterator& last) const;
 
+			void SetLocalGame(bool isLocal) { isLocalGame = isLocal; }
+			bool IsLocalGame() { return isLocalGame; }
+
+			void SetLocalPlayerCount(int count) { localPlayerCount = count; }
+			int GetLocalPlayerCount() { return localPlayerCount; }
+
 		protected:
 			std::vector<GameEntity*> gameObjects;
+			std::vector<GameEntity*> players;
 			RendererBase* renderer;
 
-			Camera* mainCamera;
+			std::vector<Camera*> mainCameras;
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
+			bool	isLocalGame;
+			int		localPlayerCount;
 			int		worldIDCounter;
 
 			TransformConverter transformConverter;

@@ -1,6 +1,6 @@
 #include "../common/Window.h"
 #include "Game.h"
-#include "../Physics/VkTechRenderer.h"
+//#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "DebugMode.h"
 
@@ -22,6 +22,9 @@ int main() {
 	srand(time(0));
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
+	//VkTechRenderer* renderer = new VkTechRenderer();
+	//PhysicsTestScene* g = new PhysicsTestScene(renderer);
+
 	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();

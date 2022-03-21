@@ -12,8 +12,8 @@ public:
 	};
 	~BulletPool();
 
-	void Create(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld);
-	void Animate();
+	void Create(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera);
+	void Animate(btRigidBody& player, float dt);
 
 private:
 

@@ -8,11 +8,11 @@ using namespace NCL;
 using namespace NCL::CSC8503;
 
 GameWorld::GameWorld()	{
-	mainCamera = new Camera();
-
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
+	localPlayerCount = 0;
+	isLocalGame = true;
 }
 
 GameWorld::~GameWorld()	{
@@ -36,6 +36,18 @@ void GameWorld::AddGameObject(GameEntity* o) {
 
 void GameWorld::RemoveGameObject(GameEntity* o, bool andDelete) {
 	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), o), gameObjects.end());
+	if (andDelete) {
+		delete o;
+	}
+}
+
+void GameWorld::AddPlayer(GameEntity* o) {
+	players.emplace_back(o);
+	o->SetWorldID(worldIDCounter++);
+}
+
+void GameWorld::RemovePlayer(GameEntity* o, bool andDelete) {
+	players.erase(std::remove(players.begin(), players.end(), o), players.end());
 	if (andDelete) {
 		delete o;
 	}

@@ -9,6 +9,6 @@
 class ControlsCommand {
 public:
 	virtual ~ControlsCommand() {}
-	virtual void execute(Player& player, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, AudioManager& audioManager) = 0;
+	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) = 0;
 
 };

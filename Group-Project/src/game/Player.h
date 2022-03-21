@@ -9,6 +9,14 @@ public:
 	Player(Vector3 position, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
 	~Player();
 
+	virtual float GetPitch() {
+		return pitch;
+	}
+
+	virtual void SetPitch(float p) {
+		pitch = p;
+	}
+
 	virtual btRigidBody* GetRigidBody() const override{
 		return playerRigidBody;
 	}
@@ -57,7 +65,6 @@ protected:
 	ShaderPtr playerShader;
 
 	//general
-	string name;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;
@@ -65,6 +72,7 @@ protected:
 
 	//player Physics
 	int playerMass;
+	float pitch;
 	float playerFriction;
 	float playerRestitution;
 	btVector3 playerInertia;

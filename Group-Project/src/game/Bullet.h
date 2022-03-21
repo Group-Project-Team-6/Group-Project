@@ -17,8 +17,8 @@ public:
 	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
-	void Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable);
-	void Animate(float dt);
+	void Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable);
+	void Animate(btRigidBody& player, float dt);
 	void InitAssets();
 	void RemoveFromPool();
 
@@ -34,7 +34,7 @@ public:
 
 	virtual void UpdateRenderPositions() override {
 
-		bttransform = bulletRigidBody->getWorldTransform();
+		bttransform = ghost->getWorldTransform();
 
 		btRot = bttransform.getRotation();
 		btPos = bttransform.getOrigin();
@@ -49,6 +49,7 @@ public:
 
 private:
 	float framesLeft;
+	float speed;
 
 	MeshPtr bulletMesh;
 	TexturePtr bulletTex;

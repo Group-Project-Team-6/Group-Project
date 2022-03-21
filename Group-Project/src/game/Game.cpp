@@ -3,6 +3,8 @@
 #include "PlayerInput.h"
 #include "LevelGen.h"
 #include "Painter.h"
+#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
+
 #include <math.h>
 #include <thread>
 #include <mutex>
@@ -114,6 +116,9 @@ void Game::InitPhysics() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+	btGhostPairCallback* ghostPair = new btGhostPairCallback();
+	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
 void Game::InitAudio() {
@@ -187,45 +192,6 @@ void Game::InitPlayerInput() {
 	playerInput[3] = nullptr;
 }
 
-void Game::UpdateGame(float dt) {
-
-	dynamicsWorld->stepSimulation(dt, 0);
-
-	audioManager->AudioUpdate(world, dt);
-
-	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
-		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
-		players[i]->GetBulletPool()->Animate(dt);
-		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
-		if (playerInput[i]) {
-			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
-			while (command.size() > 0) {
-				command.front()->execute(*players[i], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
-				command.pop();
-			}
-		}
-	}
-
-	world->UpdatePositions(); //Maybe Change
-	GameTimer t;
-	renderer->Render();
-	t.Tick();
-	float ti = t.GetTimeDeltaSeconds();
-	if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-	/*std::cout <<
-		std::to_string(character->GetTransform().GetPosition().x) +
-		std::to_string(character->GetTransform().GetPosition().y) +
-		std::to_string(character->GetTransform().GetPosition().z) << std::endl;
-
-	std::cout << std::to_string(
-		character->GetbtTransform().getOrigin().x())
-		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
-		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
-	//t.Tick();
-	//float ti = t.GetTimeDeltaSeconds();
-	//if (ti > 0.01) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-}
-
 void Game::LevelGeneration() {
 
 	int length = 10;
@@ -248,49 +214,6 @@ void Game::LevelGeneration() {
 	stairsTransform.SetScale({ scale, scale ,0.5 });
 	stairsTransform.SetOrientation({ 0.5,0,0,1 });
 	stairsTransform.SetPosition({ 10,2,0 });
-
-	/*
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs = new Wall(stairsTransform);
-	stairs->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs->GetRigidBody());
-	world->AddGameObject(stairs);
-
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs1 = new Wall(stairsTransform);
-	stairs1->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs1->GetRigidBody());
-	world->AddGameObject(stairs1);
-	stairsTransform.SetScale({ 0.5, scale ,scale });
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs2 = new Wall(stairsTransform);
-	stairs2->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs2->GetRigidBody());
-	world->AddGameObject(stairs2);
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs3 = new Wall(stairsTransform);
-	stairs3->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs3->GetRigidBody());
-	world->AddGameObject(stairs3);
-	*/
-
-	/*
-	Wall* wall1 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
-	world->AddGameObject(wall1);
-	wallsTransform.SetPosition({ 0,2,50 });
-	Wall* wall2 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
-	world->AddGameObject(wall2);
-	wallsTransform.SetPosition({ 0,2,-50 });
-	Wall* wall3 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
-	world->AddGameObject(wall3);
-	wallsTransform.SetPosition({ -50,2,0 });
-	Wall* wall4 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
-	world->AddGameObject(wall4);
-	*/
 
 	vector<Wall*> vecWalls;
 
@@ -316,7 +239,7 @@ void Game::LevelGeneration() {
 						if (numItems > 36) continue;
 						items[numItems] = new Item(position, 1);
 						world->AddGameObject(items[numItems]);
-						dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
+						//dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
 						numItems++;
 						break;
 					case '#':
@@ -361,9 +284,76 @@ void Game::LevelGeneration() {
 	}
 
 }
+/////////////////Build Level//////////////////////////
 
+/////////////////Other Functions//////////////////////
 void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
 	d->GetMemoryAllocationSize(*world);
 	d->GetMemoryAllocationSize(*audioManager);
 	d->GetMemoryAllocationSize(*renderer);
 }
+
+void Game::exectureTriggers() {
+	for (int i = 0; i < world->GetGameObjects().size(); i++) {
+		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
+			GameEntity* objA = world->GetGameObjects()[i];
+			for (int j = 0; j < world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects(); j++) {
+				{
+					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(j)->getUserPointer();
+					std::cout << objA->GetName() << std::endl;
+					std::cout << objB->GetName() << std::endl;
+						//Execute triggers
+					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
+						std::cout << "Player has picked up item" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
+						std::cout << "Wall Painted" << std::endl;
+						//return;
+					}
+					objB = nullptr;
+				}
+			}
+			objA = nullptr;			
+		}
+	}
+}
+/////////////////Other Functions///////////////////////
+
+/////////////////Update Game//////////////////////////
+void Game::UpdateGame(float dt) {
+
+	dynamicsWorld->stepSimulation(dt, 0);
+	audioManager->AudioUpdate(world, dt);
+	
+	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
+		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
+		if (playerInput[i]) {
+			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
+			while (command.size() > 0) {
+				command.front()->execute(*players[i], *(world->GetMainCamera(i)), *audioManager); //Learn which player from networking
+				command.pop();
+			}
+		}
+	}
+
+	world->UpdatePositions(); //Maybe Change
+	GameTimer t;
+	renderer->Render();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
+	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
+
+	exectureTriggers();
+
+}
+/////////////////Update Game//////////////////////////
+
+

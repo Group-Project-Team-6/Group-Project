@@ -1,6 +1,6 @@
 #include "../common/Window.h"
 #include "Game.h"
-#include "../Physics/VkTechRenderer.h"
+//#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "DebugMode.h"
 
@@ -13,7 +13,7 @@ using namespace NCL;
 int main() {
 	Assets::FetchDirConfig("dir.txt");
 
-	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, true);
+	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 	std::shared_ptr<DebugMode> d(new(DebugMode));
 	
 	if (!w->HasInitialised()) {
@@ -22,6 +22,9 @@ int main() {
 	srand(time(0));
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
+	//VkTechRenderer* renderer = new VkTechRenderer();
+	//PhysicsTestScene* g = new PhysicsTestScene(renderer);
+
 	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();
@@ -40,11 +43,11 @@ int main() {
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::T)) {
-			//w->SetWindowPosition(0, 0);
+			w->SetWindowPosition(0, 0);
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-			//toggleDebug = !toggleDebug;
+			toggleDebug = !toggleDebug;
 		}
 		if (toggleDebug) {
 			d->GetMemoryAllocationSize(*w);

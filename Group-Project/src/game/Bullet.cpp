@@ -4,24 +4,35 @@
 
 Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
-	InitAssets(); //Temp, Replace with loadAsset Class
+	InitAssets();
 	name = "Bullet";
+	speed = 20;
+
 	bulletMass = 4;
 	bulletInertia = { 1, 1, 1 };
-	transform.SetPosition({ 0, 5, 0 });
+	transform.SetPosition({ 0, 25, 0 });
 	transform.SetOrientation({ 1, 1, 1, 1 });
 	transform.SetScale({ .2, .2, .2 });
 	this->SetRenderObject(new RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
-	bulletMotion = new btDefaultMotionState(bttransform);
+	//bulletMotion = new btDefaultMotionState(bttransform);
 	bulletShape = new btSphereShape(0.2);
-	btRigidBody::btRigidBodyConstructionInfo playerCI(bulletMass, bulletMotion, bulletShape, bulletInertia);
-	bulletRigidBody = new btRigidBody(playerCI);
+	//btRigidBody::btRigidBodyConstructionInfo playerCI(bulletMass, bulletMotion, bulletShape, bulletInertia);
+	//bulletRigidBody = new btRigidBody(playerCI);
+	//bulletRigidBody->setUserPointer(this);
+	ghost = new btGhostObject();
+	ghost->setWorldTransform(bttransform);
+	ghost->setCollisionShape(bulletShape);
+	ghost->setUserPointer(this);
+	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	isTrigger = true;
 	world.AddGameObject(this);
-	dynamicsWorld.addRigidBody(bulletRigidBody);
+	//dynamicsWorld.addRigidBody(bulletRigidBody);
+	dynamicsWorld.addCollisionObject(ghost);
 
 	this->setActive(false);
-	bulletRigidBody->setActivationState(false);
+	ghost->setActivationState(false);
+	//set collision flags
 };
 
 Bullet::~Bullet() {
@@ -36,37 +47,33 @@ void Bullet::InitAssets() {
 	bulletShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
-void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, GameWorld& world, btDiscreteDynamicsWorld& physicsWorld, bool paintable) {
+void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable) {
 
 	this->setActive(1);
-	bulletRigidBody->setActivationState(1);
+	ghost->setActivationState(1);
 	framesLeft = lifeTime; 
-	this->paintable = paintable;
-	//float yaw = player.getWorldTransform().getRotation().getY();
 
-	//player.getWorldTransform().getOrigin();
-	//player.getWorldTransform().getRotation().getEulerZYX(player.getWorldTransform().getOrigin().x(), player.getWorldTransform().getOrigin().y(), player.getWorldTransform().getOrigin().z());
+	this->paintable = paintable;
+
 	btScalar x, y, z;
 	player.getWorldTransform().getRotation().getEulerZYX(z,y,x);
-	float test = z > 0 ? (z- y) : y;
+	float angle = z > 0 ? (z- y) : y;
 	
-	bulletRigidBody->getWorldTransform().getOrigin().setX(-sin(test));
-	bulletRigidBody->getWorldTransform().getOrigin().setY(0);
-	bulletRigidBody->getWorldTransform().getOrigin().setZ(-cos(test));
+	ghost->getWorldTransform().getOrigin().setX(-sin(angle));
+	ghost->getWorldTransform().getOrigin().setY(0);
+	ghost->getWorldTransform().getOrigin().setZ(-cos(angle));
 
-	bulletRigidBody->getWorldTransform().setOrigin((bulletRigidBody->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
+	ghost->getWorldTransform().setOrigin((ghost->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
 	btQuaternion quat;
-	quat.setEuler(test, 0, 0);
-	bulletRigidBody->getWorldTransform().setRotation(quat);
-	/*position = { playersPosition.x + 10 * sin(Maths::DegreesToRadians(yaw)),
-		playersPosition.y + 5,
-		playersPosition.z + 10 * cos(Maths::DegreesToRadians(yaw)) };*/
-	//bulletRigidBody->getWorldTransform().setBasis(x, y, z);
+	quat.setEuler(angle, 0, 0);
+	ghost->getWorldTransform().setRotation(quat);
 
-	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
+
+	//bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
+
 }
 
-void Bullet::Animate(float dt) {
+void Bullet::Animate(btRigidBody& player, float dt) {
 	if (!inUse()) return;
 	if(paintable) Painter::Paint(this, this->GetTransform().GetPosition());
 	framesLeft -=dt;
@@ -74,13 +81,17 @@ void Bullet::Animate(float dt) {
 		RemoveFromPool();
 	}
 
-	return;
+	//ghost->getWorldTransform().getBasis().getColumn(2).setX(ghost->getWorldTransform().getBasis().getColumn(2).x() + dt*speed);
+	//ghost->getWorldTransform().getBasis().getColumn(2).setY(ghost->getWorldTransform().getBasis().getColumn(2).y() + dt * speed);
+	//ghost->getWorldTransform().getBasis().getColumn(2).setZ(ghost->getWorldTransform().getBasis().getColumn(2).z() + dt * speed);
+
+	//bulletRigidBody->getWorldTransform().getOrigin().setX(bulletRigidBody->getWorldTransform().getOrigin().getX() + dt*speed);
+	ghost->getWorldTransform().setOrigin(ghost->getWorldTransform().getOrigin() + ghost->getWorldTransform().getBasis().getColumn(2) * dt * -speed);
 }
 
 void Bullet::RemoveFromPool() {
-	bulletRigidBody->clearForces();
 	this->setActive(0);
-	bulletRigidBody->setActivationState(0);
-	//set collision flags
+	ghost->setActivationState(0);
+	//needs to be called on collision
 
 }

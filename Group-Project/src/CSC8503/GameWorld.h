@@ -61,6 +61,10 @@ namespace NCL {
 				return nullptr;
 			}
 
+			vector<GameEntity*> GetGameObjects() const {
+				return gameObjects;
+			}
+
 			void ShuffleConstraints(bool state) {
 				shuffleConstraints = state;
 			}

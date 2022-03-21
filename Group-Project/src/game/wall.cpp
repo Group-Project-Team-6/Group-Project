@@ -14,10 +14,17 @@ Wall::Wall(Transform buildTransform) {
 	wallShape = new btBoxShape({ (scale.x / 2.0f), (scale.y / 2.0f), (scale.z / 2.0f) });
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
 	wallRigidBody = new btRigidBody(itemCI);
+	wallRigidBody->isStaticObject();
+	wallRigidBody->setUserPointer(this);
+
+	/*world.AddGameObject(this);
+	physicsWorld.addRigidBody(wallRigidBody);*/
 }
 
 Wall::~Wall() {
-
+	delete wallMotion;
+	delete wallShape;
+	delete wallRigidBody;
 }
 
 void Wall::InitAssets() {

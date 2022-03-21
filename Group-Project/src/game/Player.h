@@ -65,7 +65,6 @@ protected:
 	ShaderPtr playerShader;
 
 	//general
-	string name;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;

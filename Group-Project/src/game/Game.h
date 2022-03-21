@@ -4,7 +4,7 @@
 #include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "../CSC8503/GameLoadingRenderer.h"
-#include "../Physics/VkTechRenderer.h"
+//#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
@@ -28,6 +28,7 @@ public:
 	void UpdateGame(float dt);
 	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
+
 protected:
 	void InitWorld();
 	void RenderLoading();
@@ -44,6 +45,8 @@ protected:
 	
 	//void InitHUD
 	//InitNetworking?
+	void exectureTriggers();
+
 
 	//Tools
 	TransformConverter transformConverter;

@@ -5,7 +5,7 @@ project(Group-Project)
 add_executable(Game
 	GameEntity.h
 	DebugMode.h
-
+	
 	main.cpp
 	GameEntity.cpp
 	DebugMode.cpp

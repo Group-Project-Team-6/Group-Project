@@ -14,6 +14,9 @@ add_library(GUI
     StateMachine.h
     StateTransition.h
     GameMode.h
+    BallLevelMenu.h
+    GameMode.h
+    BallGameMode.h
 
     GameUI.cpp
     MainMenu.cpp
@@ -21,4 +24,7 @@ add_library(GUI
     PauseState.cpp
     PushdownMachine.cpp
     StateMachine.cpp
+    BallLevelMenu.cpp
+    BallGameMode.cpp
+  
 )

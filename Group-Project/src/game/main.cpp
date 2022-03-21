@@ -47,6 +47,7 @@ int main() {
 			d->GetFPS(dt);
 		}
 		g->UpdateGame(dt);
+		g->UpdateRender(dt);
 		//d->GetFPS(dt);
 	}
 

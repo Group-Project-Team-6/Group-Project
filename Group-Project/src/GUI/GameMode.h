@@ -13,7 +13,7 @@ namespace NCL {
 
 			virtual void SetupScene() = 0;
 			virtual void Update(float dt) = 0;
-			
+
 		protected:
 			PhysicsTestScene* gameInst;
 		};

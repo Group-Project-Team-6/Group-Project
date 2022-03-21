@@ -25,6 +25,8 @@ class PhysicsTestScene {
 
 		void UpdateGame(float dt);
 
+		virtual void UpdateRender(float dt);
+
 		void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 		GameUI* GetUI() const { return gameUI; };
@@ -35,11 +37,13 @@ class PhysicsTestScene {
 		void SetMainLevel();
 		void SetSettingLevel();
 
+		GameUI* gameUI;
+
 	private:
 		void InitAssets();
 		void InitScene();
 		void InitCamera();
-		void UpdateKeys();
+		void UpdateKeys(float dt);
 
 		int maxProxies;
 		btVector3 worldAabbMin;
@@ -66,14 +70,20 @@ class PhysicsTestScene {
 		GameWorld* world;
 		AudioManager* audioManager;
 
+		
+
 	protected:
+
+		class GameMode;
+		std::unique_ptr<GameMode> gameMode = nullptr;
+		class BallGameMode;
 		friend class MainMenu;
 		std::shared_ptr<MainMenu> gameMenu = nullptr;
 
 		friend class SettingMenu;
 		std::shared_ptr<SettingMenu> SMenu = nullptr;
 
-		GameUI* gameUI;
+		
 
 		bool quit;
 		bool freezed;

@@ -14,8 +14,11 @@
 #include "../game/DebugMode.h"
 #include "../GUI/GameUI.h"
 #include "../GUI/PauseState.h"
-
+#include "../GUI/GameMode.h"
 #include <iomanip>
+#include "../GUI/MainMenu.h"
+#include "../GUI/SettingMenu.h"
+#include "../GUI/BallGameMode.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -42,13 +45,14 @@ PhysicsTestScene::PhysicsTestScene() {
 	freezed = true;
 
 	InitAssets();
-	InitCamera();
 	InitScene();
 	InitUI();
 	audioManager->InitSystem();
 }
 
 PhysicsTestScene::~PhysicsTestScene() {
+	freezed = true;
+	//gameMenu.reset();
 	delete world;
 	delete renderer;
 
@@ -61,6 +65,9 @@ PhysicsTestScene::~PhysicsTestScene() {
 	delete sphereMesh;
 	delete basicTex;
 	delete basicShader;
+
+	delete pauseMachine;
+	delete gameUI;
 
 }
 
@@ -76,6 +83,7 @@ void PhysicsTestScene::InitAssets() {
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	InitCamera();
 }
 
 void PhysicsTestScene::InitCamera() {
@@ -148,20 +156,44 @@ void PhysicsTestScene::InitScene() {
 void PhysicsTestScene::UpdateGame(float dt) {
 	gameUI->UpdateUI();
 	quit = !pauseMachine->Update(dt);
-	if (freezed) { return; }
+	
+	if (freezed)
+		return; 
+
+
+	if (gameMode) gameMode->Update(dt);
 	
 	audioManager->AudioUpdate(world, dt);
 	dynamicsWorld->stepSimulation(1 / 60.f, 10);
 	
 	world->GetMainCamera()->UpdateCamera(dt);
-	UpdateKeys();
+
+	UpdateKeys(dt);
 	renderer->Render();
 
 	world->UpdatePositions();
+	world->UpdateWorld(dt);
 }
 
-void PhysicsTestScene::UpdateKeys() {
+void PhysicsTestScene::UpdateRender(float dt)
+{
+	//Debug::FlushRenderables(dt);
+	renderer->Update(dt);
+	renderer->Render();
+}
 
+void PhysicsTestScene::UpdateKeys(float dt) {
+	world->GetMainCamera()->UpdateCamera(dt);
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1)) {
+		InitScene(); //We can reset the simulation at any time with F1
+		/*selectionObject = nullptr;
+		lockedObject = nullptr;*/
+	}
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2)) {
+		InitCamera(); //F2 will reset the camera to a specific default place
+	}
 }
 
 void PhysicsTestScene::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {

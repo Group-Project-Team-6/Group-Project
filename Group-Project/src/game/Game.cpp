@@ -239,7 +239,7 @@ void Game::LevelGeneration() {
 						if (numItems > 36) continue;
 						items[numItems] = new Item(position, 1);
 						world->AddGameObject(items[numItems]);
-						//dynamicsWorld->addRigidBody(items[numItems]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(items[numItems]->getGhostObject());
 						numItems++;
 						break;
 					case '#':

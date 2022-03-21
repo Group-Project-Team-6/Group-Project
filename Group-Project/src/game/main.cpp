@@ -7,6 +7,32 @@
 #include <iostream>
 #include <memory>
 
+void* operator new(size_t size, const char* name) {
+    void* ptr;
+    ptr = malloc(size);
+
+    if (!ptr) // if no memory is allocated, then generate an exception
+    {
+        std::bad_alloc ba;
+        std::cout<<"Memory allocation error." << std::endl;
+        throw ba;
+    }
+    else {
+        std::cout<<"Memory is allocated successfully!" << std::endl;
+        std::cout << "Memory Size for " << name << ": " << size << " Byte." << std::endl;
+        std::cout << "Memory Location for " << name << ": " << &size << std::endl;
+
+        return ptr;
+    }
+    
+}
+
+void operator delete(void* ptr) {
+    const char* name = typeid(ptr).name();
+    //std::cout << "Free Memory From " << name << std::endl;
+    free(ptr);
+}
+
 using namespace NCL;
 //using namespace CSC8503;
 
@@ -14,7 +40,9 @@ int main() {
 	Assets::FetchDirConfig("dir.txt");
 
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
-	std::shared_ptr<DebugMode> d(new(DebugMode));
+	std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name()) DebugMode());
+
+	//DebugMode* d = new (typeid(DebugMode).name()) DebugMode();
 	
 	if (!w->HasInitialised()) {
 		return -1;
@@ -26,6 +54,7 @@ int main() {
 	//PhysicsTestScene* g = new PhysicsTestScene(renderer);
 
 	Game* g = new Game();
+	//std::shared_ptr<Game> g(Debug_NEW(Game));
 
 	w->GetTimer()->GetTimeDeltaSeconds();
 	bool toggleDebug = false;
@@ -50,6 +79,7 @@ int main() {
 			toggleDebug = !toggleDebug;
 		}
 		if (toggleDebug) {
+			//std::cout << "\x1B[2J\x1B[H";
 			d->GetMemoryAllocationSize(*w);
 			d->GetMemoryAllocationSize(*d);
 			d->GetMemoryAllocationSize(*g);
@@ -57,7 +87,6 @@ int main() {
 			d->GetFPS(dt);
 		}
 		g->UpdateGame(dt);
-		//d->GetFPS(dt);
 	}
 
 	Window::DestroyGameWindow();

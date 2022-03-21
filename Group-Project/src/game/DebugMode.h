@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <stdlib.h>
+
+#include "Tasks.h"
 
 class DebugMode {
     public:
@@ -15,16 +18,21 @@ class DebugMode {
         }
 
         inline void GetFPS(float dt) {
-            //if (frames > 60) {
-            //    std::cout << "Average FPS: " << (1.0f / dt) << std::endl;
-            //    frames = 0;
-            //}
-            //frames++;
-
             std::cout << "Average FPS: " << (1.0f / dt) << std::endl;
         }
 
+        inline void InitTasks() {
+            tasks.start(4);
+        }
+
+        void ToggleDebugMode();
+        bool getDebugMode() { return isDebug; }
+        void DebugUpdate();
+       
     private:
         size_t MemorySize;
         int frames = 0;
+        bool isDebug = false;
+
+        Tasks tasks;
 };

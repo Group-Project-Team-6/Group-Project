@@ -180,8 +180,8 @@ void Game::InitCharacter() {
 			world->GetMainCamera(i)->SetDistance(8.0f);
 
 		}
-		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
-		//world->AddGameObject(players[i]);
+		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		world->AddGameObject(players[i]);
 	}
 }
 

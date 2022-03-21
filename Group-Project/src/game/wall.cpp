@@ -17,8 +17,8 @@ Wall::Wall(Transform buildTransform) {
 	wallRigidBody->isStaticObject();
 	wallRigidBody->setUserPointer(this);
 
-	/*world.AddGameObject(this);
-	physicsWorld.addRigidBody(wallRigidBody);*/
+	/*world.AddGameObject(this);*/
+	//physicsWorld.addRigidBody(wallRigidBody);
 }
 
 Wall::~Wall() {

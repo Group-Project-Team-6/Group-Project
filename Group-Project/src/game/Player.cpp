@@ -28,8 +28,8 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	playerRigidBody->setRestitution(playerRestitution);
 	playerRigidBody->setUserPointer(this);
 
-	dynamicsWorld.addRigidBody(playerRigidBody);
-	world.AddGameObject(this);
+	//dynamicsWorld.addRigidBody(playerRigidBody);
+	//world.AddGameObject(this);
 
 	bullets = new BulletPool(world, dynamicsWorld);
 }

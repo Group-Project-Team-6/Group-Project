@@ -24,7 +24,7 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 	ghost->setWorldTransform(bttransform);
 	ghost->setCollisionShape(bulletShape);
 	ghost->setUserPointer(this);
-	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE | btCollisionObject::CF_STATIC_OBJECT);
 	isTrigger = true;
 	world.AddGameObject(this);
 	//dynamicsWorld.addRigidBody(bulletRigidBody);

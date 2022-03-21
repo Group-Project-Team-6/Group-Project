@@ -125,7 +125,7 @@ void GameTechRenderer::RenderFrame() {
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList(false,0);
 	if (!initTexture) {
-		//initTextures();
+		initTextures();
 		initTexture = true;
 	}
 	UpdatePaints();
@@ -436,7 +436,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 			}
 		}
 	}
-	std::cout << count << std::endl;
+	//std::cout << count << std::endl;
 	glDepthMask(GL_TRUE);
 }
 

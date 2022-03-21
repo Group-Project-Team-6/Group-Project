@@ -2,9 +2,11 @@
 
 
 Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
+	pitch = 0;
 	InitAssets(); //Temp, Replace with loadAsset Class
 
-	name = newName;
+	//name = "player" + newName;
+	name = "Player";
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -22,11 +24,12 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
 	playerRigidBody = new btRigidBody(playerCI);
 	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
-
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
-	dynamicsWorld.addRigidBody(playerRigidBody);
-	world.AddGameObject(this);
+	playerRigidBody->setUserPointer(this);
+
+	//dynamicsWorld.addRigidBody(playerRigidBody);
+	//world.AddGameObject(this);
 
 	bullets = new BulletPool(world, dynamicsWorld);
 }
@@ -44,6 +47,7 @@ void Player::InitAssets() {
 	playerMesh = AssetsManager::FetchMesh("CapsuleMesh");
 	TexID texID = AssetsManager::LoadTextureFromFile("CheckerBoardTex", "CheckerBoard.png", false);
 	if (texID != -1) playerTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
+	playerTex.get()->Init({ "FBO" });
 	playerShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 

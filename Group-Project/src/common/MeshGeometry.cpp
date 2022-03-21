@@ -8,6 +8,10 @@
 #include <fstream>
 #include <string>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h> 
+
 using namespace NCL;
 using namespace Maths;
 
@@ -106,6 +110,10 @@ void ReadIndices(std::ifstream& file, vector<unsigned int>& elements, int numInd
 
 MeshGeometry::MeshGeometry(const std::string&filename) {
 	primType = GeometryPrimitive::Triangles;
+	if (filename.substr(filename.length() - 4, 4) != ".msh") {
+		LoadOtherFileType(Assets::MESHDIR + filename);
+		return;
+	}
 	std::ifstream file(Assets::MESHDIR + filename);
 
 	std::string filetype;
@@ -147,7 +155,7 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 			case GeometryChunkTypes::VTangents:	ReadTextFloats(file, tangents, numVertices);	break;
 			case GeometryChunkTypes::VTex0:		ReadTextFloats(file, texCoords, numVertices);	break;
 			case GeometryChunkTypes::Indices:	ReadIndices(file, indices, numIndices); break;			
-				
+			
 			case GeometryChunkTypes::VWeightValues:		ReadTextFloats(file, skinWeights, numVertices);  break;
 			case GeometryChunkTypes::VWeightIndices:	ReadTextFloats(file, skinIndices, numVertices);  break;
 			case GeometryChunkTypes::JointNames:		ReadJointNames(file);		break;
@@ -156,9 +164,67 @@ MeshGeometry::MeshGeometry(const std::string&filename) {
 			case GeometryChunkTypes::BindPoseInv:		ReadRigPose(file, inverseBindPose);  break;
 			case GeometryChunkTypes::SubMeshes: 		ReadSubMeshes(file, numMeshes); break;
 			case GeometryChunkTypes::SubMeshNames: 		ReadSubMeshNames(file, numMeshes); break;
+		
 		}
 	}
 	file.close();
+}
+
+void MeshGeometry::LoadOtherFileType(const std::string& filename) {
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filename,  aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices);
+	if (scene) {
+		positions.clear();
+		texCoords.clear();
+		normals.clear();
+		indices.clear();
+		colours.clear();
+		float largest = 0.0f;
+		for (int mIndex = 0; mIndex < scene->mNumMeshes; mIndex++) {
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumVertices; i++) {
+				aiVector3D v = scene->mMeshes[mIndex]->mVertices[i];
+				if (v.x > largest) largest = v.x;
+				if (v.y > largest) largest = v.y;
+				if (v.z > largest) largest = v.z;
+			}
+		}
+		largest = 0.5f / largest;
+		int count = 0;
+		for (int mIndex = 0; mIndex < scene->mNumMeshes; mIndex++){
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumVertices; i++) {
+				aiVector3D v = scene->mMeshes[mIndex]->mVertices[i];
+				positions.push_back({ v.x * largest,v.y * largest,v.z * largest });
+
+				if (scene->mMeshes[mIndex]->HasTextureCoords(0)) {
+					aiVector3D uv = scene->mMeshes[mIndex]->mTextureCoords[0][i];
+					texCoords.push_back({uv.x, uv.y });
+				}
+
+				if (scene->mMeshes[0]->HasNormals()) {
+					aiVector3D normal = scene->mMeshes[mIndex]->mNormals[i];
+					normals.push_back({ normal.x, normal.y, normal.z });
+				}
+				if (scene->mMeshes[0]->HasVertexColors(0)) {
+					aiColor4D colour = scene->mMeshes[mIndex]->mColors[0][i];
+					colours.push_back({ colour.r, colour.g, colour.b, colour.a });
+				}
+			}
+			for (int i = 0; i < scene->mMeshes[mIndex]->mNumFaces; i++) {
+				for (int j = 0; j < 3; j++) {
+					int index = scene->mMeshes[mIndex]->mFaces[i].mIndices[j];
+					indices.push_back(index);
+				}
+			}
+			SubMesh m;
+			m.start = count;
+			m.count = scene->mMeshes[mIndex]->mNumFaces * 3;
+			count += m.count;
+			subMeshes.push_back(m);
+			subMeshNames.push_back("Mesh"+ std::to_string(mIndex));
+		}
+		return;
+	}
+	std::cout << "Cannot read file! Name: " << Assets::MESHDIR + filename << std::endl;
 }
 
 MeshGeometry::~MeshGeometry()

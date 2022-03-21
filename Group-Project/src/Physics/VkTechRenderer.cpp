@@ -46,7 +46,7 @@ void VkTechRenderer::RenderFrame() {
 	RenderSkybox();
 	RenderCamera();*/
 	float screenAspect = (float)currentWidth / (float)currentHeight;
-	Matrix4 VPMat = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect) * gameWorld.GetMainCamera()->BuildViewMatrix();
+	Matrix4 VPMat = gameWorld.GetMainCamera(0)->BuildProjectionMatrix(screenAspect) * gameWorld.GetMainCamera(0)->BuildViewMatrix();
 
 	UpdateUniformBuffer(matrixDataObject, VPMat.array, sizeof(VPMat.array));
 

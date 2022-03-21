@@ -18,9 +18,14 @@ namespace NCL {
 		{
 		public:
 			//friend class OGLRenderer;
-			 OGLTexture();
-			 OGLTexture(GLuint texToOwn);
+			 OGLTexture(bool withFBO = false);
+			 OGLTexture(GLuint texToOwn, bool withFBO = false);
 			~OGLTexture();
+			void Init(std::vector<std::string> args) override { 
+				if (args.size() > 0 && args[0] == "FBO") {
+					GenFrameBuffer(); 
+				} 
+			}
 			void SetHeight(int height) { this->height = height; }
 			void SetWidth(int width) { this->width = width; }
 			int GetHeight() { return height; }
@@ -33,10 +38,17 @@ namespace NCL {
 			GLuint GetObjectID() const	{
 				return texID;
 			}
+
+			GLuint GetFBO() const {
+				return FBO;
+			}
+
+			void GenFrameBuffer();
 		protected:						
 			GLuint texID;
 			int height;
 			int width;
+			GLuint FBO;
 		};
 	}
 }

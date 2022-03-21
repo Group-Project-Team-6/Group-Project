@@ -88,7 +88,12 @@ Win32Window::Win32Window(const std::string& title,int sizeX, int sizeY, bool ful
 	LockMouseToWindow(lockMouse);
 	ShowOSPointer(showMouse);
 
-	SetConsolePosition(1500, 200);
+	if (fullScreen) {
+		SetConsolePosition(-200, 0);
+	}
+	else {
+		SetConsolePosition(-200, 0);
+	}
 
 	windowTitle = title;
 

@@ -1,5 +1,6 @@
 #include "AssetsManager.h"
 #include "../common/TextureLoader.h"
+#include "../common/json/json.hpp"
 
 RendererPtr AssetsManager::renderer(nullptr);
 std::map<std::string, std::vector<TexturePtr>> AssetsManager::texturePoolMap;
@@ -9,58 +10,24 @@ std::map<std::string, std::stack<TexID>> AssetsManager::TexStackMap;
 std::map<std::string, std::stack<ShaderID>> AssetsManager::ShaderStackMap;
 std::map<std::string, std::stack<MeshID>> AssetsManager::MeshStackMap;
 
+using json = nlohmann::json;
+
 AssetsManager::~AssetsManager() {
 }
 
-void AssetsManager::LoadAssets(std::string configFileName) {
-	std::ifstream configFile(Assets::DATADIR + configFileName);
-	std::string line;
-	auto f = [&]() -> std::map<std::string, std::string> {
-		std::map<std::string, std::string> map;
-		std::string input;
-		configFile >> input;
-		if (input != "{") return map ;
-		std::string name = "";
-		std::string FileName = "";
-		while (name != "}") {
-			configFile >> name;
-			configFile >> FileName;
-			map[name] = FileName;
-		}
-		return map;
-	};
-
-	if (configFile.is_open())
-	{
-		while (!configFile.eof()) {
-			std::string input;
-			configFile >> input;
-			std::map<std::string, std::string> map;
-			map = f();
-			if (input == "Texture") {
-				for (auto& it = map.begin(); it != map.end(); it++) {
-					LoadTextureFromFile(it->first,it->second);
-				}
-			}else if (input == "Shader") {
-				for (auto& it = map.begin(); it != map.end(); it++) {
-					LoadShaderFromFile(it->first, it->second);
-				}
-			}
-			else if (input == "Mesh") {
-				for (auto& it = map.begin(); it != map.end(); it++) {
-					LoadMeshFromFile(it->first, it->second);
-				}
-			}
-		}
-		configFile.close();
-	}
+void AssetsManager::LoadAssets(std::string label, std::string jsonFile) {
+	std::ifstream configFile(Assets::DATADIR + jsonFile);
+	json j;
+	configFile >> j;
+	
 }
 
 TexID AssetsManager::LoadTextureFromFile(std::string name, std::string fileName, bool isShared) {
 	if (renderer) {
 		std::shared_ptr<TextureBase> t;
 		t.reset(TextureLoader::LoadAPITexture(fileName));
-		if (t.get()) return LoadTexture(name,t,isShared);
+		
+		if (t.get()) return LoadTexture(name,t, isShared);
 	}
 	return -1;
 }

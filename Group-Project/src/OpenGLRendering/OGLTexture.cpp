@@ -14,18 +14,34 @@ https://research.ncl.ac.uk/game/
 using namespace NCL;
 using namespace NCL::Rendering;
 
-OGLTexture::OGLTexture()
+OGLTexture::OGLTexture(bool withFBO)
 {
+	FBO = 0;
 	glGenTextures(1, &texID);
+	if (withFBO) {
+		glGenFramebuffers(1, &FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);
+		glDrawBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
-OGLTexture::OGLTexture(GLuint texToOwn) {
+OGLTexture::OGLTexture(GLuint texToOwn, bool withFBO ) {
+	FBO = 0;
 	texID = texToOwn;
+	if (withFBO) {
+		glGenFramebuffers(1, &FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 OGLTexture::~OGLTexture()
 {
 	glDeleteTextures(1, &texID);
+	glDeleteFramebuffers(1, &FBO);
 }
 
 TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, int channels) {
@@ -72,4 +88,12 @@ TextureBase* OGLTexture::RGBATextureFromFilename(const std::string&name) {
 	free(texData);
 
 	return glTex;
+}
+
+void OGLTexture::GenFrameBuffer() {
+	if(FBO != 0) glDeleteFramebuffers(1, &FBO);
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

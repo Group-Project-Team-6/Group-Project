@@ -6,6 +6,7 @@
 #include "../Common/RenderObject.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "../common/TextureLoader.h"
+#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
 
 #include "../CSC8503/Transform.h"
 #include "AssetsManager.h"
@@ -73,6 +74,25 @@ public:
 		return worldID;
 	}
 
+	std::string GetName() {
+		return name;
+	}
+
+	bool getTrigger() {
+		return isTrigger;
+	}
+
+	void setTrigger(bool state) {
+		isTrigger = state;
+	}
+
+	btGhostObject* getGhostObject()
+	{
+		if (isTrigger)
+			return ghost;
+		else return false;
+	}
+
 	virtual void UpdateRenderPositions() {
 		
 		bttransform = rigidBody->getWorldTransform();
@@ -95,6 +115,7 @@ public:
 protected:
 	RenderObject* renderObject;
 	btRigidBody* rigidBody;
+	btGhostObject* ghost;
 	
 	Transform transform;
 	btTransform bttransform;
@@ -107,6 +128,7 @@ protected:
 	string name;
 
 	bool isActive;
+	bool isTrigger;
 	int	worldID;
 };
 

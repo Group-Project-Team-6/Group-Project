@@ -3,19 +3,23 @@
 #include "PlayerInput.h"
 #include "LevelGen.h"
 #include "Painter.h"
+#include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
+
+#include <math.h>
+#include <thread>
+#include <mutex>
 
 //Namespaces?
 
 Game::Game() {
-	command = nullptr;
+	loading = true;
 	InitWorld();
-	InitPhysics();
-	InitAudio();
-	InitAssets();
-	InitScene();
-	InitItems();
-	LevelGeneration();
-	InitCharacter();
+	std::thread loadScreenThread(&Game::RenderLoading,this);
+	Init();
+	//std::thread initThread(&Game::Init,this);
+
+	//initThread.join();
+	loadScreenThread.join();
 	//void InitHUD
 	//InitNetworking?
 
@@ -33,6 +37,11 @@ Game::~Game() {
 	//delete world
 	delete world;
 
+	for (int i = 0; i < 4; i++) {
+		if(playerInput[i]) 
+			delete playerInput[i];
+	}
+
 	//delete GameEntities
 	delete ground;
 	for (auto i : players) {
@@ -49,18 +58,40 @@ Game::~Game() {
 
 }
 
+void Game::Init() {
+	InitPhysics();
+	InitAudio();
+	InitAssets();
+	InitScene();
+	InitItems();
+	LevelGeneration();
+	InitCharacter();
+	InitPlayerInput();
+	loading = false;
+}
+
 void Game::InitWorld() {
 	world = new GameWorld();
+	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
-	world->GetMainCamera()->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
-	world->GetMainCamera()->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+}
+
+void Game::RenderLoading() {
+	RendererPtr loadingRenderer;
+	loadingRenderer.reset(new GameLoadingRenderer());
+	while (loading) {
+		loadingRenderer.get()->Render();
+		//wglMakeCurrent(NULL, NULL);
+		Sleep(10);
+	}
 }
 
 void Game::InitAssets() {
 	AssetsManager::LoadMeshFromFile("SphereMesh", "Sphere.msh");
 	AssetsManager::LoadMeshFromFile("CubeMesh", "Cube.msh");
+	AssetsManager::LoadMeshFromFile("WallMesh", "corridor_wall_6.fbx");
 	AssetsManager::LoadMeshFromFile("CapsuleMesh", "Capsule.msh");
 	AssetsManager::LoadShaderFromFile("GameTechShaderSet", "GameTechShader.set");
 	AssetsManager::LoadTextureFromFile("CheckerboardTex", "checkerboard.png");
@@ -70,6 +101,7 @@ void Game::InitAssets() {
 	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
 	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
+	basicTex.get()->Init({ "FBO" });
 	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
@@ -84,6 +116,9 @@ void Game::InitPhysics() {
 	solver = new btSequentialImpulseConstraintSolver();
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+	btGhostPairCallback* ghostPair = new btGhostPairCallback();
+	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
 void Game::InitAudio() {
@@ -116,50 +151,45 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
+	//Transform wallTransform;
+	//walls[0] = new Wall(wallTransform);
+	//world->AddGameObject(walls[0]);
+	//dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
+	//maybe use foreach loops for static objects
+
+	//std::cout << &*world << std::endl;
+	//std::cout << &*dynamicsWorld << std::endl;
 }
 
 void Game::InitItems() {
-	items[0] = new Item({ 0, 2, 0 }, 1);
+	/*items[0] = new Item({ 0, 2, 0 }, 1);
 	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());
+	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
 }
 
 void Game::InitCharacter() {
 
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
-		//dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
-		//world->AddGameObject(players[i]);
+		world->AddPlayer(players[i]);
+		if ((world->IsLocalGame() || i == 0) && i < 4) {
+			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
+			world->AddMainCamera();
+			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
+			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
+			world->GetMainCamera(i)->SetDistance(8.0f);
+
+		}
+		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		world->AddGameObject(players[i]);
 	}
 }
 
-void Game::UpdateGame(float dt) {
-	dynamicsWorld->stepSimulation(dt, 0);
-	
-
-	audioManager->AudioUpdate(world, dt);
-
-	//Networking to tell which player to camera
-	world->GetMainCamera()->UpdateCamera(players[0]->GetTransform().GetPosition(), players[0]->GetTransform().GetOrientation().ToEuler().y, dt);
-	command = playerInput.handleInput();
-	if (command) {
-		command->execute(*players[0], *world, *dynamicsWorld, *audioManager); //Learn which player from networking
-	}
-
-	//Anims
-	world->UpdatePositions(); //Maybe Change
-	renderer->Render();
-	players[0]->GetBulletPool()->Animate();
-
-	/*std::cout <<
-		std::to_string(character->GetTransform().GetPosition().x) +
-		std::to_string(character->GetTransform().GetPosition().y) +
-		std::to_string(character->GetTransform().GetPosition().z) << std::endl;
-
-	std::cout << std::to_string(
-		character->GetbtTransform().getOrigin().x())
-		+ std::to_string(character->GetbtTransform().getOrigin().y()) +
-		std::to_string(character->GetbtTransform().getOrigin().z()) << std::endl;*/
+void Game::InitPlayerInput() {
+	playerInput[0] = new PlayerInput();
+	playerInput[1] = new PlayerInput2();
+	playerInput[2] = nullptr;
+	playerInput[3] = nullptr;
 }
 
 void Game::LevelGeneration() {
@@ -172,87 +202,54 @@ void Game::LevelGeneration() {
 	LevelGen* levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
-	//vector<string> maze = levelGenerator->TestMap();
-
 
 	Transform wallsTransform;
 	wallsTransform.SetPosition({ 50,2,0 });
 	wallsTransform.SetScale({ scale,scale,scale });
-	wallsTransform.SetOrientation({ 1,0,0,1 });
+	//wallsTransform.SetOrientation({ 1,0,0,1 });
 
 	Transform stairsTransform;
 	stairsTransform.SetScale({ scale, scale ,0.5 });
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
+	//stairsTransform.SetOrientation({ 0.5,0,0,1 });
 	stairsTransform.SetPosition({ 10,2,0 });
 
-	/*
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs = new Wall(stairsTransform);
-	stairs->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs->GetRigidBody());
-	world->AddGameObject(stairs);
+	Transform floorsTransform;
+	floorsTransform.SetScale({ scale, scale ,0.1 });
+	//floorsTransform.SetOrientation({ 1,0,0,1 });
 
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs1 = new Wall(stairsTransform);
-	stairs1->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs1->GetRigidBody());
-	world->AddGameObject(stairs1);
-	stairsTransform.SetScale({ 0.5, scale ,scale });
-	stairsTransform.SetOrientation({ 0.5,0,0,1 });
-	Wall* stairs2 = new Wall(stairsTransform);
-	stairs2->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs2->GetRigidBody());
-	world->AddGameObject(stairs2);
-	stairsTransform.SetOrientation({ -0.5,0,0,1 });
-	Wall* stairs3 = new Wall(stairsTransform);
-	stairs3->UpdateCollShape(scale, scale, 0.5);
-	dynamicsWorld->addRigidBody(stairs3->GetRigidBody());
-	world->AddGameObject(stairs3);
-	*/
-
-	/*
-	Wall* wall1 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall1->GetRigidBody());
-	world->AddGameObject(wall1);
-	wallsTransform.SetPosition({ 0,2,50 });
-	Wall* wall2 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall2->GetRigidBody());
-	world->AddGameObject(wall2);
-	wallsTransform.SetPosition({ 0,2,-50 });
-	Wall* wall3 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall3->GetRigidBody());
-	world->AddGameObject(wall3);
-	wallsTransform.SetPosition({ -50,2,0 });
-	Wall* wall4 = new Wall(wallsTransform);
-	dynamicsWorld->addRigidBody(wall4->GetRigidBody());
-	world->AddGameObject(wall4);
-	*/
 
 	vector<Wall*> vecWalls;
+	vector<Wall*> floors;
 
-	float unitLength = scale; //int
+	float unitLength = scale;
 	int numWalls = 0;
-	for (int i = 0; i < 4; i++)
+	int numFloors = 0;
+	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level++) //int
+		for (float level = 0; level < maze.size(); level+=1.0f)
 		{
-			for (float l = 0; l < length; l++) //int
+			for (float l = 0; l < length; l+=1.0f)
 			{
-				for (float w = 0; w < width; w++) //int
+				for (float w = 0; w < width; w += 1.0f)
 				{
-					//AddChild(i, GetSymbol(level, l, w), level, l, w);
-					//AddChild(i, maze[level][l * width + w], level, l, w);
-
 					char ch = maze[level][l * width + w];
-
+					Vector3 position({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
 					switch (ch)
 					{
 					case 'P':
+						if (level >= 0) {
+							floorsTransform.SetPosition(position + Vector3(0,-unitLength*.45f,0));
+							floorsTransform.SetScale({ scale, 0.1f, scale });
+							floors.push_back(new Wall(floorsTransform));
+							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
+							world->AddGameObject(floors[numFloors]);
+							numFloors++;
+						}
 						break;
 					case '#':
-						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
-						vecWalls.push_back(new Wall(wallsTransform));
+						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
+						vecWalls.push_back(new Wall(wallsTransform));
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
@@ -260,39 +257,156 @@ void Game::LevelGeneration() {
 						break;
 					case 'S':
 						break;
-					case 'A':
-						/*
-						stairsTransform.SetOrientation({ 0.5,0,0,1 });
-						stairsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+					case '<':
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ 0.42,0,0,1 });
+						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						vecWalls[numWalls]->UpdateCollShape(scale, scale, 0.5);
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
-						*/
-						break;
-					case 'V':
-
-						break;
-					case '<':
-
 						break;
 					case '>':
-
+						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
+						stairsTransform.SetOrientation({ -0.42,0,0,1 });
+						stairsTransform.SetPosition(position);
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'V':
+						break;
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
+						stairsTransform.SetPosition(position);
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
+						break;
+					case 'A':
+						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
+						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
+						stairsTransform.SetPosition(position);
+						vecWalls.push_back(new Wall(stairsTransform));
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						world->AddGameObject(vecWalls[numWalls]);
+						numWalls++;
 						break;
 					}
 
 
 				}
 			}
-			//collGen.Collectables(level, maze[level], width, length, unitLength);
+
 		}
 	}
 
-}
+	Transform collectablesTransform;
+	collectablesTransform.SetScale({ scale / 5,scale / 5,scale / 5 });
+	//collectablesTransform.SetOrientation({ 1,0,0,1 });
 
+	vector<vector<int>> collectablePos;
+	vector<Item*> vecCollectables;
+	int numCollectablesPlaced = 0;
+	for (int i = 0; i < maze.size(); i++) {
+
+		int numCollectables = ((length * width) / 50);
+
+		for (int x = 0; x < numCollectables; x++) {
+
+			int randomNum = rand() % maze[i].length();
+
+			if (maze[i][randomNum] == 'P') {
+				int posLength = randomNum / length;
+				int posWidth = randomNum - (posLength * width);
+
+				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
+				collectablesTransform.SetScale({ 0.1, 0.1, 0.1 });
+				vecCollectables.push_back(new Item(collectablesTransform.GetPosition(),1));
+				dynamicsWorld->addCollisionObject(vecCollectables[numCollectablesPlaced]->getGhostObject());
+				world->AddGameObject(vecCollectables[numCollectablesPlaced]);
+				numCollectablesPlaced++;
+
+			}
+			else { x--; }
+
+		}
+
+	}
+
+}
+/////////////////Build Level//////////////////////////
+
+/////////////////Other Functions//////////////////////
 void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
 	d->GetMemoryAllocationSize(*world);
 	d->GetMemoryAllocationSize(*audioManager);
 	d->GetMemoryAllocationSize(*renderer);
 }
+
+void Game::exectureTriggers() {
+	for (int i = 0; i < world->GetGameObjects().size(); i++) {
+		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
+			GameEntity* objA = world->GetGameObjects()[i];
+			for (int j = 0; j < world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects(); j++) {
+				{
+					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(j)->getUserPointer();
+					std::cout << objA->GetName() << std::endl;
+					std::cout << objB->GetName() << std::endl;
+						//Execute triggers
+					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
+						std::cout << "Player has picked up item" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
+						std::cout << "Wall Painted" << std::endl;
+						//return;
+					}
+					objB = nullptr;
+				}
+			}
+			objA = nullptr;			
+		}
+	}
+}
+/////////////////Other Functions///////////////////////
+
+/////////////////Update Game//////////////////////////
+void Game::UpdateGame(float dt) {
+
+	dynamicsWorld->stepSimulation(dt, 0);
+	audioManager->AudioUpdate(world, dt);
+	
+	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
+		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
+		if (playerInput[i]) {
+			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
+			while (command.size() > 0) {
+				command.front()->execute(*players[i], *(world->GetMainCamera(i)), *audioManager); //Learn which player from networking
+				command.pop();
+			}
+		}
+	}
+
+	world->UpdatePositions(); //Maybe Change
+	GameTimer t;
+	renderer->Render();
+	t.Tick();
+	float ti = t.GetTimeDeltaSeconds();
+	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
+	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
+
+	exectureTriggers();
+
+}
+/////////////////Update Game//////////////////////////
+
+

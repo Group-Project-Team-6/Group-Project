@@ -72,7 +72,7 @@ void Game::Init() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(true);
+	world->SetLocalGame(false);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -194,8 +194,8 @@ void Game::InitPlayerInput() {
 
 void Game::LevelGeneration() {
 
-	int length = 10;
-	int width = 10;
+	int length = 5;
+	int width = 5;
 
 	float scale = 5;
 

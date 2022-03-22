@@ -106,7 +106,7 @@ protected:
 	
 	Transform transform;
 	btTransform bttransform;
-
+	TransformConverter transformConverter;
 	btQuaternion btRot;
 	btVector3 btPos;
 	Quaternion nclRot;
@@ -116,6 +116,7 @@ protected:
 
 	bool isActive;
 	bool isTrigger;
+	bool isStatic;
 	int	worldID;
 };
 

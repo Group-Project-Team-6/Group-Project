@@ -34,7 +34,7 @@ void GameUI::Init() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); //(void)io;
     //io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -58,6 +58,7 @@ void GameUI::PushMenu(const GameMenuPtr& menu)
 
 GameMenuPtr GameUI::PopMenu()
 {
+    if (menus.size() <= 0) return nullptr;
     GameMenuPtr menuToPop = menus.back();
     menus.pop_back();
     return menuToPop;

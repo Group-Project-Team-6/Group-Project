@@ -1,4 +1,5 @@
 #include "PauseMenu.h"
+#include <iostream>
 
 using namespace NCL;
 using namespace CSC8503;

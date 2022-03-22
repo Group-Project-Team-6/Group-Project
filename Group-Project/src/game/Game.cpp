@@ -65,7 +65,7 @@ void Game::Init() {
 	InitAssets();
 	InitScene();
 	InitItems();
-	LevelGeneration();
+	//LevelGeneration();
 	InitCharacter();
 	InitPlayerInput();
 	loading = false;
@@ -75,8 +75,6 @@ void Game::InitWorld() {
 	world = new GameWorld();
 	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
-	UI.reset(new GameUI());
-	UI.get()->Init();
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
 }
@@ -93,6 +91,8 @@ void Game::RenderLoading() {
 }
 
 void Game::InitGUI() {
+	UI.reset(new GameUI());
+	UI->Init();
 	pauseMenuPtr.reset(new PauseMenu());
 	UI->PushMenu(pauseMenuPtr);
 }
@@ -378,6 +378,13 @@ void Game::exectureTriggers() {
 
 /////////////////Update Game//////////////////////////
 void Game::UpdateGame(float dt) {
+	UI->UpdateUI();
+	PauseMenu* pMenu = dynamic_cast<PauseMenu*>(pauseMenuPtr.get());
+	if (pMenu) {
+		if (pMenu->menuClose) {
+			UI->PopMenu();
+		}
+	}
 
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
@@ -401,8 +408,7 @@ void Game::UpdateGame(float dt) {
 	world->UpdatePositions(); //Maybe Change
 	// GameTimer t;
 	renderer->Update(dt);
-	UI->UpdateUI();
-
+	///UI->UpdateUI();
 	renderer->Render();
 	UI->DrawUI();
 

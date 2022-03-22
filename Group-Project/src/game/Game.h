@@ -67,6 +67,7 @@ protected:
 	btCollisionDispatcher* dispatcher;
 	btSequentialImpulseConstraintSolver* solver;
 	btDiscreteDynamicsWorld* dynamicsWorld;
+	btGhostPairCallback* ghostPair;
 
 	//Custom motion state?
 

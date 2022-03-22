@@ -12,27 +12,14 @@ public:
 
 	void InitAssets(); //Temp
 
-	/*virtual btRigidBody* GetRigidBody() const override {
-		return wallRigidBody;
+	btCollisionObject* getCollisionObject() {
+		return wallObject;
 	}
-
-	virtual void SetRigidBody(btRigidBody* newRigidBody) override {
-		wallRigidBody = newRigidBody;
-	}
-
-	virtual void UpdateRenderPositions() override {
-
-		return;
-	}*/
 
 private:
-	//TransformConverter transformConverter;
-	//Transform transform;
-	//btTransform bttransform;
 
 	btDefaultMotionState* wallMotion;
 	btCollisionShape* wallShape;
-	//btRigidBody* wallRigidBody;
 	btCollisionObject* wallObject;
 
 	//graphics

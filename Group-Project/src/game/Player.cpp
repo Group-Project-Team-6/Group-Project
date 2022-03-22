@@ -25,10 +25,11 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	btRigidBody::btRigidBodyConstructionInfo playerCI(playerMass, playerMotion, playerShape, playerInertia);
 	playerRigidBody = new btRigidBody(playerCI);
 	playerRigidBody->setActivationState(DISABLE_DEACTIVATION);
+	playerRigidBody->setCollisionFlags(playerRigidBody->getCollisionFlags() | btCollisionObject::CF_DYNAMIC_OBJECT);
 	playerRigidBody->setFriction(playerFriction);
 	playerRigidBody->setRestitution(playerRestitution);
 	playerRigidBody->setUserPointer(this);
-
+	//playerRigidBody->setGravity({ 0, -10, 0 });
 	//dynamicsWorld.addRigidBody(playerRigidBody);
 	//world.AddGameObject(this);
 

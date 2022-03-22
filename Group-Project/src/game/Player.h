@@ -41,7 +41,7 @@ public:
 		return bullets;
 	}
 
-	virtual void UpdateRenderPositions() override {
+	/*virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
 
@@ -54,7 +54,7 @@ public:
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
 
-	}
+	}*/
 
 	void InitAssets(); //Temp
 
@@ -65,9 +65,9 @@ protected:
 	ShaderPtr playerShader;
 
 	//general
-	TransformConverter transformConverter;
-	Transform transform;
-	btTransform bttransform;
+	//TransformConverter transformConverter;
+	//Transform transform;
+	//btTransform bttransform;
 	BulletPool* bullets;
 
 	//player Physics

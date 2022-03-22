@@ -27,21 +27,6 @@ Game::Game() {
 
 Game::~Game() {
 
-	//delete Physics
-	delete broadphase;
-	delete collisionConfiguration;
-	delete dispatcher;
-	delete solver;
-	delete dynamicsWorld;
-
-	//delete world
-	delete world;
-
-	for (int i = 0; i < 4; i++) {
-		if(playerInput[i]) 
-			delete playerInput[i];
-	}
-
 	//delete GameEntities
 	delete ground;
 	for (auto i : players) {
@@ -56,6 +41,21 @@ Game::~Game() {
 		delete i;
 	}
 
+	//delete Physics
+	delete broadphase;
+	delete collisionConfiguration;
+	delete dispatcher;
+	delete solver;
+	delete dynamicsWorld;
+	delete ghostPair;
+
+	//delete world
+	delete world;
+
+	for (int i = 0; i < 4; i++) {
+		if(playerInput[i]) 
+			delete playerInput[i];
+	}	
 }
 
 void Game::Init() {
@@ -117,7 +117,7 @@ void Game::InitPhysics() {
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
-	btGhostPairCallback* ghostPair = new btGhostPairCallback();
+	ghostPair = new btGhostPairCallback();
 	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
@@ -151,10 +151,12 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
-	//Transform wallTransform;
-	//walls[0] = new Wall(wallTransform);
-	//world->AddGameObject(walls[0]);
-	//dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
+	Transform wallTransform;
+	wallTransform.SetPosition({ 25, 6, -20 });
+	wallTransform.SetScale({ 10, 10, 2 });
+	walls[0] = new Wall(wallTransform);
+	world->AddGameObject(walls[0]);
+	dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
 	//maybe use foreach loops for static objects
 
 	//std::cout << &*world << std::endl;
@@ -241,6 +243,7 @@ void Game::LevelGeneration() {
 							floorsTransform.SetPosition(position + Vector3(0,-unitLength*.45f,0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
+							//dynamicsWorld->addCollisionObject(floors[numFloors]->getCollisionObject());
 							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
 							numFloors++;
@@ -250,6 +253,7 @@ void Game::LevelGeneration() {
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
+						//dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getCollisionObject());
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
@@ -262,7 +266,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -271,7 +275,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -281,7 +285,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -290,7 +294,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;

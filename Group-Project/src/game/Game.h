@@ -15,6 +15,8 @@
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
 #include <atomic>
+#include "../GUI/GameUI.h"
+#include "../GUI/PauseMenu.h"
 
 
 //Encapsulate in namespace?
@@ -33,6 +35,7 @@ protected:
 	void InitWorld();
 	void RenderLoading();
 	void Init();
+	void InitGUI();
 	void InitPhysics();
 	void InitAudio();
 	void InitAssets();
@@ -87,4 +90,8 @@ protected:
 	//Controls
 	PlayerInput* playerInput[4];
 	std::atomic<bool> loading;
+
+	//GUI
+	std::unique_ptr<GameUI> UI;
+	GameMenuPtr pauseMenuPtr;
 };

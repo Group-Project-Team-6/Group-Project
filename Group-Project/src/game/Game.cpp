@@ -59,6 +59,7 @@ Game::~Game() {
 }
 
 void Game::Init() {
+	InitGUI();
 	InitPhysics();
 	InitAudio();
 	InitAssets();
@@ -74,6 +75,8 @@ void Game::InitWorld() {
 	world = new GameWorld();
 	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
+	UI.reset(new GameUI());
+	UI.get()->Init();
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
 }
@@ -82,10 +85,16 @@ void Game::RenderLoading() {
 	RendererPtr loadingRenderer;
 	loadingRenderer.reset(new GameLoadingRenderer());
 	while (loading) {
-		loadingRenderer.get()->Render();
+		loadingRenderer->Render();
+		loadingRenderer->NextFrame();
 		//wglMakeCurrent(NULL, NULL);
 		Sleep(10);
 	}
+}
+
+void Game::InitGUI() {
+	pauseMenuPtr.reset(new PauseMenu());
+	UI->PushMenu(pauseMenuPtr);
 }
 
 void Game::InitAssets() {
@@ -101,7 +110,6 @@ void Game::InitAssets() {
 	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
 	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
-	basicTex.get()->Init({ "FBO" });
 	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
@@ -150,15 +158,6 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-
-	//Transform wallTransform;
-	//walls[0] = new Wall(wallTransform);
-	//world->AddGameObject(walls[0]);
-	//dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
-	//maybe use foreach loops for static objects
-
-	//std::cout << &*world << std::endl;
-	//std::cout << &*dynamicsWorld << std::endl;
 }
 
 void Game::InitItems() {
@@ -383,7 +382,10 @@ void Game::UpdateGame(float dt) {
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
 	
+	exectureTriggers();
+
 	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		players[i]->GetBulletPool()->Animate(*players[i]->GetRigidBody(), dt);
 		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
 		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
 		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
@@ -397,14 +399,17 @@ void Game::UpdateGame(float dt) {
 	}
 
 	world->UpdatePositions(); //Maybe Change
-	GameTimer t;
-	renderer->Render();
-	t.Tick();
-	float ti = t.GetTimeDeltaSeconds();
-	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
+	// GameTimer t;
+	renderer->Update(dt);
+	UI->UpdateUI();
 
-	exectureTriggers();
+	renderer->Render();
+	UI->DrawUI();
+
+	renderer->NextFrame();
+	// t.Tick();
+	// ti = t.GetTimeDeltaSeconds();
+	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 
 }
 /////////////////Update Game//////////////////////////

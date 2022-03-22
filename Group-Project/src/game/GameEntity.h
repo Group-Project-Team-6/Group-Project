@@ -93,20 +93,7 @@ public:
 		else return false;
 	}
 
-	virtual void UpdateRenderPositions() {
-		
-		bttransform = rigidBody->getWorldTransform();
-
-		btRot = bttransform.getRotation();
-		btPos = bttransform.getOrigin();
-
-		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
-		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
-
-		transform.SetOrientation(nclRot);
-		transform.SetPosition(nclPos);
-
-	}
+	virtual void UpdateRenderPositions();
 
 	void Jump() {
 		this->GetRigidBody()->applyCentralImpulse({ 0, 1000, 0 });

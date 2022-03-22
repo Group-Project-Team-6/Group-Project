@@ -368,6 +368,18 @@ void Game::exectureTriggers() {
 						std::cout << "Wall Painted" << std::endl;
 						//return;
 					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Bullet") {
+						std::cout << "Bullets Collided" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Item") {
+						std::cout << "Item Hit" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Ground") {
+						std::cout << "Ground Hit" << std::endl;
+						//return;
+					}
 					objB = nullptr;
 				}
 			}

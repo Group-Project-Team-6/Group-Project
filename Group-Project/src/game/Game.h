@@ -38,7 +38,7 @@ protected:
 	void InitAudio();
 	void InitAssets();
 	void InitScene();
-	void InitItems();
+	//void InitItems();
 	//Build State Machine?
 	void LevelGeneration();
 	void InitCharacter();

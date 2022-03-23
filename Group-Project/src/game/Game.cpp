@@ -30,43 +30,43 @@ Game::Game(Tasks* tasks) {
 
 Game::~Game() {
 	//delete GameEntities
-	delete ground;
+	//delete ground;
 
-	for (int i = 0; i < 4; i++) {
+	/*for (int i = 0; i < 4; i++) {
 		if (playerInput[i])
 			delete playerInput[i];
 	}
 
 	for (auto i : players) {
 		delete i;
-	}
+	}*/
 
-	vecWalls.clear();
-	floors.clear();
-	vecCollectables.clear();
+	//vecWalls.clear();
+	//floors.clear();
+	//vecCollectables.clear();
 
 	//delete LevelGen
-	delete levelGenerator;
+	//delete levelGenerator;
 
 	//delete Audio
-	delete audioManager;
+	//delete audioManager;
 
 	//delete Physics
-	delete broadphase;
-	delete collisionConfiguration;
-	delete dispatcher;
-	delete solver;
-	delete dynamicsWorld;
-	delete ghostPair;
+	//delete broadphase;
+	//delete collisionConfiguration;
+	//delete dispatcher;
+	//delete solver;
+	//delete ghostPair;
+	//delete dynamicsWorld;
 
 	//delete world
-	delete world;	
+	//delete world;	
 }
 
 void Game::Init(Tasks* tasks) {
 	tasks->queue([this]{InitPhysics();});
 	tasks->queue([this]{InitAudio();});
-	tasks->queue([this]{InitItems();});
+	//tasks->queue([this]{InitItems();});
 	tasks->queue([this]{InitPlayerInput();});
 
 	//InitPhysics();
@@ -359,6 +359,15 @@ void Game::exectureTriggers() {
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
 						//return;
+
+						//Team 1
+
+						//Team 2
+
+
+
+
+
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
 						std::cout << "Wall Painted" << std::endl;

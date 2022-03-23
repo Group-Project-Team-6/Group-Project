@@ -20,6 +20,7 @@ GameWorld::~GameWorld()	{
 
 void GameWorld::Clear() {
 	gameObjects.clear();
+	players.clear();
 }
 
 void GameWorld::ClearAndErase() {

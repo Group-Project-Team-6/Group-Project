@@ -51,9 +51,9 @@ private:
 	float framesLeft;
 	float speed;
 
-	MeshPtr bulletMesh;
-	TexturePtr bulletTex;
-	ShaderPtr bulletShader;
+	MeshPtr bulletMesh = nullptr;
+	TexturePtr bulletTex = nullptr;
+	ShaderPtr bulletShader = nullptr;
 
 	//Transform transform;
 	//btTransform bttransform;
@@ -61,9 +61,9 @@ private:
 	int bulletMass;
 	btVector3 bulletInertia;
 
-	btDefaultMotionState* bulletMotion;
-	btCollisionShape* bulletShape;
-	btRigidBody* bulletRigidBody;
+	btDefaultMotionState* bulletMotion = nullptr;
+	btCollisionShape* bulletShape = nullptr;
+	btRigidBody* bulletRigidBody = nullptr;
 
 	bool paintable;
 };

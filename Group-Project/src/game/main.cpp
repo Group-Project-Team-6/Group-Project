@@ -10,6 +10,14 @@
 using namespace NCL;
 //using namespace CSC8503;
 
+void operator delete(void* p)
+{
+	if (p) {
+		free(p);
+		p = nullptr;
+	}
+}
+
 int main() {
 	Assets::FetchDirConfig("dir.txt");
 
@@ -29,7 +37,7 @@ int main() {
 
 	w->GetTimer()->GetTimeDeltaSeconds();
 	bool toggleDebug = false;
-	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+	while (w->UpdateWindow() && !g->End()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		if (dt > 0.1f) {
 			std::cout << "Skipping large time delta" << std::endl;
@@ -56,7 +64,7 @@ int main() {
 			g->GetPhysicsTestSceneDebugData(d);
 			d->GetFPS(dt);
 		}
-		g->UpdateGame(dt);
+		g->Update(dt);
 		//d->GetFPS(dt);
 	}
 

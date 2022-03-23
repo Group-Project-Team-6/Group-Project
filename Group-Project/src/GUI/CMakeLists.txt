@@ -6,16 +6,9 @@ add_library(GUI STATIC
     GameUI.h
     MainMenu.h
     PauseMenu.h
-    PushdownMachine.h
-    PushdownState.h
     SettingMenu.h
-    State.h
-    StateMachine.h
-    StateTransition.h
 
     GameUI.cpp
     MainMenu.cpp
     PauseMenu.cpp
-    PushdownMachine.cpp
-    StateMachine.cpp
 )

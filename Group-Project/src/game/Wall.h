@@ -30,9 +30,9 @@ private:
 	//Transform transform;
 	btTransform bttransform;
 
-	btDefaultMotionState* wallMotion;
-	btCollisionShape* wallShape;
-	btRigidBody* wallRigidBody;
+	btDefaultMotionState* wallMotion = nullptr;
+	btCollisionShape* wallShape = nullptr;
+	btRigidBody* wallRigidBody = nullptr;
 
 	//graphics
 	MeshPtr wallMesh = nullptr;

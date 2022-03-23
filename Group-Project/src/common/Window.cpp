@@ -47,7 +47,7 @@ Window* Window::CreateGameWindow(std::string title, int sizeX, int sizeY, bool f
 
 void	Window::SetRenderer(RendererBase* r) {
 	if (renderer && renderer != r) {
-		renderer->OnWindowDetach();
+		//renderer->OnWindowDetach();
 	}
 	renderer = r;
 

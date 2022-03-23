@@ -4,6 +4,9 @@
 #include "LevelGen.h"
 #include "Painter.h"
 #include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "../CSC8503/StateMachine.h"
+#include "../CSC8503/StateTransition.h"
+#include "../CSC8503//GameWorld.h"
 
 #include <math.h>
 #include <thread>
@@ -12,54 +15,43 @@
 //Namespaces?
 
 Game::Game() {
-	loading = true;
-	InitWorld();
-	std::thread loadScreenThread(&Game::RenderLoading,this);
-	Init();
-	//std::thread initThread(&Game::Init,this);
-
-	//initThread.join();
-	loadScreenThread.join();
-	//void InitHUD
-	//InitNetworking?
-
+	int n = 0;
+	for (auto i : players) {
+		players[n] = nullptr;
+		n++;
+	}
+	n = 0;
+	for (auto i : items) {
+		items[n] = nullptr;
+		n++;
+	}
+	n = 0;
+	for (auto i : walls) {
+		walls[n] = nullptr;
+		n++;
+	}
+	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
+	State* initState = new State([&](float dt)->void {
+		InitWorld();
+		});
+	State* endGameState = new State([&](float dt)->void { });
+	gameStateMachine.AddState(initState);
+	gameStateMachine.AddState(gameState);
+	gameStateMachine.AddState(endGameState);
+	gameStateMachine.AddTransition(new StateTransition(initState, gameState, [&]()->bool {
+		InitGame();  
+		return true; 
+		}));
+	gameStateMachine.AddTransition(new StateTransition(gameState, endGameState, [&]()->bool {return winningTeam >= 0; }));
 }
 
 Game::~Game() {
-
-	//delete Physics
-	delete broadphase;
-	delete collisionConfiguration;
-	delete dispatcher;
-	delete solver;
-	delete dynamicsWorld;
-
-	//delete world
-	delete world;
-
-	for (int i = 0; i < 4; i++) {
-		if(playerInput[i]) 
-			delete playerInput[i];
-	}
-
-	//delete GameEntities
-	delete ground;
-	for (auto i : players) {
-		delete i;
-	}
-
-	for (auto i : items) {
-		delete i;
-	}
-
-	for (auto i : walls) {
-		delete i;
-	}
-
+	Destroy();
 }
 
 void Game::Init() {
-	InitGUI();
+	loading = true;
+	std::thread loadScreenThread(&Game::RenderLoading, this);
 	InitPhysics();
 	InitAudio();
 	InitAssets();
@@ -69,6 +61,43 @@ void Game::Init() {
 	InitCharacter();
 	InitPlayerInput();
 	loading = false;
+	loadScreenThread.join();
+	hasInit = true;
+}
+
+void Game::Destroy() {
+	//delete Physics
+	delete dynamicsWorld;
+	delete broadphase;
+	delete collisionConfiguration;
+	delete dispatcher;
+	delete solver;
+
+	//delete world
+	//delete world;
+
+	for (int i = 0; i < 4; i++) {
+		delete playerInput[i];
+	}
+	delete audioManager;
+	sphereMesh.reset();
+	cubeMesh.reset();
+	capsuleMesh.reset();
+	basicTex.reset();
+	basicShader.reset();
+	//delete GameEntities
+	//if(ground) delete ground;
+	//for (auto i : players) {
+	//	delete i;
+	//}
+
+	//for (auto i : items) {
+	//	delete i;
+	//}
+
+	//for (auto i : walls) {
+	//	delete i;
+	//}
 }
 
 void Game::InitWorld() {
@@ -77,6 +106,7 @@ void Game::InitWorld() {
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
+	InitGUI();
 }
 
 void Game::RenderLoading() {
@@ -85,16 +115,13 @@ void Game::RenderLoading() {
 	while (loading) {
 		loadingRenderer->Render();
 		loadingRenderer->NextFrame();
-		//wglMakeCurrent(NULL, NULL);
-		Sleep(10);
+		Sleep(1);
 	}
 }
 
 void Game::InitGUI() {
 	UI.reset(new GameUI());
 	UI->Init();
-	pauseMenuPtr.reset(new PauseMenu());
-	UI->PushMenu(pauseMenuPtr);
 }
 
 void Game::InitAssets() {
@@ -167,7 +194,7 @@ void Game::InitItems() {
 }
 
 void Game::InitCharacter() {
-
+	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
@@ -336,6 +363,86 @@ void Game::LevelGeneration() {
 	}
 
 }
+
+PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+		return PushdownResult::Pop;
+	}
+	dynamicsWorld->stepSimulation(dt, 0);
+	audioManager->AudioUpdate(world, dt);
+	exectureTriggers();
+	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		players[i]->GetBulletPool()->Animate(*players[i]->GetRigidBody(), dt);
+		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
+		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
+		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
+		if (playerInput[i]) {
+			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
+			while (command.size() > 0) {
+				command.front()->execute(*players[i], *(world->GetMainCamera(i)), *audioManager); //Learn which player from networking
+				command.pop();
+			}
+		}
+	}
+	world->UpdatePositions(); //Maybe Change
+	renderer->Update(dt);
+	renderer->Render();
+	UI->DrawUI();
+	renderer->NextFrame();
+	return PushdownResult::NoChange;
+}
+
+PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	PauseMenu* pMenu = dynamic_cast<PauseMenu*>(gameMenuPtr.get());
+	if (pMenu) {
+		if (pMenu->menuClose) {
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
+			PushdownState* s = new PushdownState(up);
+			*state = s;
+			return PushdownResult::Push;
+		}
+		if (pMenu->quitGame) {
+			end = true;
+			return PushdownResult::Pop;
+		}
+		if (pMenu->mainLevel) {
+			if(hasInit) Destroy();
+			Init();
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
+			PushdownState* s = new PushdownState(up);
+			*state = s;
+			return PushdownResult::Push;
+		}
+	}
+	UI->DrawUI();
+	renderer->NextFrame();
+	return PushdownResult::NoChange;;
+}
+
+void Game::MainMenuAwakeFunc() {
+	UI->PushMenu(gameMenuPtr);
+}
+
+void Game::MainMenuSleepFunc() {
+	UI->RemoveMenu(gameMenuPtr);
+}
+
+
+void Game::InitGame() {
+	gameMenuPtr.reset(new PauseMenu());
+	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
+	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
+	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };
+	PushdownState* s = new PushdownState(up,aw,sl);
+	pushDownMachine = PushdownMachine(s);
+}
+
+void Game::UpdateGame(float dt) {
+	pushDownMachine.Update(dt);
+}
+
 /////////////////Build Level//////////////////////////
 
 /////////////////Other Functions//////////////////////
@@ -377,46 +484,8 @@ void Game::exectureTriggers() {
 /////////////////Other Functions///////////////////////
 
 /////////////////Update Game//////////////////////////
-void Game::UpdateGame(float dt) {
-	UI->UpdateUI();
-	PauseMenu* pMenu = dynamic_cast<PauseMenu*>(pauseMenuPtr.get());
-	if (pMenu) {
-		if (pMenu->menuClose) {
-			UI->PopMenu();
-		}
-	}
-
-	dynamicsWorld->stepSimulation(dt, 0);
-	audioManager->AudioUpdate(world, dt);
-	
-	exectureTriggers();
-
-	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
-		players[i]->GetBulletPool()->Animate(*players[i]->GetRigidBody(), dt);
-		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
-		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
-		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
-		if (playerInput[i]) {
-			std::queue<ControlsCommand*>& command = playerInput[i]->handleInput();
-			while (command.size() > 0) {
-				command.front()->execute(*players[i], *(world->GetMainCamera(i)), *audioManager); //Learn which player from networking
-				command.pop();
-			}
-		}
-	}
-
-	world->UpdatePositions(); //Maybe Change
-	// GameTimer t;
-	renderer->Update(dt);
-	///UI->UpdateUI();
-	renderer->Render();
-	UI->DrawUI();
-
-	renderer->NextFrame();
-	// t.Tick();
-	// ti = t.GetTimeDeltaSeconds();
-	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-
+void Game::Update(float dt) {
+	gameStateMachine.Update(dt);
 }
 /////////////////Update Game//////////////////////////
 

@@ -3,8 +3,9 @@
 using namespace NCL::CSC8503;
 
 PushdownMachine::PushdownMachine(PushdownState* initState)
-	: initialState(initState)
 {
+	if (initialState) { delete initialState; }
+	initialState = initState;
 	activeState = nullptr;
 }
 
@@ -17,16 +18,17 @@ bool PushdownMachine::Update(float dt)
 	if (activeState)
 	{
 		PushdownState* newState = nullptr;
-		PushdownState::PushdownResult result = activeState->OnUpdate(dt, &newState);
+		PushdownResult result = activeState->OnUpdate(dt, &newState);
 		switch (result)
 		{
-		case PushdownState::PushdownResult::Pop:
+		case PushdownResult::Pop:
 			{
 				activeState->OnSleep();
-				delete activeState;
+				if(activeState != initialState) delete activeState;
 				stateStack.pop();
 				if (stateStack.empty())
 				{
+					activeState = nullptr;
 					return false;
 				}
 				else
@@ -36,7 +38,7 @@ bool PushdownMachine::Update(float dt)
 				}
 			}
 			break;
-		case PushdownState::PushdownResult::Push:
+		case PushdownResult::Push:
 			{
 				activeState->OnSleep();
 				stateStack.push(newState);
@@ -48,9 +50,11 @@ bool PushdownMachine::Update(float dt)
 	}
 	else
 	{
-		stateStack.push(initialState);
-		activeState = initialState;
-		activeState->OnAwake();
+		if (initialState) {
+			stateStack.push(initialState);
+			activeState = initialState;
+		}
+		if(activeState) activeState->OnAwake();
 	}
 	return true;
 }

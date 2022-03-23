@@ -17,6 +17,10 @@
 #include <atomic>
 #include "../GUI/GameUI.h"
 #include "../GUI/PauseMenu.h"
+#include "../CSC8503/StateMachine.h"
+#include "../CSC8503/PushdownMachine.h"
+#include "../CSC8503/State.h"
+#include "../CSC8503/PushdownState.h"
 
 
 //Encapsulate in namespace?
@@ -27,7 +31,8 @@ public:
 	Game();
 	~Game();
 
-	void UpdateGame(float dt);
+	void Update(float dt);
+	bool End() { return end; };
 	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 
@@ -35,6 +40,7 @@ protected:
 	void InitWorld();
 	void RenderLoading();
 	void Init();
+	void Destroy();
 	void InitGUI();
 	void InitPhysics();
 	void InitAudio();
@@ -46,6 +52,14 @@ protected:
 	void InitCharacter();
 	void InitPlayerInput();
 	
+	// Main Game Gameplay
+	void InitGame();
+	void UpdateGame(float dt);
+	PushdownResult GameUpdateFunc(float dt, PushdownState** state);
+	// Main Game Menu
+	PushdownResult MainMenuUpdateFunc(float dt, PushdownState** state);
+	void MainMenuAwakeFunc();
+	void MainMenuSleepFunc();
 	//void InitHUD
 	//InitNetworking?
 	void exectureTriggers();
@@ -56,20 +70,23 @@ protected:
 
 	//World
 	RendererPtr renderer = nullptr;//GameTechRenderer* renderer;
-	GameWorld* world;
+	GameWorld* world = nullptr;
+	StateMachine gameStateMachine;
+	PushdownMachine pushDownMachine = PushdownMachine(nullptr);
+	int winningTeam = -1;
 
 	//Audio
-	AudioManager* audioManager;
+	AudioManager* audioManager = nullptr;
 
 	//Physics
 	int maxProxies;
 	btVector3 worldAabbMin;
 	btVector3 worldAabbMax;
-	btAxisSweep3* broadphase;
-	btDefaultCollisionConfiguration* collisionConfiguration;
-	btCollisionDispatcher* dispatcher;
-	btSequentialImpulseConstraintSolver* solver;
-	btDiscreteDynamicsWorld* dynamicsWorld;
+	btAxisSweep3* broadphase = nullptr;
+	btDefaultCollisionConfiguration* collisionConfiguration = nullptr;
+	btCollisionDispatcher* dispatcher = nullptr;
+	btSequentialImpulseConstraintSolver* solver = nullptr;
+	btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 
 	//Custom motion state?
 
@@ -77,7 +94,7 @@ protected:
 	Player* players[4];
 	Item* items[36];
 	Wall* walls[100]; //Exact number data driven;
-	GameEntity* ground;
+	GameEntity* ground = nullptr;
 
 	//Game Assets? Temp
 	MeshPtr sphereMesh = nullptr;
@@ -90,8 +107,10 @@ protected:
 	//Controls
 	PlayerInput* playerInput[4];
 	std::atomic<bool> loading;
+	bool hasInit = false;
+	bool end = false;
 
 	//GUI
 	std::unique_ptr<GameUI> UI;
-	GameMenuPtr pauseMenuPtr;
+	GameMenuPtr gameMenuPtr = nullptr;
 };

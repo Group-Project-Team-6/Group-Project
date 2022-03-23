@@ -60,15 +60,15 @@ public:
 
 protected:
 	//Temp
-	MeshPtr playerMesh;
-	TexturePtr playerTex;
-	ShaderPtr playerShader;
+	MeshPtr playerMesh = nullptr;
+	TexturePtr playerTex = nullptr;
+	ShaderPtr playerShader = nullptr;
 
 	//general
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;
-	BulletPool* bullets;
+	BulletPool* bullets = nullptr;
 
 	//player Physics
 	int playerMass;
@@ -77,8 +77,8 @@ protected:
 	float playerRestitution;
 	btVector3 playerInertia;
 
-	btDefaultMotionState* playerMotion;
-	btCollisionShape* playerShape;
-	btGeneric6DofConstraint* playerConstraint;
-	btRigidBody* playerRigidBody;
+	btDefaultMotionState* playerMotion = nullptr;
+	btCollisionShape* playerShape = nullptr;
+	btGeneric6DofConstraint* playerConstraint = nullptr;
+	btRigidBody* playerRigidBody = nullptr;
 };

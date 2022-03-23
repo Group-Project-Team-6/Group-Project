@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "Items.h"
 #include "Wall.h"
-#include "DebugMode.h"
+#include "../DebugMode/DebugMode.h"
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
 #include <atomic>
@@ -22,17 +22,17 @@
 class Game {
 
 public:
-	Game();
+	Game(Tasks* tasks);
 	~Game();
 
-	void UpdateGame(float dt);
+	void UpdateGame(float dt, std::shared_ptr<DebugMode> d);
 	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 
 protected:
 	void InitWorld();
 	void RenderLoading();
-	void Init();
+	void Init(Tasks* tasks);
 	void InitPhysics();
 	void InitAudio();
 	void InitAssets();

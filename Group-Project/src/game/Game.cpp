@@ -8,14 +8,15 @@
 #include <math.h>
 #include <thread>
 #include <mutex>
+#include "../DebugMode/Tasks.h"
 
 //Namespaces?
 
-Game::Game() {
+Game::Game(Tasks* tasks) {
 	loading = true;
 	InitWorld();
 	std::thread loadScreenThread(&Game::RenderLoading,this);
-	Init();
+	Init(tasks);
 	//std::thread initThread(&Game::Init,this);
 
 	//initThread.join();
@@ -58,15 +59,23 @@ Game::~Game() {
 
 }
 
-void Game::Init() {
+void Game::Init(Tasks* tasks) {
+	//tasks->queue([this]{InitPhysics();});
+	//tasks->queue([this]{InitAudio();});
+	//tasks->queue([this]{InitItems();});
+	//tasks->queue([this]{InitPlayerInput();});
+
 	InitPhysics();
 	InitAudio();
+	InitItems();
+	InitPlayerInput();
+	
 	InitAssets();
 	InitScene();
-	InitItems();
 	LevelGeneration();
 	InitCharacter();
-	InitPlayerInput();
+	
+	tasks->waitFinished();
 	loading = false;
 }
 
@@ -172,7 +181,7 @@ void Game::InitCharacter() {
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		if ((world->IsLocalGame() || i == 0) && i < 4) {
+		if ((world->IsLocalGame() || i == 0) && i < 2) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
@@ -331,7 +340,6 @@ void Game::LevelGeneration() {
 
 			}
 			else { x--; }
-
 		}
 
 	}
@@ -341,9 +349,9 @@ void Game::LevelGeneration() {
 
 /////////////////Other Functions//////////////////////
 void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
-	d->GetMemoryAllocationSize(*world);
-	d->GetMemoryAllocationSize(*audioManager);
-	d->GetMemoryAllocationSize(*renderer);
+	//d->GetMemoryAllocationSize(*world);
+	//d->GetMemoryAllocationSize(*audioManager);
+	//d->GetMemoryAllocationSize(*renderer);
 }
 
 void Game::exectureTriggers() {
@@ -378,7 +386,7 @@ void Game::exectureTriggers() {
 /////////////////Other Functions///////////////////////
 
 /////////////////Update Game//////////////////////////
-void Game::UpdateGame(float dt) {
+void Game::UpdateGame(float dt, std::shared_ptr<DebugMode> d) {
 
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
@@ -404,8 +412,9 @@ void Game::UpdateGame(float dt) {
 	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
 	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
 
-	exectureTriggers();
-
+	d->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
+	dynamicsWorld->getDispatchInfo();
+;	exectureTriggers();
 }
 /////////////////Update Game//////////////////////////
 

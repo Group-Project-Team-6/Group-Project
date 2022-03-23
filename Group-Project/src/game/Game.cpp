@@ -147,7 +147,7 @@ void Game::InitScene() {
 	ground = new GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
-		.SetScale(Vector3(100, 1, 100))
+		.SetScale(Vector3(70, 1, 70))
 		.SetOrientation(Quaternion(0, 0, 0, 1));
 
 	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
@@ -230,7 +230,7 @@ void Game::LevelGeneration() {
 				for (int w = 0; w < width; w ++)
 				{
 					char ch = maze[level][l * width + w];
-					Vector3 position({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+					Vector3 position({ ((l + 0.5f) * unitLength) - 25 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 25 });
 					switch (ch)
 					{
 					case 'P':
@@ -361,7 +361,7 @@ void Game::exectureTriggers() {
 						//return;
 
 						//Team 1
-
+						//if player.getTeam(1)
 						//Team 2
 
 

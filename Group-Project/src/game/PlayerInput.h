@@ -8,6 +8,7 @@ class PlayerInput {
 public:
 	//will need deconstructor
 	//Check Memory Leaks!
+	bool inhibit = false;
 	~PlayerInput() {
 		delete spaceBar;
 		delete wKey;
@@ -36,9 +37,12 @@ public:
 		if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::D)) {
 			ControlQueue.push(dKey);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {	
 			ControlQueue.push(spaceBar);
 		}
+		// Compare the collision with ground and change inhibt to false.
+		
+
 		if (Window::GetKeyboard()->KeyHeld(KeyboardKeys::T)) {
 			ControlQueue.push(tKey);
 		}

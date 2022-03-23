@@ -6,6 +6,8 @@ add_subdirectory(OpenGLRendering)
 #add_subdirectory(Physics)
 add_subdirectory(game)
 add_subdirectory(assimp)
+add_subdirectory(Networking-ENet)
+add_subdirectory(Networking)
 
 #Targeting Directories & Linking Libraries
 find_package(Bullet CONFIG REQUIRED)
@@ -56,13 +58,14 @@ set_property(TARGET FMOD PROPERTY
 #    message(STATUS "Using vulkan lib at: ${Vulkan_LIBRARIES}")
 #endif()
 
-target_link_libraries(Game OpenGLRendering CSC8503 Common Audio) #vk,Physics
+target_link_libraries(Game OpenGLRendering CSC8503 Common Audio Networking) #vk,Physics
 #target_link_libraries(Physics ${BULLET_LIBRARIES} Common OpenGLRendering CSC8503) #vk
 target_link_libraries(CSC8503 Common OpenGLRendering ${BULLET_LIBRARIES})
 target_link_libraries(OpenGLRendering Common)
 #target_link_libraries(VulkanRendering Vulkan::Vulkan Common)
 target_link_libraries(Common ${BULLET_LIBRARIES} assimp)
 target_link_libraries(Audio FMOD CSC8503)
+target_link_libraries(Networking ENet Common)
 
 #Copy fmod.dll to Output Directory
 get_property(FMOD_DLL TARGET FMOD PROPERTY IMPORTED_LOCATION)

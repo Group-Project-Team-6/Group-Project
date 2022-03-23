@@ -1,3 +1,4 @@
+
 /** 
  @file  enet.h
  @brief ENet public header file
@@ -13,15 +14,15 @@ extern "C"
 #include <stdlib.h>
 
 #ifdef _WIN32
-#include "enet/win32.h"
+#include "win32.h"
 #else
 #include "enet/unix.h"
 #endif
 
-#include "enet/types.h"
-#include "enet/protocol.h"
-#include "enet/list.h"
-#include "enet/callbacks.h"
+#include "types.h"
+#include "protocol.h"
+#include "list.h"
+#include "callbacks.h"
 
 #define ENET_VERSION_MAJOR 1
 #define ENET_VERSION_MINOR 3

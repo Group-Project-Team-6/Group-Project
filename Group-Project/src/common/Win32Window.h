@@ -11,6 +11,7 @@ _-_-_-_-_-_-_-""  ""
 
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
+
 #include "Window.h"
 
 #ifdef _WIN32
@@ -32,6 +33,7 @@ _-_-_-_-_-_-_-""  ""
 #define NOMINMAX
 #endif
 #include <windows.h>
+#include "../Networking-ENet/enet/enet.h"
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>

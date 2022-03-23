@@ -62,7 +62,7 @@ void Game::Init(Tasks* tasks) {
 	InitAssets();
 	InitScene();
 	InitItems();
-	//LevelGeneration();
+	LevelGeneration();
 	InitCharacter();
 
 	loading = false;
@@ -280,8 +280,8 @@ void Game::LevelGeneration() {
 							floorsTransform.SetPosition(position + Vector3(0, -unitLength * .45f, 0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
-							//dynamicsWorld->addCollisionObject(floors[numFloors]->getCollisionObject());
-							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
+							dynamicsWorld->addCollisionObject(floors[numFloors]->getGhostObject());
+							//dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
 							numFloors++;
 						}
@@ -290,8 +290,8 @@ void Game::LevelGeneration() {
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
-						//dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getCollisionObject());
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 
@@ -303,7 +303,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -312,7 +313,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -322,7 +324,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -331,7 +334,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -510,18 +514,30 @@ void Game::exectureTriggers() {
 						//Execute triggers
 					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
 						std::cout << "Player has picked up item" << std::endl;
+						//Which Team? ObjB
+						//GetTeam()
+						//Team1 Score++
+						//Team2 Score++
+						// 
+						//Delete Item; ObjA
+						//Remove form Dynamics World
+						//Remove From GameWorld
+						//Call Deconstructor  
 						//return;
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
+						//Which Team? ObjB
+						//Set Team for the Bullet from its player
+						//GetTeam()
+						//Same Team? Health++ if < 3;
+						//Different Team? Health-- if > 0'
+						// if Health is less than 0, bool canControl;
 						//return;
 					}
 					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
 						std::cout << "Wall Painted" << std::endl;
-						//return;
-					}
-					if (objA->GetName() == "Wall" && objB->GetName() == "Player") {
-						std::cout << "Bonk, go to horny Jail" << std::endl;
+						//Chris's Painting
 					}
 
 					objB = nullptr;

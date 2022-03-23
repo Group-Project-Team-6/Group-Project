@@ -13,26 +13,27 @@ Wall::Wall(Transform buildTransform) {
 	Vector3 scale = transform.GetScale();
 	wallShape = new btBoxShape({ (scale.x / 2.0f), (scale.y / 2.0f), (scale.z / 2.0f) });
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
-	wallRigidBody = new btRigidBody(itemCI);
-	wallRigidBody->isStaticObject();
-	wallRigidBody->setUserPointer(this);
+	rigidBody = new btRigidBody(itemCI);
+	rigidBody->isStaticObject();
+	rigidBody->setUserPointer(this);
 
-	/*world.AddGameObject(this);*/
-	//physicsWorld.addRigidBody(wallRigidBody);
+	//wallObject = new btCollisionObject();
+	//wallObject->setCollisionShape(wallShape);
+	//wallObject->setWorldTransform(bttransform);
+	//wallObject->setUserPointer(this);
 }
 
 Wall::~Wall() {
 	delete wallMotion;
 	delete wallShape;
-	delete wallRigidBody;
+	delete rigidBody;
 }
 
 void Wall::InitAssets() {
 
 	wallMesh = AssetsManager::FetchMesh("WallMesh");
-	TexID texID = AssetsManager::LoadTextureFromFile("WallTex","nyan.png", false);
-	//if(texID != -1)
-	wallTex = AssetsManager::FetchTexture("WallTex", texID);
+	TexID texID = AssetsManager::LoadTextureFromFile("WallTex","corridor_walls_and_floor_c_2.png",false);
+	if(texID != -1) wallTex = AssetsManager::FetchTexture("WallTex",texID);
 	wallTex.get()->Init({ "FBO" });
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }

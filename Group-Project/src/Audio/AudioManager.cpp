@@ -57,7 +57,7 @@ void AudioManager::InitSystem() {
 }
 
 void AudioManager::SetVolume() {
-    std::cout << "Please Enter Preffered Output Volume (Default Value: 1.0f): ";
+    std::cout << "Please Enter Preffered Output Volume (Current Value: " << volume << " ): ";
     float _volume;
     std::cin >> _volume;
     volume = _volume;   

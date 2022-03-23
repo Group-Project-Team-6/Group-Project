@@ -8,7 +8,7 @@ class Item : public GameEntity {
 public:
 	Item(Vector3 position, int score);
 	~Item();
-	void InitAssets(); //Temp
+	void InitAssets();
 	void OnPlayerCollide();
 
 	virtual btRigidBody* GetRigidBody() const override {
@@ -31,12 +31,9 @@ private:
 	btTransform bttransform;
 	int itemScore;
 
-
 	btDefaultMotionState* itemMotion = nullptr;
 	btCollisionShape* itemShape = nullptr;
 	btRigidBody* itemRigidBody = nullptr;
-
-	//Anim
 
 	//graphics
 	MeshPtr itemMesh = nullptr;

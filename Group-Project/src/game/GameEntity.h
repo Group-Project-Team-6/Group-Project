@@ -51,7 +51,6 @@ public:
 
 	btTransform& GetbtTransform() {
 		return bttransform;
-		//return this->GetRigidBody()->getWorldTransform();
 	}
 
 	void SetbtTransform(btTransform newbtTransform) {
@@ -93,33 +92,16 @@ public:
 		else return false;
 	}
 
-	virtual void UpdateRenderPositions() {
-		
-		bttransform = rigidBody->getWorldTransform();
-
-		btRot = bttransform.getRotation();
-		btPos = bttransform.getOrigin();
-
-		nclRot = { btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW() };
-		nclPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
-
-		transform.SetOrientation(nclRot);
-		transform.SetPosition(nclPos);
-
-	}
-
-	void Jump() {
-		this->GetRigidBody()->applyCentralImpulse({ 0, 1000, 0 });
-	}
+	virtual void UpdateRenderPositions();
 
 protected:
 	RenderObject* renderObject = nullptr;
 	btRigidBody* rigidBody = nullptr;
 	btGhostObject* ghost = nullptr;
-	
+
 	Transform transform;
 	btTransform bttransform;
-
+	TransformConverter transformConverter;
 	btQuaternion btRot;
 	btVector3 btPos;
 	Quaternion nclRot;
@@ -129,6 +111,7 @@ protected:
 
 	bool isActive;
 	bool isTrigger;
+	bool isStatic;
 	int	worldID;
 };
 

@@ -2,13 +2,38 @@
 #include "Game.h"
 //#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
-#include "DebugMode.h"
+#include "../DebugMode/DebugMode.h"
 
 #include <iostream>
 #include <memory>
+#include <string>
+#include <sstream>
+#include <thread>
+
+void* operator new(size_t size, const char* name, std::string& Info) {
+	std::stringstream ss;
+    void* ptr;
+    ptr = malloc(size);
+
+    if (!ptr) // if no memory is allocated, then generate an exception
+    {
+        std::bad_alloc ba;
+        std::cout<<"Memory allocation error for " << name << "." << std::endl;
+        throw ba;
+    }
+    else {
+		ss << "Memory Size for " << name << ": " << size << " Byte.\nMemory Location for " << name << ": " << &size << "\n";
+		Info = ss.str();
+
+        return ptr;
+    }
+}
+
+void operator delete(void* ptr, const char* name, string& Info) {
+	free(ptr);
+}
 
 using namespace NCL;
-//using namespace CSC8503;
 
 void operator delete(void* p)
 {
@@ -20,18 +45,24 @@ void operator delete(void* p)
 
 int main() {
 	Assets::FetchDirConfig("dir.txt");
-
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
-	std::shared_ptr<DebugMode> d(new(DebugMode));
-	
 	if (!w->HasInitialised()) {
 		return -1;
 	}
+
+	std::string info;
+	std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name(), info) DebugMode());
+	d->SetMemoryInfo(info);
+
+	Tasks* tasks = d->GetTasks();
+	d->InitTasks(2);
+
+	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks));
+	d->SetMemoryInfo(info);
+	
 	srand(time(0));
 	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
-	//VkTechRenderer* renderer = new VkTechRenderer();
-	//PhysicsTestScene* g = new PhysicsTestScene(renderer);
 
 	Game* g = new Game();
 
@@ -55,19 +86,31 @@ int main() {
 		}
 
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-			toggleDebug = !toggleDebug;
+			d->ToggleDebugMode();
 		}
-		if (toggleDebug) {
-			d->GetMemoryAllocationSize(*w);
-			d->GetMemoryAllocationSize(*d);
-			d->GetMemoryAllocationSize(*g);
-			g->GetPhysicsTestSceneDebugData(d);
-			d->GetFPS(dt);
+		if (d->getDebugMode()) {
+			tasks->queue(
+				[d, w, g, dt]
+				{
+					std::cout << "Current Thread ID: " << std::this_thread::get_id() << "\n" << std::endl; //For tracking current thread
+					//std::cout << "\x1B[2J\x1B[H";
+					//d->GetMemoryAllocationSize(*w);
+					//d->GetMemoryAllocationSize(*d);
+					//d->GetMemoryAllocationSize(*g);
+					//g->GetPhysicsTestSceneDebugData(d);
+					d->GetMemoryInfo();
+					d->GetPhysicsInfo();
+					d->GetFPS(dt);
+					std::cout << std::endl;
+				}
+			);
+			tasks->waitFinished();
 		}
+
 		g->Update(dt);
 		//d->GetFPS(dt);
 	}
-
+	
 	Window::DestroyGameWindow();
 
 	return 0;

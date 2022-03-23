@@ -2,9 +2,6 @@
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
-#include <assert.h>
-
-
 BulletPool::~BulletPool(){}
 
 void BulletPool::Create(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera) {

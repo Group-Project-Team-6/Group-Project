@@ -1,10 +1,27 @@
 cmake_minimum_required(VERSION 3.22.1)
-set(CMAKE_GENERATOR_PLATFORM x64)
+#set(CMAKE_GENERATOR_PLATFORM x64)
 project(Group-Project)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_HOME_DIRECTORY}/cmake")
+set(REPOSITORY_DIR ${CMAKE_HOME_DIRECTORY})
+set(CMAKE_INSTALL_PREFIX "${BINARIES_DIR}/Group-Project/win${ARCH_BITS}/$<LOWER_CASE:$<CONFIG>>")
 set(CMAKE_PREFIX_PATH ${CMAKE_HOME_DIRECTORY}/src)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Lib)
-set(CMAKE_CONFIGURATION_TYPES Debug;Release)
+
+include(CMakePlugin)
+
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Bin)
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Lib)
+#set(CMAKE_CONFIGURATION_TYPES Debug;Release)
+
+#if( PLATFORM_WINDOWS )
+#	if( BUILD_SHARED_LIBS )
+#		include_directories(${PROJECT_SOURCE_DIR})
+#		configure_file("${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.rc.in" "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.rc")
+#		set(RESOURCE_FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.rc")
+#		source_group("Resources" FILES ${RESOURCE_FILES})
+#		list(APPEND ALL_SOURCE_FILES ${RESOURCE_FILES})
+#	endif()
+#endif()
 
 add_subdirectory(src)
 
@@ -14,29 +31,4 @@ function(print)
 	endforeach()
 endfunction()
 
-print(PROJECT_NAME CMAKE_SOURCE_DIR PROJECT_BINARY_DIR)
-
-#GUI Component
-#add_library(imgui SHARED IMPORTED
-#	src/imgui/imgui_demo.cpp
-#	src/imgui/imgui_draw.cpp
-#	src/imgui/imgui_impl_glfw.cpp
-#	src/imgui/imgui_impl_opengl3.cpp
-#	src/imgui/imgui_tables.cpp
-#	src/imgui/imgui_widgets.cpp
-#	src/imgui/imgui.cpp
-
-#	src/imgui/imconfig.h
-#	src/imgui/imgui_impl_glfw.h
-#	src/imgui/imgui_impl_opengl3_loader.h
-#	src/imgui/imgui_impl_opengl3.h
-#	src/imgui/imgui_internal.h
-#	src/imgui/imgui.h
-#	src/imgui/imstb_rectpack.h
-#	src/imgui/imstb_textedit.h
-#	src/imgui/imstb_truetype.h
-#	src/imgui/glfw/GLFW/glfw3.h
-#)
-#set_property(TARGET imgui PROPERTY
-#	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/imgui/glfw/GLFW"
-#)
+print(PROJECT_NAME CMAKE_SOURCE_DIR PROJECT_BINARY_DIR PROJECT_SOURCE_DIR CMAKE_MODULE_PATH CMAKE_INSTALL_PREFIX)

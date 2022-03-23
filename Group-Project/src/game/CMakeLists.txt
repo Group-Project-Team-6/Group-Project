@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(Group-Project)
 
 #Executable
-add_executable(Game
+add_executable(Game 
 	Controls.h
 	ControlsCommand.h
 	Game.h
@@ -13,7 +13,6 @@ add_executable(Game
 	TransformConverter.h
 	Wall.h
 	Bullet.h	
-	DebugMode.h
 	Painter.h
 	BulletPool.h
 	AssetsManager.h
@@ -30,7 +29,6 @@ add_executable(Game
 	Wall.cpp
 	Bullet.cpp
 	BulletPool.cpp
-	DebugMode.cpp
 	Painter.cpp
 	AssetsManager.cpp
 	LevelGen.cpp

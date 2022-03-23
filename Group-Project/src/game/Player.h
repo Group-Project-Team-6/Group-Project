@@ -56,7 +56,7 @@ public:
 
 	}
 
-	void InitAssets(); //Temp
+	void InitAssets();
 
 protected:
 	//Temp
@@ -65,10 +65,11 @@ protected:
 	ShaderPtr playerShader = nullptr;
 
 	//general
-	TransformConverter transformConverter;
-	Transform transform;
-	btTransform bttransform;
+	//TransformConverter transformConverter;
+	//Transform transform;
+	//btTransform bttransform;
 	BulletPool* bullets = nullptr;
+
 
 	//player Physics
 	int playerMass;

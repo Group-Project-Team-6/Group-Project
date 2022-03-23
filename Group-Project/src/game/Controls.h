@@ -15,7 +15,7 @@ class moveForwardCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		//while (player.GetRigidBody()->getLinearVelocity().x() > -20) {
-			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * -100);
+			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * -25);
 		//}
 		
 	}
@@ -25,7 +25,7 @@ class moveBackwardCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		//while (player.GetRigidBody()->getLinearVelocity().x() > 20) {
-			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * 100);
+			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(2) * 25);
 		//}
 	}
 };
@@ -34,7 +34,7 @@ class moveLeftCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		//while (player.GetRigidBody()->getLinearVelocity().z() > 20) {
-			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * -100);
+			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * -25);
 		//}
 	}
 };
@@ -43,7 +43,7 @@ class moveRightCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
 		//while (player.GetRigidBody()->getLinearVelocity().z() > 20) {
-			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * 100);
+			player.GetRigidBody()->applyCentralImpulse(player.GetRigidBody()->getWorldTransform().getBasis().getColumn(0) * 25);
 		//}
 	}
 };

@@ -13,6 +13,8 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+//
+
 #ifndef BT_RIGIDBODY_H
 #define BT_RIGIDBODY_H
 
@@ -91,6 +93,7 @@ class btRigidBody : public btCollisionObject
 	int m_rigidbodyFlags;
 
 	int m_debugBodyId;
+	btVector3 m_acclimiter = btVector3(5, 5, 5);
 
 protected:
 	ATTRIBUTE_ALIGNED16(btVector3 m_deltaLinearVelocity);
@@ -319,6 +322,46 @@ public:
 	void applyCentralImpulse(const btVector3& impulse)
 	{
 		m_linearVelocity += impulse * m_linearFactor * m_inverseMass;
+		if (m_linearVelocity.getX() > 10)
+		{
+			m_linearVelocity.setX(10);
+		}
+		if (m_linearVelocity.getY() > 10)
+		{
+
+			m_linearVelocity.setY(10);
+		}
+		if(m_linearVelocity.getZ() > 10)
+		{
+			m_linearVelocity.setZ(10);
+
+		}
+
+		if (m_linearVelocity.getX() < -10)
+		{
+			m_linearVelocity.setX(-10);
+	}
+		if (m_linearVelocity.getY() < -10)
+		{
+
+			m_linearVelocity.setY(-10);
+		}
+		if (m_linearVelocity.getZ() < -10)
+		{
+			m_linearVelocity.setZ(-10);
+
+		}
+
+		/*if (m_linearVelocity > m_acclimiter)
+		{
+			m_linearVelocity = m_acclimiter;
+		}
+
+		if (m_linearVelocity < -m_acclimiter)
+		{
+			m_linearVelocity = -m_acclimiter;
+		}*/
+	
 		#if defined(BT_CLAMP_VELOCITY_TO) && BT_CLAMP_VELOCITY_TO > 0
 		clampVelocity(m_linearVelocity);
 		#endif
@@ -371,6 +414,11 @@ public:
         m_pushVelocity = v;
     }
 
+
+	/*#ifndef BT_CLAMP_VELOCITY_TO
+	#define BT_CLAMP_VELOCITY_TO 50
+	#endif*/
+
     #if defined(BT_CLAMP_VELOCITY_TO) && BT_CLAMP_VELOCITY_TO > 0
     void clampVelocity(btVector3& v) const {
         v.setX(
@@ -385,8 +433,13 @@ public:
             fmax(-BT_CLAMP_VELOCITY_TO,
                  fmin(BT_CLAMP_VELOCITY_TO, v.getZ()))
         );
+		
     }
+
     #endif
+
+
+
 
     void setTurnVelocity(const btVector3& v)
     {

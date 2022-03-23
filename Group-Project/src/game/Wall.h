@@ -12,9 +12,9 @@ public:
 
 	void InitAssets(); //Temp
 
-	btCollisionObject* getCollisionObject() {
+	/*btCollisionObject* getCollisionObject() {
 		return wallObject;
-	}
+	}*/
 private:
 
 	btDefaultMotionState* wallMotion = nullptr;

@@ -20,6 +20,7 @@ namespace NCL {
 		public:
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();  
+			void SetTextureInit(bool hasInit) { initTexture = hasInit; };
 
 		protected:
 			void RenderFrame()	override;

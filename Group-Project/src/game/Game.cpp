@@ -14,7 +14,7 @@
 
 //Namespaces?
 
-Game::Game() {
+Game::Game(Tasks* tasks) : tasks(tasks) {
 	int n = 0;
 	for (auto i : players) {
 		players[n] = nullptr;
@@ -49,19 +49,23 @@ Game::~Game() {
 	Destroy();
 }
 
-void Game::Init() {
+void Game::Init(Tasks* tasks) {
 	loading = true;
-	std::thread loadScreenThread(&Game::RenderLoading, this);
+	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
+	tasks->queue([this] {RenderLoading(); });
+	//tasks->queue([this] {InitPhysics(); });
+	//tasks->queue([this] {InitAudio(); });
+	//tasks->queue([this] {InitPlayerInput(); });
 	InitPhysics();
 	InitAudio();
+	InitPlayerInput();
 	InitAssets();
 	InitScene();
-	InitItems();
 	LevelGeneration();
 	InitCharacter();
-	InitPlayerInput();
+
 	loading = false;
-	loadScreenThread.join();
+	tasks->waitFinished();
 	hasInit = true;
 }
 
@@ -254,11 +258,11 @@ void Game::LevelGeneration() {
 	int numFloors = 0;
 	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level+=1.0f)
+		for (int level = 0; level < maze.size(); level++)
 		{
-			for (float l = 0; l < length; l+=1.0f)
+			for (int l = 0; l < length; l++)
 			{
-				for (float w = 0; w < width; w += 1.0f)
+				for (int w = 0; w < width; w++)
 				{
 					char ch = maze[level][l * width + w];
 					Vector3 position({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
@@ -266,9 +270,10 @@ void Game::LevelGeneration() {
 					{
 					case 'P':
 						if (level >= 0) {
-							floorsTransform.SetPosition(position + Vector3(0,-unitLength*.45f,0));
+							floorsTransform.SetPosition(position + Vector3(0, -unitLength * .45f, 0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
+							//dynamicsWorld->addCollisionObject(floors[numFloors]->getCollisionObject());
 							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
 							numFloors++;
@@ -278,6 +283,7 @@ void Game::LevelGeneration() {
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
+						//dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getCollisionObject());
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
@@ -290,7 +296,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -299,7 +305,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -309,7 +315,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -318,7 +324,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -420,7 +426,7 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 		if (pMenu->mainLevel) {
 			if(hasInit) Destroy();
 			pMenu->hasInit = true;
-			Init();
+			Init(tasks);
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PushdownState* s = new PushdownState(up);
 			*state = s;

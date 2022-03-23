@@ -3,6 +3,7 @@
 //#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "../DebugMode/DebugMode.h"
+#include "../DebugMode/Tasks.h"
 
 #include <iostream>
 #include <memory>
@@ -30,7 +31,7 @@ void* operator new(size_t size, const char* name, std::string& Info) {
 }
 
 void operator delete(void* ptr, const char* name, string& Info) {
-	free(ptr);
+	delete ptr;
 }
 
 using namespace NCL;
@@ -63,8 +64,6 @@ int main() {
 	srand(time(0));
 	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
-
-	Game* g = new Game();
 
 	w->GetTimer()->GetTimeDeltaSeconds();
 	bool toggleDebug = false;

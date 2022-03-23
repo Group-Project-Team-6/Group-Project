@@ -47,6 +47,8 @@ public:
 
 	}
 
+	virtual void SetFrame(float f) { framesLeft = f; }
+
 protected:
 	float framesLeft;
 	float speed;

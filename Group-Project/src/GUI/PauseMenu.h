@@ -1,7 +1,7 @@
 #pragma once
 #include "GameMenu.h"
 #include <string>
-#include "../game/DebugMode.h"
+#include "../DebugMode/DebugMode.h"
 
 namespace NCL {
 	namespace CSC8503 {

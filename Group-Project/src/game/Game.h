@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "Items.h"
 #include "Wall.h"
-#include "DebugMode.h"
+#include "../DebugMode/DebugMode.h"
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
 #include <atomic>
@@ -28,7 +28,7 @@
 class Game {
 
 public:
-	Game();
+	Game(Tasks* tasks);
 	~Game();
 
 	void Update(float dt);
@@ -39,7 +39,7 @@ public:
 protected:
 	void InitWorld();
 	void RenderLoading();
-	void Init();
+	void Init(Tasks* tasks);
 	void Destroy();
 	void InitGUI();
 	void InitPhysics();
@@ -116,6 +116,7 @@ protected:
 
 	//GUI
 	std::unique_ptr<GameUI> UI;
+	Tasks* tasks = nullptr;
 	GameMenuPtr gameMenuPtr = nullptr;
 	GameMenuPtr debugMenuPtr = nullptr;
 };

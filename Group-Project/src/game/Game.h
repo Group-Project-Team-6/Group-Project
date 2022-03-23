@@ -60,6 +60,10 @@ protected:
 	PushdownResult MainMenuUpdateFunc(float dt, PushdownState** state);
 	void MainMenuAwakeFunc();
 	void MainMenuSleepFunc();
+	// Setting Menu
+	PushdownResult SettingMenuUpdateFunc(float dt, PushdownState** state);
+	void SettingMenuAwakeFunc();
+	void SettingMenuSleepFunc();
 	//void InitHUD
 	//InitNetworking?
 	void exectureTriggers();
@@ -113,4 +117,5 @@ protected:
 	//GUI
 	std::unique_ptr<GameUI> UI;
 	GameMenuPtr gameMenuPtr = nullptr;
+	GameMenuPtr debugMenuPtr = nullptr;
 };

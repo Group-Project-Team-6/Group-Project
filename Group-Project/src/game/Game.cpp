@@ -57,7 +57,7 @@ void Game::Init() {
 	InitAssets();
 	InitScene();
 	InitItems();
-	//LevelGeneration();
+	LevelGeneration();
 	InitCharacter();
 	InitPlayerInput();
 	loading = false;
@@ -185,6 +185,8 @@ void Game::InitScene() {
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
+
+	/*for (int i = 0 ; i < 100 ; i++)  world->AddGameObject(new Wall(Transform()));*/
 }
 
 void Game::InitItems() {
@@ -407,8 +409,17 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			end = true;
 			return PushdownResult::Pop;
 		}
+		if (pMenu->settingLevel) {
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return SettingMenuUpdateFunc(dt, st); };
+			PSAwakeFunction aw = [&]()->void {SettingMenuAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {SettingMenuSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
+			*state = s;
+			return PushdownResult::Push;
+		}
 		if (pMenu->mainLevel) {
 			if(hasInit) Destroy();
+			pMenu->hasInit = true;
 			Init();
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PushdownState* s = new PushdownState(up);
@@ -429,9 +440,31 @@ void Game::MainMenuSleepFunc() {
 	UI->RemoveMenu(gameMenuPtr);
 }
 
+PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	SettingMenu* pMenu = dynamic_cast<SettingMenu*>(debugMenuPtr.get());
+	if (pMenu) {
+		if (pMenu->back) {
+			return PushdownResult::Pop;
+		}
+	}
+	UI->DrawUI();
+	renderer->NextFrame();
+	return PushdownResult::NoChange;;
+}
+
+void Game::SettingMenuAwakeFunc() {
+	UI->PushMenu(debugMenuPtr);
+}
+
+void Game::SettingMenuSleepFunc() {
+	UI->RemoveMenu(debugMenuPtr);
+}
+
 
 void Game::InitGame() {
 	gameMenuPtr.reset(new PauseMenu());
+	debugMenuPtr.reset(new SettingMenu());
 	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
 	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
 	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };

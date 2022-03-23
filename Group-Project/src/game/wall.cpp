@@ -6,7 +6,6 @@ Wall::Wall(Transform buildTransform) {
 	name = "Wall";
 	transform = buildTransform;		
 
-	isStatic = false; //change
 	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
@@ -16,15 +15,7 @@ Wall::Wall(Transform buildTransform) {
 	btRigidBody::btRigidBodyConstructionInfo itemCI(0,wallMotion, wallShape, { 0,0,0 });
 	rigidBody = new btRigidBody(itemCI);
 	rigidBody->isStaticObject();
-	//rigidBody->setGravity({ 0, 0, 0 });
-	//rigidBody->setActivationState(0);
-	//rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
-	//rigidBody->setFriction(0.8);
-	//rigidBody->setRestitution(0.8);
 	rigidBody->setUserPointer(this);
-
-	/*world.AddGameObject(this);*/
-	//physicsWorld.addRigidBody(wallRigidBody);
 
 	//wallObject = new btCollisionObject();
 	//wallObject->setCollisionShape(wallShape);

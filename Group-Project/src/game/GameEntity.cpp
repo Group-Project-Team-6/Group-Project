@@ -19,8 +19,8 @@ GameEntity::~GameEntity() {
 
 void GameEntity::UpdateRenderPositions()
 {
-	if (isStatic) return;
-	else {
+	//if (isStatic) return;
+	//else {
 		bttransform = rigidBody->getWorldTransform();
 
 		btRot = bttransform.getRotation();
@@ -31,6 +31,6 @@ void GameEntity::UpdateRenderPositions()
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-	}
+	//}
 }
 

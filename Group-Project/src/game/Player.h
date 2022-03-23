@@ -41,7 +41,7 @@ public:
 		return bullets;
 	}
 
-	/*virtual void UpdateRenderPositions() override {
+	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
 
@@ -54,12 +54,11 @@ public:
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
 
-	}*/
+	}
 
-	void InitAssets(); //Temp
+	void InitAssets();
 
 protected:
-	//Temp
 	MeshPtr playerMesh;
 	TexturePtr playerTex;
 	ShaderPtr playerShader;

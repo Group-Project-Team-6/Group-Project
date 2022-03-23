@@ -51,7 +51,6 @@ public:
 
 	btTransform& GetbtTransform() {
 		return bttransform;
-		//return this->GetRigidBody()->getWorldTransform();
 	}
 
 	void SetbtTransform(btTransform newbtTransform) {
@@ -94,10 +93,6 @@ public:
 	}
 
 	virtual void UpdateRenderPositions();
-
-	void Jump() {
-		this->GetRigidBody()->applyCentralImpulse({ 0, 1000, 0 });
-	}
 
 protected:
 	RenderObject* renderObject;

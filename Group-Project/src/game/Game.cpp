@@ -15,12 +15,15 @@
 Game::Game(Tasks* tasks) {
 	loading = true;
 	InitWorld();
-	std::thread loadScreenThread(&Game::RenderLoading,this);
+	tasks->queue([this]{RenderLoading();});
+	//std::thread loadScreenThread(&Game::RenderLoading,this);
 	Init(tasks);
+	tasks->waitFinished();
+	//loadScreenThread.join();
+	
 	//std::thread initThread(&Game::Init,this);
-
 	//initThread.join();
-	loadScreenThread.join();
+	
 	//void InitHUD
 	//InitNetworking?
 
@@ -60,15 +63,15 @@ Game::~Game() {
 }
 
 void Game::Init(Tasks* tasks) {
-	//tasks->queue([this]{InitPhysics();});
-	//tasks->queue([this]{InitAudio();});
-	//tasks->queue([this]{InitItems();});
-	//tasks->queue([this]{InitPlayerInput();});
+	tasks->queue([this]{InitPhysics();});
+	tasks->queue([this]{InitAudio();});
+	tasks->queue([this]{InitItems();});
+	tasks->queue([this]{InitPlayerInput();});
 
-	InitPhysics();
-	InitAudio();
-	InitItems();
-	InitPlayerInput();
+	//InitPhysics();
+	//InitAudio();
+	//InitItems();
+	//InitPlayerInput();
 	
 	InitAssets();
 	InitScene();

@@ -50,26 +50,14 @@ class DebugMode {
             std::cout << "Number of Manifold(s): " << ManifoldsInfo << "\n" << std::endl;
         }
 
-        //template <class T>
-        //void GetPhysicsClassInfo(T&& t) {
-        //    std::cout << t << std::endl;
-        //}
-
-        //template <typename Enumeration>
-        //auto GetPhysicsClassInfo(Enumeration const value)
-        //    -> typename std::underlying_type<Enumeration>::type
-        //{
-        //    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
-        //}
-
         void ToggleDebugMode();
         bool getDebugMode() { return isDebug; }
         void DebugUpdate();
        
     private:
-        size_t MemorySize;
-        int frames = 0;
         bool isDebug = false;
+
+        size_t MemorySize;
 
         std::vector<std::string> MemoryInfo;
         int ManifoldsInfo;

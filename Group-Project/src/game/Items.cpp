@@ -19,6 +19,7 @@ Item::Item(Vector3 position, int score) {
 	ghost = new btGhostObject();
 	ghost->setWorldTransform(bttransform);
 	ghost->setCollisionShape(itemShape);
+	rigidBody->isStaticObject();
 	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	isTrigger = true;
 	ghost->setUserPointer(this);

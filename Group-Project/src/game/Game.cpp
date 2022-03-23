@@ -61,7 +61,8 @@ void Game::Init(Tasks* tasks) {
 	InitPlayerInput();
 	InitAssets();
 	InitScene();
-	LevelGeneration();
+	InitItems();
+	//LevelGeneration();
 	InitCharacter();
 
 	loading = false;
@@ -106,7 +107,7 @@ void Game::Destroy() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(true);
+	world->SetLocalGame(false);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -194,9 +195,15 @@ void Game::InitScene() {
 }
 
 void Game::InitItems() {
-	/*items[0] = new Item({ 0, 2, 0 }, 1);
+	items[0] = new Item({ 25, 2, -20 }, 1);
 	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
+	dynamicsWorld->addCollisionObject(items[0]->getGhostObject());
+
+	Transform test;
+	test.SetPosition({ 25, 2, -15 });
+	walls[0] = new Wall(test);
+	dynamicsWorld->addCollisionObject(walls[0]->getGhostObject());
+	world->AddGameObject(walls[0]);
 }
 
 void Game::InitCharacter() {
@@ -509,10 +516,14 @@ void Game::exectureTriggers() {
 						std::cout << "Player Shot" << std::endl;
 						//return;
 					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
+					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
 						std::cout << "Wall Painted" << std::endl;
 						//return;
 					}
+					if (objA->GetName() == "Wall" && objB->GetName() == "Player") {
+						std::cout << "Bonk, go to horny Jail" << std::endl;
+					}
+
 					objB = nullptr;
 				}
 			}

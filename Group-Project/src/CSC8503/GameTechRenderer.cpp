@@ -126,7 +126,7 @@ void GameTechRenderer::RenderFrame() {
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList(false,0);
 	if (!initTexture) {
-		initTextures();
+		//initTextures();
 		initTexture = true;
 	}
 	UpdatePaints();

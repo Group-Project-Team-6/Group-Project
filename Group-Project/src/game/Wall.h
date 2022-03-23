@@ -15,11 +15,21 @@ public:
 	/*btCollisionObject* getCollisionObject() {
 		return wallObject;
 	}*/
+
+	virtual void UpdateRenderPositions() override {
+		return;
+	}
 private:
+
+	TransformConverter transformConverter;
+	Transform transform;
+	btTransform bttransform;
 
 	btDefaultMotionState* wallMotion = nullptr;
 	btCollisionShape* wallShape = nullptr;
 	btRigidBody* wallRigidBody = nullptr;
+	///////////////
+	//btGhostObject* wallObject = nullptr;
 
 	//graphics
 	MeshPtr wallMesh = nullptr;

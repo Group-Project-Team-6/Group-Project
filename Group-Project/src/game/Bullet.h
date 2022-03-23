@@ -34,7 +34,7 @@ public:
 
 	virtual void UpdateRenderPositions() override {
 
-		bttransform = ghost->getWorldTransform();
+		bttransform = bulletRigidBody->getWorldTransform();
 
 		btRot = bttransform.getRotation();
 		btPos = bttransform.getOrigin();
@@ -60,8 +60,11 @@ protected:
 	//Transform transform;
 	//btTransform bttransform;
 	//TransformConverter transformConverter;
+
 	int bulletMass;
 	btVector3 bulletInertia;
+	float bulletFriction;
+	float bulletRestitution;
 
 	btDefaultMotionState* bulletMotion = nullptr;
 	btCollisionShape* bulletShape = nullptr;

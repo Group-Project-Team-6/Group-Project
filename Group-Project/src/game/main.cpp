@@ -29,16 +29,20 @@ void* operator new(size_t size, const char* name, std::string& Info) {
     }
 }
 
+void operator delete(void* ptr, const char* name, string& Info) {
+	free(ptr);
+}
+
 using namespace NCL;
 
 int main() {
-	std::string info;
 	Assets::FetchDirConfig("dir.txt");
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
 	if (!w->HasInitialised()) {
 		return -1;
 	}
 
+	std::string info;
 	std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name(), info) DebugMode());
 	d->SetMemoryInfo(info);
 

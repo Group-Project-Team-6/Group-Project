@@ -1,10 +1,11 @@
+#include "../Networking/GameClient.h"
+#include "../Networking/GameServer.h"
+
 #include "../common/Window.h"
 #include "Game.h"
 //#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "DebugMode.h"
-#include "../Networking/GameClient.h"
-#include "../Networking/GameServer.h"
 
 #include <iostream>
 #include <memory>

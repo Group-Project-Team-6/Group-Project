@@ -1,4 +1,5 @@
 #include "NetworkObject.h"
+#include "../game/GameEntity.h"
 using namespace NCL;
 using namespace CSC8503;
 

@@ -1,5 +1,6 @@
 #include "Win32Window.h"
 #ifdef _WIN32
+#define _WINSOCKAPI_
 #include "Windowsx.h"
 
 using namespace NCL;

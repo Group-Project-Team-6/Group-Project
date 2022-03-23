@@ -13,7 +13,7 @@ _-_-_-_-_-_-_-""  ""
 #pragma once
 
 #include "Window.h"
-
+#define _WINSOCKAPI_
 #ifdef _WIN32
 #ifndef HID_USAGE_PAGE_GENERIC
 #define HID_USAGE_PAGE_GENERIC			((USHORT) 0x01)
@@ -32,8 +32,8 @@ _-_-_-_-_-_-_-""  ""
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+
 #include <windows.h>
-#include "../Networking-ENet/enet/enet.h"
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>

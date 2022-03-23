@@ -1,5 +1,5 @@
 #pragma once
-#include "../common/Win32Window.h"
+#include "../Networking-ENet/enet/enet.h"
 #include <map>
 #include <string>
 

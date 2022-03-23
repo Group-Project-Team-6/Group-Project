@@ -14,6 +14,7 @@ https://research.ncl.ac.uk/game/
 
 
 #ifdef _WIN32
+#define _WINSOCKAPI_
 #include "windows.h"
 #endif
 

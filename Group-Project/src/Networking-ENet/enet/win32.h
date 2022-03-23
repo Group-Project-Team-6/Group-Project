@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 #include <winsock2.h>
+#define _WINSOCKAPI_
 
 typedef SOCKET ENetSocket;
 

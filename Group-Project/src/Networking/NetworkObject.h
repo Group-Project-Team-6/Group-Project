@@ -1,9 +1,10 @@
 #pragma once
 //#include "GameObject.h"
-#include "../game/GameEntity.h"
+//#include "../game/GameEntity.h"
 #include "NetworkBase.h"
 #include "NetworkState.h"
 #include <vector>
+class GameEntity;
 namespace NCL {
 	namespace CSC8503 {
 		struct FullPacket : public GamePacket {

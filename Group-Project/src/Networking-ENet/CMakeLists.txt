@@ -11,7 +11,7 @@ add_library(ENet STATIC
 	packet.c
 	peer.c
 	protocol.c
-	win32.c	
+	win32.c
 
 	enet/callbacks.h
 	enet/enet.h

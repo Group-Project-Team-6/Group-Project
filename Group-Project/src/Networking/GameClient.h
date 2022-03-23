@@ -4,9 +4,9 @@
 #include <thread>
 #include <atomic>
 
+class GameEntity;
 namespace NCL {
 	namespace CSC8503 {
-		class GameEntity;
 		class GameClient : public NetworkBase {
 		public:
 			GameClient();

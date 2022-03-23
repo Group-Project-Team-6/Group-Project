@@ -56,18 +56,17 @@ public:
 
 	}
 
-	void InitAssets(); //Temp
+	void InitAssets();
 
 protected:
-	//Temp
 	MeshPtr playerMesh;
 	TexturePtr playerTex;
 	ShaderPtr playerShader;
 
 	//general
-	TransformConverter transformConverter;
-	Transform transform;
-	btTransform bttransform;
+	//TransformConverter transformConverter;
+	//Transform transform;
+	//btTransform bttransform;
 	BulletPool* bullets;
 
 	//player Physics

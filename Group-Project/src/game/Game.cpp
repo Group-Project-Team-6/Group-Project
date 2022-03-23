@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
-#include "LevelGen.h"
 #include "Painter.h"
 #include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
 
@@ -30,6 +29,27 @@ Game::Game(Tasks* tasks) {
 }
 
 Game::~Game() {
+	//delete GameEntities
+	delete ground;
+
+	for (int i = 0; i < 4; i++) {
+		if (playerInput[i])
+			delete playerInput[i];
+	}
+
+	for (auto i : players) {
+		delete i;
+	}
+
+	vecWalls.clear();
+	floors.clear();
+	vecCollectables.clear();
+
+	//delete LevelGen
+	delete levelGenerator;
+
+	//delete Audio
+	delete audioManager;
 
 	//delete Physics
 	delete broadphase;
@@ -37,29 +57,10 @@ Game::~Game() {
 	delete dispatcher;
 	delete solver;
 	delete dynamicsWorld;
+	delete ghostPair;
 
 	//delete world
-	delete world;
-
-	for (int i = 0; i < 4; i++) {
-		if(playerInput[i]) 
-			delete playerInput[i];
-	}
-
-	//delete GameEntities
-	delete ground;
-	for (auto i : players) {
-		delete i;
-	}
-
-	for (auto i : items) {
-		delete i;
-	}
-
-	for (auto i : walls) {
-		delete i;
-	}
-
+	delete world;	
 }
 
 void Game::Init(Tasks* tasks) {
@@ -84,7 +85,7 @@ void Game::Init(Tasks* tasks) {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(true);
+	world->SetLocalGame(false);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -119,8 +120,8 @@ void Game::InitAssets() {
 
 void Game::InitPhysics() {
 	maxProxies = 1024;
-	worldAabbMin = { -1000, -1000, -1000 };
-	worldAabbMax = { 1000, 1000, 1000 };
+	worldAabbMin = { -100, -100, -100 };
+	worldAabbMax = { 100, 100, 100 };
 	broadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 	collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -129,7 +130,7 @@ void Game::InitPhysics() {
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
-	btGhostPairCallback* ghostPair = new btGhostPairCallback();
+	ghostPair = new btGhostPairCallback();
 	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
@@ -143,7 +144,6 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
-	//Should be a static bodies
 	ground = new GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
@@ -155,31 +155,20 @@ void Game::InitScene() {
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
-	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer static objects btTransforms work differently
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
-
-	//Transform wallTransform;
-	//walls[0] = new Wall(wallTransform);
-	//world->AddGameObject(walls[0]);
-	//dynamicsWorld->addRigidBody(walls[0]->GetRigidBody());
-	//maybe use foreach loops for static objects
-
-	//std::cout << &*world << std::endl;
-	//std::cout << &*dynamicsWorld << std::endl;
-}
-
-void Game::InitItems() {
-	/*items[0] = new Item({ 0, 2, 0 }, 1);
-	world->AddGameObject(items[0]);
-	dynamicsWorld->addRigidBody(items[0]->GetRigidBody());*/
 }
 
 void Game::InitCharacter() {
+
+	spawnPos[0] = {};
+	spawnPos[1] = {};
+	spawnPos[2] = {};
+	spawnPos[3] = {};
 
 	for (int i = 0; i < 4; i++) {
 		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
@@ -190,7 +179,6 @@ void Game::InitCharacter() {
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 			world->GetMainCamera(i)->SetDistance(8.0f);
-
 		}
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
@@ -211,7 +199,7 @@ void Game::LevelGeneration() {
 
 	float scale = 5;
 
-	LevelGen* levelGenerator = new LevelGen();
+	levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
 
@@ -230,19 +218,16 @@ void Game::LevelGeneration() {
 	//floorsTransform.SetOrientation({ 1,0,0,1 });
 
 
-	vector<Wall*> vecWalls;
-	vector<Wall*> floors;
-
 	float unitLength = scale;
 	int numWalls = 0;
 	int numFloors = 0;
 	for (int i = 0; i < 1; i++)
 	{
-		for (float level = 0; level < maze.size(); level+=1.0f)
+		for (int level = 0; level < maze.size(); level++)
 		{
-			for (float l = 0; l < length; l+=1.0f)
+			for (int l = 0; l < length; l++)
 			{
-				for (float w = 0; w < width; w += 1.0f)
+				for (int w = 0; w < width; w ++)
 				{
 					char ch = maze[level][l * width + w];
 					Vector3 position({ ((l + 0.5f) * unitLength) - 40 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
@@ -253,6 +238,7 @@ void Game::LevelGeneration() {
 							floorsTransform.SetPosition(position + Vector3(0,-unitLength*.45f,0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
+							//dynamicsWorld->addCollisionObject(floors[numFloors]->getCollisionObject());
 							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
 							numFloors++;
@@ -262,6 +248,7 @@ void Game::LevelGeneration() {
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
+						//dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getCollisionObject());
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
@@ -274,7 +261,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -283,7 +270,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -293,7 +280,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -302,7 +289,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -320,7 +307,7 @@ void Game::LevelGeneration() {
 	//collectablesTransform.SetOrientation({ 1,0,0,1 });
 
 	vector<vector<int>> collectablePos;
-	vector<Item*> vecCollectables;
+	
 	int numCollectablesPlaced = 0;
 	for (int i = 0; i < maze.size(); i++) {
 
@@ -344,9 +331,7 @@ void Game::LevelGeneration() {
 			}
 			else { x--; }
 		}
-
 	}
-
 }
 /////////////////Build Level//////////////////////////
 
@@ -377,6 +362,18 @@ void Game::exectureTriggers() {
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
 						std::cout << "Wall Painted" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Bullet") {
+						std::cout << "Bullets Collided" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Item") {
+						std::cout << "Item Hit" << std::endl;
+						//return;
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Ground") {
+						std::cout << "Ground Hit" << std::endl;
 						//return;
 					}
 					objB = nullptr;

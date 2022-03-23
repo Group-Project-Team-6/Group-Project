@@ -4,7 +4,6 @@
 #include "../common/RendererBase.h"
 #include "../CSC8503/GameTechRenderer.h"
 #include "../CSC8503/GameLoadingRenderer.h"
-//#include "../Physics/VkTechRenderer.h"
 #include "../game/TransformConverter.h"
 #include "ControlsCommand.h"
 #include "PlayerInput.h"
@@ -14,6 +13,8 @@
 #include "../DebugMode/DebugMode.h"
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
+#include "LevelGen.h"
+
 #include <atomic>
 
 
@@ -47,9 +48,9 @@ protected:
 	//InitNetworking?
 	void exectureTriggers();
 
-
 	//Tools
 	TransformConverter transformConverter;
+	LevelGen* levelGenerator;
 
 	//World
 	RendererPtr renderer = nullptr;//GameTechRenderer* renderer;
@@ -67,13 +68,14 @@ protected:
 	btCollisionDispatcher* dispatcher;
 	btSequentialImpulseConstraintSolver* solver;
 	btDiscreteDynamicsWorld* dynamicsWorld;
-
-	//Custom motion state?
+	btGhostPairCallback* ghostPair;
 
 	//GameEntities
 	Player* players[4];
-	Item* items[36];
-	Wall* walls[100]; //Exact number data driven;
+	Vector3 spawnPos[4];
+	vector<Wall*> vecWalls;
+	vector<Wall*> floors;
+	vector<Item*> vecCollectables;
 	GameEntity* ground;
 
 	//Game Assets? Temp

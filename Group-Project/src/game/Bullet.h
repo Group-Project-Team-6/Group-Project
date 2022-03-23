@@ -47,7 +47,7 @@ public:
 
 	}
 
-private:
+protected:
 	float framesLeft;
 	float speed;
 
@@ -57,7 +57,7 @@ private:
 
 	//Transform transform;
 	//btTransform bttransform;
-	TransformConverter transformConverter;
+	//TransformConverter transformConverter;
 	int bulletMass;
 	btVector3 bulletInertia;
 

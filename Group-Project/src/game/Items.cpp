@@ -1,8 +1,7 @@
 #include "Items.h"
 
-
 Item::Item(Vector3 position, int score) {
-	InitAssets(); //Temp, Replace with loadAsset Class
+	InitAssets();
 	name = "Item";
 	transform
 		.SetPosition(position)
@@ -21,21 +20,12 @@ Item::Item(Vector3 position, int score) {
 	ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	isTrigger = true;
 	ghost->setUserPointer(this);
-
-	/*dynamicsWorld.addCollisionObject(ghost);
-	world.AddGameObject(this);*/
-
-	/*itemMotion = new btDefaultMotionState(bttransform);
-	itemShape = new btCapsuleShape(0.5, 1);
-	btRigidBody::btRigidBodyConstructionInfo itemCI(0, itemMotion, itemShape, {0,0,0});
-	itemRigidBody = new btRigidBody(itemCI);
-	itemRigidBody->isStaticObject();*/
 }
 
 Item::~Item() {
 	delete itemMotion;
 	delete itemShape;
-	delete itemRigidBody;
+	delete ghost;
 }
 
 void Item::InitAssets() {
@@ -45,5 +35,5 @@ void Item::InitAssets() {
 }
 
 void Item::OnPlayerCollide() {
-	//Free list pattern
+
 }

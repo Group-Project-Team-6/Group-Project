@@ -1,5 +1,5 @@
 #pragma once
-#ifdef _ORBIS
+#ifdef __ORBIS__
 #include <audio3d.h>
 #include "PS4Sound.h"
 #include "PS4AudioSource.h"

@@ -1,10 +1,10 @@
-#ifdef _ORBIS
+#ifdef __ORBIS__
 #include "PS4Mesh.h"
-#include "../../Common/Vector2.h"
-#include "../../Common/Vector3.h"
+#include "../Common/Vector2.h"
+#include "../Common/Vector3.h"
 
-#include <.\graphics\api_gnm\toolkit\allocators.h>
-#include <.\graphics\api_gnm\toolkit\stack_allocator.h>
+#include <..\samples\sample_code\graphics\api_gnm\toolkit\allocators.h>
+#include <..\samples\sample_code\graphics\api_gnm\toolkit\stack_allocator.h>
 
 using namespace NCL::Maths;
 using namespace NCL::PS4;
@@ -28,12 +28,12 @@ PS4Mesh* PS4Mesh::GenerateQuad() {
 	mesh->SetVertexPositions({ Vector3(-1.0f, -1.0f, 0.0f), Vector3(-1.0f,  1.0f, 0.0f),Vector3(1.0f, -1.0f, 0.0f), Vector3(1.0f,  1.0f, 0.0f) });
 
 	std::vector<Vector3> normals;
-	std::vector<Vector3> tangents;
+	std::vector<Vector4> tangents;
 	std::vector<unsigned int> indices;
 
 	for (int i = 0; i < 4; ++i) {
 		normals.emplace_back(Vector3(0, 0, 1));
-		tangents.emplace_back(Vector3(1, 0, 0));
+		tangents.emplace_back(Vector4(1, 0, 0, 0));
 
 		indices.emplace_back(i);
 	}
@@ -42,7 +42,7 @@ PS4Mesh* PS4Mesh::GenerateQuad() {
 	mesh->SetVertexTangents(tangents);
 	mesh->SetVertexIndices(indices);
 
-	mesh->UploadToGPU();
+	//mesh->UploadToGPU();
 	return mesh;
 }
 
@@ -57,7 +57,7 @@ PS4Mesh* PS4Mesh::GenerateSinglePoint() {
 	mesh->SetVertexTangents({ Vector3(1, 0, 0) });
 	mesh->SetVertexIndices({ 0 });
 
-	mesh->UploadToGPU();
+	//mesh->UploadToGPU();
 	return mesh;
 }
 
@@ -73,11 +73,11 @@ PS4Mesh* PS4Mesh::GenerateTriangle() {
 	mesh->SetVertexTangents({ Vector3(1, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 0) });
 	mesh->SetVertexIndices({ 0, 1, 2 });
 
-	mesh->UploadToGPU();
+	//mesh->UploadToGPU();
 	return mesh;
 }
 
-void	PS4Mesh::UploadToGPU() {
+void	PS4Mesh::UploadToGPU(Rendering::RendererBase* renderer) {
 	vertexDataSize = GetVertexCount() * sizeof(MeshVertex);
 	indexDataSize  = GetIndexCount() * sizeof(int);
 

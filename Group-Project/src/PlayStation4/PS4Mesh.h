@@ -1,6 +1,6 @@
 #pragma once
-#ifdef _ORBIS
-#include "../../Common/MeshGeometry.h"
+#ifdef __ORBIS__
+#include "../common/MeshGeometry.h"
 #include "PS4MemoryAware.h"
 
 #include <gnm.h>
@@ -23,19 +23,18 @@ namespace NCL {
 			static PS4Mesh* GenerateQuad();
 			static PS4Mesh* GenerateSinglePoint();
 
-		protected:
-			void	SubmitPreDraw(Gnmx::GnmxGfxContext& cmdList, Gnm::ShaderStage stage);
+			void	UploadToGPU(Rendering::RendererBase* renderer) override;
+			//void	SubmitPreDraw(Gnmx::GnmxGfxContext& cmdList, Gnm::ShaderStage stage);
 			void	SubmitDraw(Gnmx::GnmxGfxContext& cmdList, Gnm::ShaderStage stage);
 
 			void	InitAttributeBuffer(sce::Gnm::Buffer &buffer, Gnm::DataFormat format, void*offset);
 
-		protected:
 			PS4Mesh();
-			PS4Mesh(const std::string&filename);
+			//PS4Mesh(const std::string&filename);
 			~PS4Mesh();
 
 		protected:
-			void UploadToGPU() override;
+			//void UploadToGPU() override;
 
 			//Gpu simply has a 4 byte alignment!
 			struct MeshVertex

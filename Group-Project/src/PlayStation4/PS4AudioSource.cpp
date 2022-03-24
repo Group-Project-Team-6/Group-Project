@@ -1,4 +1,4 @@
-#ifdef _ORBIS
+#ifdef __ORBIS__
 #include "PS4AudioSource.h"
 
 using namespace NCL::PS4;

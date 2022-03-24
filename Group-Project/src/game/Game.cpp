@@ -4,6 +4,9 @@
 #include "LevelGen.h"
 #include "Painter.h"
 
+//PS4
+#include "BulletPool.h"
+
 //Namespaces?
 
 Game::Game() {
@@ -18,7 +21,6 @@ Game::Game() {
 	InitCharacter();
 	//void InitHUD
 	//InitNetworking?
-
 }
 
 Game::~Game() {
@@ -257,7 +259,7 @@ void Game::LevelGeneration() {
 					case 'P':
 						break;
 					case '#':
-						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40 });
+						wallsTransform.SetPosition({ ((l + 0.5f) * unitLength) - 40, (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 40});
 						vecWalls.push_back(new Wall(wallsTransform));
 						wallsTransform.SetScale({ scale, scale, scale });
 						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());

@@ -2,6 +2,10 @@
 #include "ControlsCommand.h"
 #include "Controls.h"
 #include "../common/Window.h"
+#ifdef __ORBIS__
+#include "../PlayStation4/PS4Input.h"
+using namespace NCL::PS4;
+#endif
 
 class PlayerInput {
 public:
@@ -16,6 +20,9 @@ public:
 	}
 
 	ControlsCommand* handleInput() {
+
+#ifdef _WIN64
+
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 			return spaceBar;
 		}
@@ -37,9 +44,18 @@ public:
 		if (Window::GetMouse()->GetRelativePosition().x) {
 			return mouseHorizontal;
 		}
+#elif __ORBIS__
+
+		PS4Input input = PS4Input();
+		input.Poll();
+
+		if (input.GetButton(0)) { // Test inputs
+			std::cout << "Button 0" << std::endl;
+			return leftMouse;
+		}
 
 
-			
+#endif
 		return NULL;
 	}
 

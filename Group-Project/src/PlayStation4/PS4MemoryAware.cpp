@@ -1,7 +1,8 @@
-#ifdef _ORBIS
+#ifdef __ORBIS__
 #include "PS4MemoryAware.h"
-#include <.\graphics\api_gnm\toolkit\allocators.h>
-#include <.\graphics\api_gnm\toolkit\stack_allocator.h>
+#include <..\samples\sample_code\graphics\api_gnm\toolkit\allocators.h>
+#include <..\samples\sample_code\graphics\api_gnm\toolkit\stack_allocator.h>
+
 using namespace NCL::PS4;
 
 

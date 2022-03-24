@@ -14,6 +14,22 @@
 #include "../Audio/AudioManager.h"
 #include "AssetsManager.h"
 
+#ifdef __ORBIS__
+
+#include "../Bullet/include/bullet/LinearMath/btVector3.h"
+#include "../Bullet/include/bullet/BulletCollision/BroadphaseCollision/btAxisSweep3.h"
+#include "../Bullet/include/bullet/BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+#include "../Bullet/include/bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
+#include "../Bullet/include/bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
+#include "../PlayStation4/PS4RendererBase.h"
+#include "../PlayStation4/PS4Shader.h"
+#include "../PlayStation4/PS4Mesh.h"
+#include "../PlayStation4/PS4Texture.h"
+using namespace NCL::PS4;
+using namespace NCL;
+using namespace NCL::CSC8503;
+
+#endif
 
 //Encapsulate in namespace?
 
@@ -43,8 +59,13 @@ protected:
 	//Tools
 	TransformConverter transformConverter;
 
+
 	//World
+#ifdef _WIN64
 	RendererPtr renderer = nullptr;//GameTechRenderer* renderer;
+#elif __ORBIS__
+
+#endif
 	GameWorld* world;
 
 	//Audio
@@ -69,12 +90,26 @@ protected:
 	GameEntity* ground;
 
 	//Game Assets? Temp
+#ifdef _WIN64
+
 	MeshPtr sphereMesh = nullptr;
 	MeshPtr cubeMesh = nullptr;
 	MeshPtr capsuleMesh = nullptr;
 
 	TexturePtr basicTex = nullptr;
 	ShaderPtr basicShader = nullptr;
+
+#elif __ORBIS__
+
+	PS4Mesh* sphereMesh;
+	PS4Mesh* cubeMesh;
+	PS4Mesh* capsuleMesh;
+
+	PS4Texture* basicTex;
+	PS4Shader* basicShader;
+
+
+#endif
 
 	//Controls
 	PlayerInput playerInput;

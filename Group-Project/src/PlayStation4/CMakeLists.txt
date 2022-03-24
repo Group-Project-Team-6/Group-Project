@@ -17,8 +17,6 @@ add_library(PlayStation4 STATIC
 	PS4Texture.cpp
 	PS4Window.cpp
 
-
-
 	InputBase.h
 	Ps4AudioEmitter.h
 	PS4AudioSource.h

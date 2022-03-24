@@ -28,9 +28,11 @@ void* operator new(size_t size, const char* name) {
 }
 
 void operator delete(void* ptr) {
+#ifdef _WIN64
     const char* name = typeid(ptr).name();
     //std::cout << "Free Memory From " << name << std::endl;
     free(ptr);
+#endif
 }
 
 using namespace NCL;
@@ -40,7 +42,9 @@ int main() {
 	Assets::FetchDirConfig("dir.txt");
 
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
+#ifdef _WIN64
 	std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name()) DebugMode());
+#endif
 
 	//DebugMode* d = new (typeid(DebugMode).name()) DebugMode();
 	
@@ -61,6 +65,7 @@ int main() {
 			std::cout << "Skipping large time delta" << std::endl;
 			continue; //must have hit a breakpoint or something to have a 1 second frame time!
 		}
+#ifdef _WIN64
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::PRIOR)) {
 			w->ShowConsole(true);
 		}
@@ -83,6 +88,7 @@ int main() {
 			g->GetPhysicsTestSceneDebugData(d);
 			d->GetFPS(dt);
 		}
+#endif
 		g->UpdateGame(dt);
 	}
 

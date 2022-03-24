@@ -1,6 +1,6 @@
 #pragma once
-#ifdef _ORBIS
-#include "../../Common/TextureBase.h"
+#ifdef __ORBIS__
+#include "../common/TextureBase.h"
 #include <string>
 #include <gnm\texture.h>
 #include "PS4MemoryAware.h"

@@ -1,4 +1,4 @@
-#ifdef _ORBIS
+#ifdef __ORBIS__
 #include "Ps4AudioEmitter.h"
 
 using namespace NCL::PS4;

@@ -1,6 +1,6 @@
 #pragma once
-#ifdef _ORBIS
-#include "../../Common/ShaderBase.h"
+#ifdef __ORBIS__
+#include "../common/ShaderBase.h"
 #include "PS4MemoryAware.h"
 
 #include <gnm.h>

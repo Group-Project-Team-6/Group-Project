@@ -188,7 +188,7 @@ void GameTechRenderer::initTextures() {
 	for (int i = 0; i < (activeObjects).size(); i++) {
 		GameTimer t;
 		if ((activeObjects)[i]->GetName() != "Wall") continue;
-		//(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
+		(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
 		//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 		OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
 
@@ -269,7 +269,7 @@ void GameTechRenderer::BuildObjectList(bool isCameraBased, int cameraNum) {
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
 				if (isCameraBased) {
-					if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()*1.1f) {
+					if (o->GetName() == "Wall" && (o->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()) {
 						activeTransparentObjects.emplace_back(o);
 					}
 					else {

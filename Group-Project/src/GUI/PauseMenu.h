@@ -39,7 +39,7 @@ namespace NCL {
 		class GameHUD : public GameMenu
 		{
 		public:
-			GameHUD() {};
+			GameHUD() { for (int i = 0; i < fpsLimit; i++) fps[i] = 0; };
 			virtual ~GameHUD() {};
 			
 			virtual void Draw() override;
@@ -51,12 +51,16 @@ namespace NCL {
 			int numTeam = 2;
 			int team1 = 0;
 			int team2 = 0;
+			int team3 = 0;
+			int team4 = 0;
 			float hp[4] = { 0.0f,0.0f,0.0f,0.0f };
 			float time = 0.0f;
 			bool debug = false;
 		private:
 			int fpsPos = 0;
+			int fpslastPos = 0;
 			int msgPos = 0;
+			float avgFps = 0;
 			std::string msg[msgLimit];
 			float fps[fpsLimit];
 		};

@@ -199,7 +199,8 @@ void GameHUD::Draw()
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::SetCursorPos(ImVec2(0, mainVp->Size.y * r));
-        ImGui::Button("Team 1:", ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
+        std::string s = "Team 1:\n" + std::to_string(team1);
+        ImGui::Button(s.c_str(), ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
         ImGui::PopStyleColor(3);
     }
 
@@ -211,7 +212,8 @@ void GameHUD::Draw()
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::SetCursorPos(ImVec2(contentWidth * 0.9, mainVp->Size.y * r));
-        ImGui::Button("Team 2:", ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
+        std::string s = "Team 2:\n" + std::to_string(team2);
+        ImGui::Button(s.c_str(), ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
         ImGui::PopStyleColor(3);
     }
 
@@ -221,7 +223,8 @@ void GameHUD::Draw()
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::SetCursorPos(ImVec2(contentWidth * 0.9, mainVp->Size.y * 0.5));
-        ImGui::Button("Team 3:", ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
+        std::string s = "Team 3:\n" + std::to_string(team3);
+        ImGui::Button(s.c_str(), ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
         ImGui::PopStyleColor(3);
     }
 
@@ -231,7 +234,8 @@ void GameHUD::Draw()
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::SetCursorPos(ImVec2(contentWidth * 0.9, mainVp->Size.y * 0.5));
-        ImGui::Button("Team 4:", ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
+        std::string s = "Team 4:\n" + std::to_string(team4);
+        ImGui::Button(s.c_str(), ImVec2(contentWidth * 0.1, mainVp->Size.y * 0.1));
         ImGui::PopStyleColor(3);
     }
 
@@ -251,12 +255,10 @@ void GameHUD::Draw()
         ImGui::PlotLines("FPS: ", fps, IM_ARRAYSIZE(fps));
 
         // Display contents in a scrolling region
-        float avgFps = 0;
-        for (int i = 0; i < fpsLimit; i++) {
-            avgFps += fps[i];
-        }
-        avgFps /= fpsLimit;
-        ImGui::TextColored(ImVec4(1, 1, 0, 1), std::to_string(avgFps).c_str());
+        if(fpslastPos != fpsPos) avgFps += fps[fpslastPos] - fps[fpsPos];
+        ImGui::TextColored(ImVec4(1, 1, 0, 1), std::to_string(avgFps/fpsLimit).c_str());
+        fpslastPos = fpsPos;
+
         ImGui::BeginChild("Scrolling");
         for (int n = 0 ; n < msgLimit; n++)
             ImGui::Text(msg[(n + msgPos)% msgLimit].c_str());

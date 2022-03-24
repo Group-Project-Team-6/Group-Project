@@ -154,3 +154,4 @@ void AudioManager::PlayJumpSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
     result = channel->set3DAttributes(&_pos, &_vel);
     ERRCHECK(result);
 }
+

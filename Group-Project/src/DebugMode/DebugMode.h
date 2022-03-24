@@ -88,7 +88,6 @@ class DebugMode {
             std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
         }
 
-
     private:
         Tasks tasks;
 

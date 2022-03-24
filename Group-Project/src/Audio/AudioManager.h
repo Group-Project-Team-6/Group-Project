@@ -15,6 +15,10 @@ class AudioManager {
         void SetVolume();
         void AudioUpdate(NCL::CSC8503::GameWorld* world, float dt);
         void PlayJumpSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel);
+        void PlayHurtSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel);
+        void PlayPickupSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel);
+        void PlaySplashSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel);
+        void PlayFaintSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel);
 
         void CacheRelease();
 

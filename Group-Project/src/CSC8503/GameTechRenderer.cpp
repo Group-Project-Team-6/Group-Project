@@ -6,6 +6,7 @@
 #include "../Common/TextureLoader.h"
 #include "Transform.h"
 #include "../game/Painter.h"
+#include "../game/Bullet.h"
 
 using namespace NCL;
 using namespace Rendering;
@@ -125,7 +126,7 @@ void GameTechRenderer::RenderFrame() {
 	glClearColor(1, 1, 1, 1);
 	BuildObjectList(false,0);
 	if (!initTexture) {
-		//initTextures();
+		initTextures();
 		initTexture = true;
 	}
 	UpdatePaints();
@@ -197,7 +198,7 @@ void GameTechRenderer::UpdatePaints() {
 	for (auto& it = map.begin(); it != map.end(); it++) {
 		for (int i = 0; i < (activeObjects).size(); i++) {
 			if ((activeObjects)[i]->GetName() == "Bullet") continue;
-			if ((it->second - (activeObjects)[i]->GetTransform().GetPosition()).Length() > (1.0f + (activeObjects)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
+			if ((it->second - (activeObjects)[i]->GetTransform().GetPosition()).Length() > ((activeObjects)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
 			(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 1.0f));
 
 			OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());

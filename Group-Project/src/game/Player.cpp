@@ -1,12 +1,14 @@
 #include "Player.h"
 
 
-Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
+Player::Player(Vector3 position, int team, string newName, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 	pitch = 0;
 	InitAssets(); //Temp, Replace with loadAsset Class
 
 	//name = "player" + newName;
 	name = "Player";
+	playerTeam = team;
+	health = 3;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -33,7 +35,7 @@ Player::Player(Vector3 position, string newName, GameWorld& world, btDiscreteDyn
 	//dynamicsWorld.addRigidBody(playerRigidBody);
 	//world.AddGameObject(this);
 
-	bullets = new BulletPool(world, dynamicsWorld);
+	bullets = new BulletPool(playerTeam, world, dynamicsWorld);
 }
 
 Player::~Player() {

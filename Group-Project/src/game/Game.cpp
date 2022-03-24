@@ -1,86 +1,108 @@
 #include "Game.h"
 #include "../common/TextureLoader.h"
 #include "PlayerInput.h"
+#include "LevelGen.h"
 #include "Painter.h"
 #include "../Bullet/BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "../CSC8503/StateMachine.h"
+#include "../CSC8503/StateTransition.h"
+#include "../CSC8503//GameWorld.h"
 
 #include <math.h>
 #include <thread>
 #include <mutex>
-#include "../DebugMode/Tasks.h"
 
 //Namespaces?
 
-Game::Game(Tasks* tasks) {
-	loading = true;
-	InitWorld();
-	tasks->queue([this]{RenderLoading();});
-	//std::thread loadScreenThread(&Game::RenderLoading,this);
-	Init(tasks);
-	tasks->waitFinished();
-	//loadScreenThread.join();
-	
-	//std::thread initThread(&Game::Init,this);
-	//initThread.join();
-	
-	//void InitHUD
-	//InitNetworking?
-
+Game::Game(Tasks* tasks) : tasks(tasks) {
+	int n = 0;
+	for (auto i : players) {
+		players[n] = nullptr;
+		n++;
+	}
+	n = 0;
+	for (auto i : items) {
+		items[n] = nullptr;
+		n++;
+	}
+	n = 0;
+	for (auto i : walls) {
+		walls[n] = nullptr;
+		n++;
+	}
+	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
+	State* initState = new State([&](float dt)->void {
+		InitWorld();
+		});
+	State* endGameState = new State([&](float dt)->void { });
+	gameStateMachine.AddState(initState);
+	gameStateMachine.AddState(gameState);
+	gameStateMachine.AddState(endGameState);
+	gameStateMachine.AddTransition(new StateTransition(initState, gameState, [&]()->bool {
+		InitGame();  
+		return true; 
+		}));
+	gameStateMachine.AddTransition(new StateTransition(gameState, endGameState, [&]()->bool {return winningTeam >= 0; }));
 }
 
 Game::~Game() {
-	//delete GameEntities
-	//delete ground;
-
-	/*for (int i = 0; i < 4; i++) {
-		if (playerInput[i])
-			delete playerInput[i];
-	}
-
-	for (auto i : players) {
-		delete i;
-	}*/
-
-	//vecWalls.clear();
-	//floors.clear();
-	//vecCollectables.clear();
-
-	//delete LevelGen
-	//delete levelGenerator;
-
-	//delete Audio
-	//delete audioManager;
-
-	//delete Physics
-	//delete broadphase;
-	//delete collisionConfiguration;
-	//delete dispatcher;
-	//delete solver;
-	//delete ghostPair;
-	//delete dynamicsWorld;
-
-	//delete world
-	//delete world;	
+	Destroy();
 }
 
 void Game::Init(Tasks* tasks) {
-	tasks->queue([this]{InitPhysics();});
-	tasks->queue([this]{InitAudio();});
-	//tasks->queue([this]{InitItems();});
-	tasks->queue([this]{InitPlayerInput();});
-
-	//InitPhysics();
-	//InitAudio();
-	//InitItems();
-	//InitPlayerInput();
-	
+	loading = true;
+	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
+	tasks->queue([this] {RenderLoading(); });
+	//tasks->queue([this] {InitPhysics(); });
+	//tasks->queue([this] {InitAudio(); });
+	//tasks->queue([this] {InitPlayerInput(); });
+	InitPhysics();
+	InitAudio();
+	InitPlayerInput();
 	InitAssets();
 	InitScene();
-	LevelGeneration();
+	//InitItems();
+	//LevelGeneration();
 	InitCharacter();
-	
-	tasks->waitFinished();
+
 	loading = false;
+	tasks->waitFinished();
+	hasInit = true;
+}
+
+void Game::Destroy() {
+	//delete Physics
+	delete dynamicsWorld;
+	delete broadphase;
+	delete collisionConfiguration;
+	delete dispatcher;
+	delete solver;
+
+	//delete world
+	//delete world;
+
+	for (int i = 0; i < 4; i++) {
+		delete playerInput[i];
+	}
+	delete audioManager;
+	sphereMesh.reset();
+	cubeMesh.reset();
+	capsuleMesh.reset();
+	basicTex.reset();
+	basicShader.reset();
+	//delete GameEntities
+	//if(ground) delete ground;
+	//for (auto i : players) {
+	//	delete i;
+	//}
+
+	//for (auto i : items) {
+	//	delete i;
+	//}
+
+	//for (auto i : walls) {
+	//	delete i;
+	//}
 }
 
 void Game::InitWorld() {
@@ -89,16 +111,22 @@ void Game::InitWorld() {
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
+	InitGUI();
 }
 
 void Game::RenderLoading() {
 	RendererPtr loadingRenderer;
 	loadingRenderer.reset(new GameLoadingRenderer());
 	while (loading) {
-		loadingRenderer.get()->Render();
-		//wglMakeCurrent(NULL, NULL);
-		Sleep(10);
+		loadingRenderer->Render();
+		loadingRenderer->NextFrame();
+		Sleep(1);
 	}
+}
+
+void Game::InitGUI() {
+	UI.reset(new GameUI());
+	UI->Init();
 }
 
 void Game::InitAssets() {
@@ -114,14 +142,13 @@ void Game::InitAssets() {
 	capsuleMesh = AssetsManager::FetchMesh("CapsuleMesh");;
 
 	basicTex = AssetsManager::FetchTexture("CheckerboardTex");
-	basicTex.get()->Init({ "FBO" });
 	basicShader = AssetsManager::FetchShader("GameTechShaderSet");
 }
 
 void Game::InitPhysics() {
 	maxProxies = 1024;
-	worldAabbMin = { -100, -100, -100 };
-	worldAabbMax = { 100, 100, 100 };
+	worldAabbMin = { -1000, -1000, -1000 };
+	worldAabbMax = { 1000, 1000, 1000 };
 	broadphase = new btAxisSweep3(worldAabbMin, worldAabbMax, maxProxies);
 
 	collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -130,7 +157,7 @@ void Game::InitPhysics() {
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
-	ghostPair = new btGhostPairCallback();
+	btGhostPairCallback* ghostPair = new btGhostPairCallback();
 	dynamicsWorld->getPairCache()->setInternalGhostPairCallback(ghostPair);
 }
 
@@ -144,6 +171,7 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
+	//Should be a static bodies
 	ground = new GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
@@ -155,30 +183,43 @@ void Game::InitScene() {
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
 	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
+	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer static objects btTransforms work differently
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
+
+	/*for (int i = 0 ; i < 100 ; i++)  world->AddGameObject(new Wall(Transform()));*/
 }
 
+/*
+void Game::InitItems() {
+	items[0] = new Item({ 25, 2, -20 }, 1);
+	world->AddGameObject(items[0]);
+	dynamicsWorld->addCollisionObject(items[0]->getGhostObject());
+
+	Transform test;
+	test.SetPosition({ 25, 2, -15 });
+	walls[0] = new Wall(test);
+	dynamicsWorld->addCollisionObject(walls[0]->getGhostObject());
+	world->AddGameObject(walls[0]);
+}
+*/
+
 void Game::InitCharacter() {
-
-	spawnPos[0] = {};
-	spawnPos[1] = {};
-	spawnPos[2] = {};
-	spawnPos[3] = {};
-
+	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		if ((world->IsLocalGame() || i == 0) && i < 2) {
+		if ((world->IsLocalGame() || i == 0) && i < 4) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
 			world->GetMainCamera(i)->SetFarPlane(1000.0f); //Graphics - Check planes Positions
 			world->GetMainCamera(i)->SetDistance(8.0f);
+
 		}
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
@@ -199,7 +240,7 @@ void Game::LevelGeneration() {
 
 	float scale = 5;
 
-	levelGenerator = new LevelGen();
+	LevelGen* levelGenerator = new LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
 
@@ -218,6 +259,9 @@ void Game::LevelGeneration() {
 	//floorsTransform.SetOrientation({ 1,0,0,1 });
 
 
+	vector<Wall*> vecWalls;
+	vector<Wall*> floors;
+
 	float unitLength = scale;
 	int numWalls = 0;
 	int numFloors = 0;
@@ -227,7 +271,7 @@ void Game::LevelGeneration() {
 		{
 			for (int l = 0; l < length; l++)
 			{
-				for (int w = 0; w < width; w ++)
+				for (int w = 0; w < width; w++)
 				{
 					char ch = maze[level][l * width + w];
 					Vector3 position({ ((l + 0.5f) * unitLength) - 25 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 25 });
@@ -235,11 +279,11 @@ void Game::LevelGeneration() {
 					{
 					case 'P':
 						if (level >= 0) {
-							floorsTransform.SetPosition(position + Vector3(0,-unitLength*.45f,0));
+							floorsTransform.SetPosition(position + Vector3(0, -unitLength * .45f, 0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
-							//dynamicsWorld->addCollisionObject(floors[numFloors]->getCollisionObject());
-							dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
+							dynamicsWorld->addCollisionObject(floors[numFloors]->getGhostObject());
+							//dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
 							numFloors++;
 						}
@@ -248,8 +292,8 @@ void Game::LevelGeneration() {
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
 						vecWalls.push_back(new Wall(wallsTransform));
-						//dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getCollisionObject());
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 
@@ -261,7 +305,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -270,7 +315,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -280,7 +326,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -289,7 +336,8 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new Wall(stairsTransform));
-						dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
+						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
+						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
 						numWalls++;
 						break;
@@ -307,7 +355,7 @@ void Game::LevelGeneration() {
 	//collectablesTransform.SetOrientation({ 1,0,0,1 });
 
 	vector<vector<int>> collectablePos;
-	
+	vector<Item*> vecCollectables;
 	int numCollectablesPlaced = 0;
 	for (int i = 0; i < maze.size(); i++) {
 
@@ -330,77 +378,22 @@ void Game::LevelGeneration() {
 
 			}
 			else { x--; }
+
 		}
+
 	}
-}
-/////////////////Build Level//////////////////////////
 
-/////////////////Other Functions//////////////////////
-void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
-	//d->GetMemoryAllocationSize(*world);
-	//d->GetMemoryAllocationSize(*audioManager);
-	//d->GetMemoryAllocationSize(*renderer);
 }
 
-void Game::exectureTriggers() {
-	for (int i = 0; i < world->GetGameObjects().size(); i++) {
-		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
-			GameEntity* objA = world->GetGameObjects()[i];
-			for (int j = 0; j < world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects(); j++) {
-				{
-					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(j)->getUserPointer();
-					std::cout << objA->GetName() << std::endl;
-					std::cout << objB->GetName() << std::endl;
-						//Execute triggers
-					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
-						std::cout << "Player has picked up item" << std::endl;
-						//return;
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
-						std::cout << "Player Shot" << std::endl;
-						//return;
-
-						//Team 1
-						//if player.getTeam(1)
-						//Team 2
-
-
-
-
-
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Wall") {
-						std::cout << "Wall Painted" << std::endl;
-						//return;
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Bullet") {
-						std::cout << "Bullets Collided" << std::endl;
-						//return;
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Item") {
-						std::cout << "Item Hit" << std::endl;
-						//return;
-					}
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Ground") {
-						std::cout << "Ground Hit" << std::endl;
-						//return;
-					}
-					objB = nullptr;
-				}
-			}
-			objA = nullptr;			
-		}
+PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+		return PushdownResult::Pop;
 	}
-}
-/////////////////Other Functions///////////////////////
-
-/////////////////Update Game//////////////////////////
-void Game::UpdateGame(float dt, DebugMode* d) {
-
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
-	
 	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
+		players[i]->GetBulletPool()->Animate(*players[i]->GetRigidBody(), dt);
 		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
 		players[i]->GetBulletPool()->Animate(*(players[i]->GetRigidBody()), dt);
 		players[i]->GetRigidBody()->setAngularVelocity({ 0,0,0 });
@@ -412,18 +405,156 @@ void Game::UpdateGame(float dt, DebugMode* d) {
 			}
 		}
 	}
-
 	world->UpdatePositions(); //Maybe Change
-	GameTimer t;
+	renderer->Update(dt);
 	renderer->Render();
-	t.Tick();
-	float ti = t.GetTimeDeltaSeconds();
-	//if (1.0f / ti < 60) std::cout << "Update Time: " << ti << "s -- fps: " << 1.0f / ti << std::endl;
-	players[0]->GetBulletPool()->Animate(*players[0]->GetRigidBody(), dt);
+	UI->DrawUI();
+	renderer->NextFrame();
+	exectureTriggers();
+	return PushdownResult::NoChange;
+}
 
-	d->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
-	dynamicsWorld->getDispatchInfo();
-;	exectureTriggers();
+PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	PauseMenu* pMenu = dynamic_cast<PauseMenu*>(gameMenuPtr.get());
+	if (pMenu) {
+		if (pMenu->menuClose) {
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
+			PushdownState* s = new PushdownState(up);
+			*state = s;
+			return PushdownResult::Push;
+		}
+		if (pMenu->quitGame) {
+			end = true;
+			return PushdownResult::Pop;
+		}
+		if (pMenu->settingLevel) {
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return SettingMenuUpdateFunc(dt, st); };
+			PSAwakeFunction aw = [&]()->void {SettingMenuAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {SettingMenuSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
+			*state = s;
+			return PushdownResult::Push;
+		}
+		if (pMenu->mainLevel) {
+			if(hasInit) Destroy();
+			pMenu->hasInit = true;
+			Init(tasks);
+			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
+			PushdownState* s = new PushdownState(up);
+			*state = s;
+			return PushdownResult::Push;
+		}
+	}
+	UI->DrawUI();
+	renderer->NextFrame();
+	return PushdownResult::NoChange;;
+}
+
+void Game::MainMenuAwakeFunc() {
+	UI->PushMenu(gameMenuPtr);
+}
+
+void Game::MainMenuSleepFunc() {
+	UI->RemoveMenu(gameMenuPtr);
+}
+
+PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
+	UI->UpdateUI();
+	SettingMenu* pMenu = dynamic_cast<SettingMenu*>(debugMenuPtr.get());
+	if (pMenu) {
+		if (pMenu->back) {
+			return PushdownResult::Pop;
+		}
+	}
+	UI->DrawUI();
+	renderer->NextFrame();
+	return PushdownResult::NoChange;;
+}
+
+void Game::SettingMenuAwakeFunc() {
+	UI->PushMenu(debugMenuPtr);
+}
+
+void Game::SettingMenuSleepFunc() {
+	UI->RemoveMenu(debugMenuPtr);
+}
+
+void Game::InitGame() {
+	gameMenuPtr.reset(new PauseMenu());
+	debugMenuPtr.reset(new SettingMenu());
+	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
+	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
+	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };
+	PushdownState* s = new PushdownState(up,aw,sl);
+	pushDownMachine = PushdownMachine(s);
+}
+
+void Game::UpdateGame(float dt) {
+	pushDownMachine.Update(dt);
+}
+/////////////////Build Level//////////////////////////
+
+/////////////////Other Functions//////////////////////
+//void Game::GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d) {
+//	d->GetMemoryAllocationSize(*world);
+//	d->GetMemoryAllocationSize(*audioManager);
+//	d->GetMemoryAllocationSize(*renderer);
+//}
+
+void Game::exectureTriggers() {
+	for (int i = 0; i < world->GetGameObjects().size(); i++) {
+		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
+			GameEntity* objA = world->GetGameObjects()[i];
+				{
+					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(0)->getUserPointer();
+						//Execute triggers
+					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
+						Player* team = (Player*)objB;
+						if (team->GetPlayerTeam() == 1) {
+							Team1Score++;
+						}
+						else{ 
+							Team2Score++;
+						}
+						//David Sound Function
+						dynamicsWorld->removeCollisionObject(objA->getGhostObject());
+						world->RemoveGameObject(objA);
+						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
+						//world->RemoveGameObject(world->GetGameObjects()[i]);
+					}
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+						Bullet* tempobjA = (Bullet*)objA;
+						Player* tempobjB = (Player*)objB;
+						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam()*/ 1) {
+							//Same Team
+							//Restore Health
+							//canControl Bool
+						}
+						else{
+							//different Team
+							//reduce health
+							//canControl Bool	
+						}						
+						//David Sound Function
+						//(Bullet*) world->GetGameObjects()[i]->setFr
+						//Remove Bullet
+					}
+					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
+						std::cout << "Wall Painted" << std::endl;
+						//David Sound Function
+						//Chris's Painting
+					}
+				}		
+		}
+	}
+}
+/////////////////Other Functions///////////////////////
+
+/////////////////Update Game//////////////////////////
+void Game::Update(float dt) {
+	gameStateMachine.Update(dt);
 }
 /////////////////Update Game//////////////////////////
 

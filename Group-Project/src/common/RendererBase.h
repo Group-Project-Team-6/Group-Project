@@ -40,6 +40,9 @@ namespace NCL {
 				BeginFrame();
 				RenderFrame();
 				EndFrame();
+			}
+
+			void NextFrame() {
 				SwapBuffers();
 			}
 

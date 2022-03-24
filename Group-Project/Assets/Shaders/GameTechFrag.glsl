@@ -34,8 +34,9 @@ void main(void)
 	float shadow = 1.0; // New !
 	
 	if( IN . shadowProj . w > 0.0) { // New !
-		shadow = textureProj ( shadowTex , IN.shadowProj);	
+		shadow = textureProj ( shadowTex , IN.shadowProj) * 0.2;	
 	}
+	
 
 	vec3  incident = normalize ( lightPos - IN.worldPos );
 	float lambert  = max (0.0 , dot ( incident , IN.normal )) * 0.9; 
@@ -54,7 +55,7 @@ void main(void)
 	
 	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 	
-	fragColor.rgb = albedo.rgb * 0.05f; //ambient
+	fragColor.rgb = albedo.rgb * 0.001f; //ambient
 	
 	fragColor.rgb += albedo.rgb * lightColour.rgb * lambert * shadow; //diffuse light
 	

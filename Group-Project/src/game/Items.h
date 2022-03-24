@@ -31,13 +31,12 @@ private:
 	btTransform bttransform;
 	int itemScore;
 
-
-	btDefaultMotionState* itemMotion;
-	btCollisionShape* itemShape;
-	btRigidBody* itemRigidBody;
+	btDefaultMotionState* itemMotion = nullptr;
+	btCollisionShape* itemShape = nullptr;
+	btRigidBody* itemRigidBody = nullptr;
 
 	//graphics
-	MeshPtr itemMesh;
-	TexturePtr itemTex;
-	ShaderPtr itemShader;
+	MeshPtr itemMesh = nullptr;
+	TexturePtr itemTex = nullptr;
+	ShaderPtr itemShader = nullptr;
 };

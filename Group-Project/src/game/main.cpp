@@ -3,6 +3,7 @@
 //#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "../DebugMode/DebugMode.h"
+#include "../DebugMode/Tasks.h"
 
 #include <iostream>
 #include <memory>
@@ -37,6 +38,14 @@ void* operator new(size_t size, const char* name, MemoryInformations& Info) {
 
 using namespace NCL;
 
+void operator delete(void* p)
+{
+	if (p) {
+		free(p);
+		p = nullptr;
+	}
+}
+
 int main() {
 	Assets::FetchDirConfig("dir.txt");
 	Window* w = Window::CreateGameWindow("Physics Test Scene", 1920, 1080, false);
@@ -55,10 +64,12 @@ int main() {
 	d->AddMemoryInfo(info);
 	
 	srand(time(0));
-	w->ShowOSPointer(false);
+	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
+
 	w->GetTimer()->GetTimeDeltaSeconds();
-	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+	bool toggleDebug = false;
+	while (w->UpdateWindow() && !g->End()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		d->GetStartTime();
 		if (dt > 0.1f) {
@@ -105,7 +116,7 @@ int main() {
 		//	}
 		//);
 
-		g->UpdateGame(dt, d);
+		g->Update(dt);
 		d->GetEndTime();
 		tasks->queue(
 			[d, dt]

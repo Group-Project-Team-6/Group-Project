@@ -25,7 +25,6 @@
 //Encapsulate in namespace?
 
 class Game {
-
 public:
 	Game(Tasks* tasks, DebugMode& d);
 	~Game();

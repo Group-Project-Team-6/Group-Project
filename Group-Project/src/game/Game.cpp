@@ -388,6 +388,15 @@ void Game::LevelGeneration() {
 }
 
 PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
+	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
+	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
+	if (hud) {
+		hud->AddFPS(1.0f / dt);
+		for (int i = 0; i < debug->GetMemoryInfo().size(); i++) {
+			std::string msg = (std::string)(debug->GetMemoryInfo()[i].name) + ": " + (std::string)(debug->GetMemoryInfo()[i].info);
+			hud->AddMessage(msg);
+		}
+	}
 	UI->UpdateUI();
 	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		return PushdownResult::Pop;
@@ -408,7 +417,7 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 		}
 	}
 	world->UpdatePositions(); //Maybe Change
-	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
+
 	renderer->Update(dt);
 	renderer->Render();
 	UI->DrawUI();

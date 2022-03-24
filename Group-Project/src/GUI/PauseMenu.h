@@ -3,6 +3,9 @@
 #include <string>
 #include "../DebugMode/DebugMode.h"
 
+const int msgLimit = 100;
+const int fpsLimit = 100;
+
 namespace NCL {
 	namespace CSC8503 {
 		class PauseMenu : public GameMenu
@@ -44,18 +47,18 @@ namespace NCL {
 			void AddMessage(std::string s);
 			void AddFPS(float s);
 
-			int fpsLimit = 1000;
-			int msgLimit = 1000;
-
 			int numPlayer = 4;
 			int numTeam = 2;
 			int team1 = 0;
 			int team2 = 0;
 			float hp[4] = { 0.0f,0.0f,0.0f,0.0f };
 			float time = 0.0f;
-			std::vector<std::string> msg;
-			std::vector<float> fps;
 			bool debug = false;
+		private:
+			int fpsPos = 0;
+			int msgPos = 0;
+			std::string msg[msgLimit];
+			float fps[fpsLimit];
 		};
 	}
 }

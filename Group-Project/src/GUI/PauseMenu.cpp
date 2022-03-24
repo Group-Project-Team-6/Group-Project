@@ -1,4 +1,5 @@
 #include "PauseMenu.h"
+#include "../DebugMode/DebugMode.h"
 #include <iostream>
 
 using namespace NCL;
@@ -240,19 +241,25 @@ void GameHUD::Draw()
     ImGui::PopStyleColor(1);
 
     if (debug) {
+        ImGui::SetNextWindowFocus();
         ImGui::SetNextWindowPos(ImVec2(0, mainVp->Size.y * 0.8), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.2, mainVp->Size.y * 0.2), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.2), ImGuiCond_Always);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
         ImGui::Begin("Debug Tool", NULL, 0);
 
         // Plot some values
-        if(fps.size() > 0) ImGui::PlotLines("FPS: ", fps.data(), IM_ARRAYSIZE(fps.data()));
+        ImGui::PlotLines("FPS: ", fps, IM_ARRAYSIZE(fps));
 
         // Display contents in a scrolling region
-        ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+        float avgFps = 0;
+        for (int i = 0; i < fpsLimit; i++) {
+            avgFps += fps[i];
+        }
+        avgFps /= fpsLimit;
+        ImGui::TextColored(ImVec4(1, 1, 0, 1), std::to_string(avgFps).c_str());
         ImGui::BeginChild("Scrolling");
-        for (int n = msg.size() - 1; n >= 0; n--)
-            ImGui::Text(msg[n].c_str());
+        for (int n = 0 ; n < msgLimit; n++)
+            ImGui::Text(msg[(n + msgPos)% msgLimit].c_str());
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);
@@ -260,16 +267,10 @@ void GameHUD::Draw()
 }
 
 void GameHUD::AddMessage(std::string s) {
-    if (msg.size() > msgLimit) {
-        msg.erase(msg.begin());
-        msg.shrink_to_fit();
-        msg.push_back(s);
-    }
+    msg[msgPos] = s.c_str();
+    msgPos = (msgPos + 1) % msgLimit;
 }
 void GameHUD::AddFPS(float s) {
-    if (fps.size() > fpsLimit) {
-        fps.erase(fps.begin());
-        fps.shrink_to_fit();
-        fps.push_back(s);
-    }
+    fps[fpsPos] = s;
+    fpsPos = (fpsPos + 1) % fpsLimit;
 }

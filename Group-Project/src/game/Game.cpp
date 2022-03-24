@@ -55,7 +55,6 @@ Game::~Game() {
 void Game::Init(Tasks* tasks) {
 	hasInit = false;
 	loading = true;
-	//dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 	tasks->queue([this] {RenderLoading(); });
 	//tasks->queue([this] {InitPhysics(); });
 	//tasks->queue([this] {InitAudio(); });
@@ -66,7 +65,7 @@ void Game::Init(Tasks* tasks) {
 	InitPlayerInput();
 	InitScene();
 	//InitItems();
-	//LevelGeneration();
+	LevelGeneration();
 	InitCharacter();
 
 	loading = false;
@@ -111,9 +110,7 @@ void Game::Destroy() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(false);
-	//world->SetLocalGame(true);
-	//renderer.reset();
+	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -283,7 +280,7 @@ void Game::LevelGeneration() {
 					switch (ch)
 					{
 					case 'P':
-						if (level >= 0) {
+						if (level > 0) {
 							floorsTransform.SetPosition(position + Vector3(0, -unitLength * .45f, 0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
 							floors.push_back(new Wall(floorsTransform));
@@ -411,6 +408,7 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 		}
 	}
 	world->UpdatePositions(); //Maybe Change
+	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
 	renderer->Update(dt);
 	renderer->Render();
 	UI->DrawUI();
@@ -571,6 +569,7 @@ void Game::exectureTriggers() {
 					}
 					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
 						std::cout << "Wall Painted" << std::endl;
+						if(dynamic_cast<Bullet*>(objB)->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
 						//David Sound Function
 						//Chris's Painting
 					}

@@ -79,7 +79,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 void Bullet::Animate(btRigidBody& player, float dt) {
 	if (!inUse()) return;
-	if(paintable) Painter::Paint(this, this->GetTransform().GetPosition());
+	//if(paintable) Painter::Paint(this, this->renderObject->GetTransform()->GetPosition());
 	framesLeft -=dt;
 	if (framesLeft <= 0.0f) {
 		RemoveFromPool();

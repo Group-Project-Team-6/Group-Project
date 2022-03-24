@@ -56,10 +56,12 @@ protected:
 	void InitGame();
 	void UpdateGame(float dt);
 	PushdownResult GameUpdateFunc(float dt, PushdownState** state);
+
 	// Main Game Menu
 	PushdownResult MainMenuUpdateFunc(float dt, PushdownState** state);
 	void MainMenuAwakeFunc();
 	void MainMenuSleepFunc();
+
 	// Setting Menu
 	PushdownResult SettingMenuUpdateFunc(float dt, PushdownState** state);
 	void SettingMenuAwakeFunc();
@@ -67,7 +69,6 @@ protected:
 	//void InitHUD
 	//InitNetworking?
 	void exectureTriggers();
-
 
 	//Tools
 	TransformConverter transformConverter;
@@ -78,6 +79,8 @@ protected:
 	StateMachine gameStateMachine;
 	PushdownMachine pushDownMachine = PushdownMachine(nullptr);
 	int winningTeam = -1;
+	int Team1Score;
+	int Team2Score;
 
 	//Audio
 	AudioManager* audioManager = nullptr;

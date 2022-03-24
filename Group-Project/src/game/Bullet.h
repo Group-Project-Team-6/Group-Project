@@ -6,15 +6,8 @@
 
 class Bullet : public GameEntity{
 public:
-	Bullet() {
-		bulletMesh = nullptr;
-		bulletTex = nullptr;
-		bulletShader = nullptr;
-		bulletMotion = nullptr;
-		bulletShape = nullptr;
-		bulletRigidBody = nullptr;
-	};
-	Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
+
+	Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld);
 	~Bullet();
 
 	void Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& camera, bool paintable);
@@ -32,6 +25,10 @@ public:
 		bulletRigidBody = newRigidBody;
 	}
 
+	int GetPlayerTeam() const {
+		return bulletTeam;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = bulletRigidBody->getWorldTransform();
@@ -44,7 +41,6 @@ public:
 
 		transform.SetOrientation(nclRot);
 		transform.SetPosition(nclPos);
-
 	}
 
 	virtual void SetFrame(float f) { framesLeft = f; }
@@ -61,6 +57,7 @@ protected:
 	//btTransform bttransform;
 	//TransformConverter transformConverter;
 
+	int bulletTeam;
 	int bulletMass;
 	btVector3 bulletInertia;
 	float bulletFriction;

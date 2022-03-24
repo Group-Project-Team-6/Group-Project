@@ -2,14 +2,12 @@
 #include <math.h>
 #include "Painter.h"
 
-Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
+Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
 	InitAssets();
 	name = "Bullet";
 	speed = 20;
-
-	//bulletMass = 4;
-	//bulletInertia = { 1, 1, 1 };
+	bulletTeam = team;
 	transform.SetPosition({ 0, 25, 0 });
 	transform.SetOrientation({ 1, 1, 1, 1 });
 	transform.SetScale({ .2, .2, .2 });

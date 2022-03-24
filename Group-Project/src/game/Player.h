@@ -6,7 +6,7 @@
 
 class Player : public GameEntity {
 public:
-	Player(Vector3 position, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
+	Player(Vector3 position, int team, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
 	~Player();
 
 	virtual float GetPitch() {
@@ -41,6 +41,10 @@ public:
 		return bullets;
 	}
 
+	int GetPlayerTeam() const {
+		return playerTeam;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
@@ -56,15 +60,17 @@ public:
 
 	}
 
-	void InitAssets();
 
 protected:
+	void InitAssets();
 	//Temp
 	MeshPtr playerMesh = nullptr;
 	TexturePtr playerTex = nullptr;
 	ShaderPtr playerShader = nullptr;
 
 	//general
+	int playerTeam;
+	int health;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;

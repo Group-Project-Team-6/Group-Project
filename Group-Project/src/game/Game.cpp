@@ -62,7 +62,7 @@ void Game::Init(Tasks* tasks) {
 	InitAssets();
 	InitScene();
 	InitItems();
-	LevelGeneration();
+	//LevelGeneration();
 	InitCharacter();
 
 	loading = false;
@@ -199,17 +199,17 @@ void Game::InitItems() {
 	world->AddGameObject(items[0]);
 	dynamicsWorld->addCollisionObject(items[0]->getGhostObject());
 
-	Transform test;
+	/*Transform test;
 	test.SetPosition({ 25, 2, -15 });
 	walls[0] = new Wall(test);
 	dynamicsWorld->addCollisionObject(walls[0]->getGhostObject());
-	world->AddGameObject(walls[0]);
+	world->AddGameObject(walls[0]);*/
 }
 
 void Game::InitCharacter() {
 	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
 		if ((world->IsLocalGame() || i == 0) && i < 4) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
@@ -390,7 +390,6 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	}
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);
-	exectureTriggers();
 	for (int i = 0; i < world->GetLocalPlayerCount(); i++) {
 		players[i]->GetBulletPool()->Animate(*players[i]->GetRigidBody(), dt);
 		world->GetMainCamera(i)->UpdateCamera(players[i]->GetTransform().GetPosition(), players[i]->GetTransform().GetOrientation().ToEuler().y, players[i]->GetPitch(), dt);
@@ -409,6 +408,7 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	renderer->Render();
 	UI->DrawUI();
 	renderer->NextFrame();
+	exectureTriggers();
 	return PushdownResult::NoChange;
 }
 
@@ -492,7 +492,6 @@ void Game::InitGame() {
 void Game::UpdateGame(float dt) {
 	pushDownMachine.Update(dt);
 }
-
 /////////////////Build Level//////////////////////////
 
 /////////////////Other Functions//////////////////////
@@ -506,44 +505,47 @@ void Game::exectureTriggers() {
 	for (int i = 0; i < world->GetGameObjects().size(); i++) {
 		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
 			GameEntity* objA = world->GetGameObjects()[i];
-			for (int j = 0; j < world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects(); j++) {
 				{
-					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(j)->getUserPointer();
-					std::cout << objA->GetName() << std::endl;
-					std::cout << objB->GetName() << std::endl;
+					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(0)->getUserPointer();
 						//Execute triggers
 					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
-						std::cout << "Player has picked up item" << std::endl;
-						//Which Team? ObjB
-						//GetTeam()
-						//Team1 Score++
-						//Team2 Score++
-						// 
-						//Delete Item; ObjA
-						//Remove form Dynamics World
-						//Remove From GameWorld
-						//Call Deconstructor  
-						//return;
+						Player* team = (Player*)objB;
+						if (team->GetPlayerTeam() == 1) {
+							Team1Score++;
+						}
+						else{ 
+							Team2Score++;
+						}
+						//David Sound Function
+						dynamicsWorld->removeCollisionObject(objA->getGhostObject());
+						world->RemoveGameObject(objA);
+						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
+						//world->RemoveGameObject(world->GetGameObjects()[i]);
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
-						//Which Team? ObjB
-						//Set Team for the Bullet from its player
-						//GetTeam()
-						//Same Team? Health++ if < 3;
-						//Different Team? Health-- if > 0'
-						// if Health is less than 0, bool canControl;
-						//return;
+						Bullet* tempobjA = (Bullet*)objA;
+						Player* tempobjB = (Player*)objB;
+						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam()*/ 1) {
+							//Same Team
+							//Restore Health
+							//canControl Bool
+						}
+						else{
+							//different Team
+							//reduce health
+							//canControl Bool	
+						}						
+						//David Sound Function
+						//(Bullet*) world->GetGameObjects()[i]->setFr
+						//Remove Bullet
 					}
 					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
 						std::cout << "Wall Painted" << std::endl;
+						//David Sound Function
 						//Chris's Painting
 					}
-
-					objB = nullptr;
-				}
-			}
-			objA = nullptr;			
+				}		
 		}
 	}
 }

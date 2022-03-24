@@ -5,9 +5,9 @@ class  btDiscreteDynamicsWorld;
 
 class BulletPool {
 public:
-	BulletPool(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
+	BulletPool(int team, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) {
 		for (int i = 0; i < poolSize; ++i) {
-			bullets[i] = new Bullet(world, dynamicsWorld);
+			bullets[i] = new Bullet(team, world, dynamicsWorld);
 		}
 	};
 	~BulletPool();

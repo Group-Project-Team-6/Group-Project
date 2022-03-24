@@ -28,6 +28,9 @@ Game::Game(Tasks* tasks) : tasks(tasks) {
 		walls[n] = nullptr;
 		n++;
 	}
+	for (int i = 0; i < 4; i++) {
+		playerInput[i] = nullptr;
+	}
 	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
 	State* initState = new State([&](float dt)->void { InitWorld();});
 	State* endGameState = new State([&](float dt)->void { });
@@ -43,36 +46,7 @@ Game::Game(Tasks* tasks) : tasks(tasks) {
 
 Game::~Game() {
 	//delete Physics
-	delete dynamicsWorld;
-	delete broadphase;
-	delete collisionConfiguration;
-	delete dispatcher;
-	delete solver;
-
-	for (int i = 0; i < 4; i++) {
-		delete playerInput[i];
-	}
-	delete audioManager;
-	delete world;
-	AssetsManager::UnloadMesh("WallMesh", 0);
-	AssetsManager::UnloadMesh("CubeMesh", 0);
-	AssetsManager::UnloadMesh("SphereMesh", 0);
-	AssetsManager::UnloadMesh("CapsuleMesh", 0);
-	AssetsManager::UnloadShader("GameTechShaderSet", 0);
-	AssetsManager::UnloadTexture("CheckerboardTex", 0);
-	//delete GameEntities
-	//if(ground) delete ground;
-	//for (auto i : players) {
-	//	delete i;
-	//}
-
-	//for (auto i : items) {
-	//	delete i;
-	//}
-
-	//for (auto i : walls) {
-	//	delete i;
-	//}
+	Game::Destroy();
 }
 
 void Game::Init(Tasks* tasks) {

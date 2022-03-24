@@ -104,7 +104,9 @@ MeshGeometry* OGLRenderer::LoadMesh(const std::string& name) {
 }
 
 ShaderBase* OGLRenderer::LoadShader(ShaderMap shaderStages) {
-	return new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+	OGLShader* b =  new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+	if (b->GetProgramID() <= 0) return nullptr;
+	return b;
 }
 
 ShaderBase* OGLRenderer::LoadShader(const std::string& shaderSet) {
@@ -138,15 +140,15 @@ void OGLRenderer::SwapBuffers()   {
 	::SwapBuffers(deviceContext);
 }
 
-void OGLRenderer::BindShader(ShaderBase*s) {
+void OGLRenderer::BindShader(OGLShader*s) {
 	if (s == boundShader) return;
 	if (!s) {
 		glUseProgram(0);
 		boundShader = nullptr;
 	}
-	else if (OGLShader* oglShader = dynamic_cast<OGLShader*>(s)) {
-		glUseProgram(oglShader->programID);
-		boundShader = oglShader;
+	else if (s) {
+		glUseProgram(s->programID);
+		boundShader = s;
 	}
 	else {
 		std::cout << __FUNCTION__ << " has received invalid shader?!" << std::endl;
@@ -229,6 +231,8 @@ void OGLRenderer::BindTextureToShader(const TextureBase*t, const std::string& un
 
 	if (slot < 0) {
 		std::cout << "No slot left" << std::endl;
+		int a;
+		std::cin >> a;
 		return;
 	}
 

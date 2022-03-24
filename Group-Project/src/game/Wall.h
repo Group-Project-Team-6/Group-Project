@@ -8,7 +8,7 @@
 class Wall : public GameEntity {
 public:
 	Wall(Transform buildTransform);
-	~Wall();
+	virtual ~Wall();
 
 	void InitAssets(); //Temp
 
@@ -35,4 +35,6 @@ private:
 	MeshPtr wallMesh = nullptr;
 	TexturePtr wallTex = nullptr;
 	ShaderPtr wallShader = nullptr;
+
+	TexID texID = -1;
 };

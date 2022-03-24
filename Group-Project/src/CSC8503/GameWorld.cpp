@@ -16,6 +16,7 @@ GameWorld::GameWorld()	{
 }
 
 GameWorld::~GameWorld()	{
+	ClearAndErase();
 }
 
 void GameWorld::Clear() {
@@ -24,8 +25,11 @@ void GameWorld::Clear() {
 }
 
 void GameWorld::ClearAndErase() {
-	for (auto& i : gameObjects) {
-		delete i;
+	for (int i = 0; i < gameObjects.size(); i++) {
+			delete gameObjects[i];
+	}
+	for (int i = 0; i < mainCameras.size(); i++) {
+		delete mainCameras[i];
 	}
 	Clear();
 }

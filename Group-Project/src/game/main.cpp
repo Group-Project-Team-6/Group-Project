@@ -36,8 +36,6 @@ void* operator new(size_t size, const char* name, MemoryInformations& Info) {
 //	free(ptr);
 //}
 
-using namespace NCL;
-
 void operator delete(void* p)
 {
 	if (p) {
@@ -45,6 +43,8 @@ void operator delete(void* p)
 		p = nullptr;
 	}
 }
+
+using namespace NCL;
 
 int main() {
 	Assets::FetchDirConfig("dir.txt");

@@ -20,7 +20,7 @@ using std::string;
 class GameEntity {
 public:
 	GameEntity(string name = "");
-	~GameEntity();
+	virtual ~GameEntity();
 
 	//Graphics
 	RenderObject* GetRenderObject() const {

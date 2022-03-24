@@ -27,7 +27,6 @@ Item::Item(Vector3 position, int score) {
 Item::~Item() {
 	delete itemMotion;
 	delete itemShape;
-	delete ghost;
 }
 
 void Item::InitAssets() {

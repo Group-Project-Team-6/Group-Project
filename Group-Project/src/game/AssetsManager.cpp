@@ -2,7 +2,7 @@
 #include "../common/TextureLoader.h"
 #include "../common/json/json.hpp"
 
-RendererPtr AssetsManager::renderer(nullptr);
+RendererBase* AssetsManager::renderer(nullptr);
 std::map<std::string, std::vector<TexturePtr>> AssetsManager::texturePoolMap;
 std::map<std::string, std::vector<ShaderPtr>> AssetsManager::shaderPoolMap;
 std::map<std::string, std::vector<MeshPtr>> AssetsManager::meshPoolMap;
@@ -29,6 +29,9 @@ TexID AssetsManager::LoadTextureFromFile(std::string name, std::string fileName,
 		
 		if (t.get()) return LoadTexture(name,t, isShared);
 	}
+	std::cout << "Cannot load Texture" << std::endl;
+	int a;
+	std::cin >> a;
 	return -1;
 }
 ShaderID AssetsManager::LoadShaderFromFile(std::string name, std::string fileName, bool isShared) {
@@ -37,6 +40,9 @@ ShaderID AssetsManager::LoadShaderFromFile(std::string name, std::string fileNam
 		s.reset(renderer->LoadShader(fileName));
 		if (s.get()) return LoadShader(name,s, isShared);
 	}
+	std::cout << "Cannot load Shader" << std::endl;
+	int a;
+	std::cin >> a;
 	return -1;
 }
 MeshID AssetsManager::LoadMeshFromFile(std::string name, std::string fileName, bool isShared) {
@@ -45,6 +51,9 @@ MeshID AssetsManager::LoadMeshFromFile(std::string name, std::string fileName, b
 		m.reset(renderer->LoadMesh(fileName));
 		if (m.get()) return LoadMesh(name,m, isShared);
 	}
+	std::cout << "Cannot load Mesh" << std::endl;;
+	int a;
+	std::cin >> a;
 	return -1;
 }
 
@@ -208,9 +217,61 @@ void AssetsManager::UnloadMesh(std::string name, MeshID id) {
 }
 
 void AssetsManager::SetRenderer(RendererPtr renderer) {
-	AssetsManager::renderer = renderer;
+	AssetsManager::renderer = renderer.get();
+	//std::cout << "Rendrer Set! " << AssetsManager::renderer << std::endl;
+	//int  a;
+	//std::cin >> a;
+}
+void AssetsManager::Reset() {
+	for (auto it = texturePoolMap.begin(); it != texturePoolMap.end(); it++) {
+		for (auto its = it->second.begin(); its != it->second.end(); its++) {
+			its->reset();
+		}
+		it->second.clear();
+	}
+	texturePoolMap.clear();
+
+	for (auto it = shaderPoolMap.begin(); it != shaderPoolMap.end(); it++) {
+		for (auto its = it->second.begin(); its != it->second.end(); its++) {
+			its->reset();
+		}
+		it->second.clear();
+	}
+	shaderPoolMap.clear();
+
+	for (auto it = meshPoolMap.begin(); it != meshPoolMap.end(); it++) {
+		for (auto its = it->second.begin(); its != it->second.end(); its++) {
+			its->reset();
+		}
+		it->second.clear();
+	}
+	meshPoolMap.clear();
+
+	for (auto it = TexStackMap.begin(); it != TexStackMap.end(); it++) {
+		for (int its = 0; its < it->second.size(); its++) {
+			it->second.pop();
+		}
+	}
+	TexStackMap.clear();
+
+	for (auto it = ShaderStackMap.begin(); it != ShaderStackMap.end(); it++) {
+		for (int its = 0; its < it->second.size(); its++) {
+			it->second.pop();
+		}
+	}
+	ShaderStackMap.clear();
+
+	for (auto it = MeshStackMap.begin(); it != MeshStackMap.end(); it++) {
+		for (int its = 0; its < it->second.size(); its++) {
+			it->second.pop();
+		}
+	}
+	MeshStackMap.clear();
 }
 
+
 RendererPtr AssetsManager::GetRenderer() {
-	return renderer;
+	RendererPtr p;
+	p.reset(renderer);
+	return p;
 }

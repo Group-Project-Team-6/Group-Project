@@ -32,6 +32,31 @@ namespace NCL {
 			bool toggleDebug = false;
 			bool back = false;
 		};
+
+		class GameHUD : public GameMenu
+		{
+		public:
+			GameHUD() {};
+			virtual ~GameHUD() {};
+			
+			virtual void Draw() override;
+
+			void AddMessage(std::string s);
+			void AddFPS(float s);
+
+			int fpsLimit = 1000;
+			int msgLimit = 1000;
+
+			int numPlayer = 4;
+			int numTeam = 2;
+			int team1 = 0;
+			int team2 = 0;
+			float hp[4] = { 0.0f,0.0f,0.0f,0.0f };
+			float time = 0.0f;
+			std::vector<std::string> msg;
+			std::vector<float> fps;
+			bool debug = false;
+		};
 	}
 }
 

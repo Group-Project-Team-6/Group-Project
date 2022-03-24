@@ -31,10 +31,11 @@ Game::Game(Tasks* tasks, DebugMode& d) : tasks(tasks) {
 		walls[n] = nullptr;
 		n++;
 	}
+	for (int i = 0; i < 4; i++) {
+		playerInput[i] = nullptr;
+	}
 	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
-	State* initState = new State([&](float dt)->void {
-		InitWorld();
-		});
+	State* initState = new State([&](float dt)->void { InitWorld();});
 	State* endGameState = new State([&](float dt)->void { });
 	gameStateMachine.AddState(initState);
 	gameStateMachine.AddState(gameState);
@@ -47,20 +48,22 @@ Game::Game(Tasks* tasks, DebugMode& d) : tasks(tasks) {
 }
 
 Game::~Game() {
-	Destroy();
+	//delete Physics
+	Game::Destroy();
 }
 
 void Game::Init(Tasks* tasks) {
+	hasInit = false;
 	loading = true;
-	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
+	//dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 	tasks->queue([this] {RenderLoading(); });
 	//tasks->queue([this] {InitPhysics(); });
 	//tasks->queue([this] {InitAudio(); });
 	//tasks->queue([this] {InitPlayerInput(); });
+	InitAssets();
 	InitPhysics();
 	InitAudio();
 	InitPlayerInput();
-	InitAssets();
 	InitScene();
 	//InitItems();
 	//LevelGeneration();
@@ -72,25 +75,25 @@ void Game::Init(Tasks* tasks) {
 }
 
 void Game::Destroy() {
-	//delete Physics
 	delete dynamicsWorld;
 	delete broadphase;
 	delete collisionConfiguration;
 	delete dispatcher;
 	delete solver;
-
-	//delete world
-	//delete world;
-
 	for (int i = 0; i < 4; i++) {
-		delete playerInput[i];
+		if(playerInput[i]) delete playerInput[i];
 	}
 	delete audioManager;
-	sphereMesh.reset();
-	cubeMesh.reset();
-	capsuleMesh.reset();
-	basicTex.reset();
-	basicShader.reset();
+	AssetsManager::UnloadMesh("WallMesh", 0);
+	AssetsManager::UnloadMesh("CubeMesh", 0);
+	AssetsManager::UnloadMesh("SphereMesh", 0);
+	AssetsManager::UnloadMesh("CapsuleMesh", 0);
+	AssetsManager::UnloadShader("GameTechShaderSet",0);
+	AssetsManager::UnloadTexture("CheckerboardTex", 0);
+	AssetsManager::Reset();
+	//delete world;
+	//renderer.reset();
+	//UI.reset();
 	//delete GameEntities
 	//if(ground) delete ground;
 	//for (auto i : players) {
@@ -109,6 +112,8 @@ void Game::Destroy() {
 void Game::InitWorld() {
 	world = new GameWorld();
 	world->SetLocalGame(false);
+	//world->SetLocalGame(true);
+	//renderer.reset();
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -121,7 +126,6 @@ void Game::RenderLoading() {
 	while (loading) {
 		loadingRenderer->Render();
 		loadingRenderer->NextFrame();
-		Sleep(1);
 	}
 }
 
@@ -415,13 +419,23 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	return PushdownResult::NoChange;
 }
 
+void Game::GameAwakeFunc() {
+	UI->PushMenu(gameHUDPtr);
+}
+
+void Game::GameSleepFunc() {
+	UI->RemoveMenu(gameHUDPtr);
+}
+
 PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 	UI->UpdateUI();
 	PauseMenu* pMenu = dynamic_cast<PauseMenu*>(gameMenuPtr.get());
 	if (pMenu) {
 		if (pMenu->menuClose) {
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
-			PushdownState* s = new PushdownState(up);
+			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -438,11 +452,16 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			return PushdownResult::Push;
 		}
 		if (pMenu->mainLevel) {
-			if(hasInit) Destroy();
-			pMenu->hasInit = true;
-			Init(tasks);
+			if (!hasInit) {
+				Init(tasks);
+				hasInit = true;
+				pMenu->hasInit = true;
+			}
+			Reset();
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
-			PushdownState* s = new PushdownState(up);
+			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -463,11 +482,13 @@ void Game::MainMenuSleepFunc() {
 PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
 	UI->UpdateUI();
 	SettingMenu* pMenu = dynamic_cast<SettingMenu*>(debugMenuPtr.get());
+	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	if (pMenu) {
 		debug->SetDebugMode(pMenu->toggleDebug);
 		if (pMenu->back) {
 			return PushdownResult::Pop;
 		}
+		hud->debug = pMenu->toggleDebug;
 	}
 	UI->DrawUI();
 	renderer->NextFrame();
@@ -485,11 +506,16 @@ void Game::SettingMenuSleepFunc() {
 void Game::InitGame() {
 	gameMenuPtr.reset(new PauseMenu());
 	debugMenuPtr.reset(new SettingMenu());
+	gameHUDPtr.reset(new GameHUD());
 	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
 	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
 	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };
 	PushdownState* s = new PushdownState(up,aw,sl);
 	pushDownMachine = PushdownMachine(s);
+}
+
+void Game::Reset() {
+	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 }
 
 void Game::UpdateGame(float dt) {

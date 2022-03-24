@@ -1,11 +1,19 @@
 #include "DebugMode.h"
 
+DebugMode::DebugMode(int num) {
+    InitTasks(num);
+}
+
 void DebugMode::ToggleDebugMode() {
     isDebug = !isDebug;
 }
 
-void DebugMode::DebugUpdate() {
+void DebugMode::UpdateDebug(float dt) {
     if (!isDebug) {
         return;
     }
+    GetMemoryInfo();
+	GetPhysicsInfo();
+	GetFPS(dt);
+	std::cout << std::endl;
 }

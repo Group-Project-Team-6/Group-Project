@@ -46,14 +46,13 @@ int main() {
 
 	MemoryInformations info;
 	//std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name(), info) DebugMode());
-	DebugMode* d = new(typeid(DebugMode).name(), info) DebugMode();
-	d->SetMemoryInfo(info);
+	DebugMode* d = new(typeid(DebugMode).name(), info) DebugMode(4);
+	d->AddMemoryInfo(info);
 
 	Tasks* tasks = d->GetTasks();
-	d->InitTasks(2);
 
 	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks));
-	d->SetMemoryInfo(info);
+	d->AddMemoryInfo(info);
 	
 	srand(time(0));
 	w->ShowOSPointer(false);
@@ -79,25 +78,41 @@ int main() {
 		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
 			d->ToggleDebugMode();
 		}
-		if (d->getDebugMode()) {
-			tasks->queue(
-				[d, w, g, dt]
-				{
-					std::cout << "Current Thread ID: " << std::this_thread::get_id() << "\n" << std::endl; //For tracking current thread
-					//std::cout << "\x1B[2J\x1B[H";
-					//d->GetMemoryAllocationSize(*w);
-					//d->GetMemoryAllocationSize(*d);
-					//d->GetMemoryAllocationSize(*g);
-					//g->GetPhysicsTestSceneDebugData(d);
-					d->GetMemoryInfo();
-					d->GetPhysicsInfo();
-					d->GetFPS(dt);
-					std::cout << std::endl;
-				}
-			);
-			tasks->waitFinished();
-		}
+		//if (d->getDebugMode()) {
+		//	tasks->queue(
+		//		[d, w, g, dt]
+		//		{
+		//			std::cout << "Current Thread ID: " << std::this_thread::get_id() << "\n" << std::endl; //For tracking current thread
+		//			//std::cout << "\x1B[2J\x1B[H";
+		//			//d->GetMemoryAllocationSize(*w);
+		//			//d->GetMemoryAllocationSize(*d);
+		//			//d->GetMemoryAllocationSize(*g);
+		//			//g->GetPhysicsTestSceneDebugData(d);
+		//			d->GetMemoryInfo();
+		//			d->GetPhysicsInfo();
+		//			d->GetFPS(dt);
+		//			std::cout << std::endl;
+		//		}
+		//	);
+		//	tasks->waitFinished();
+		//}
+
+		//tasks->queue(
+		//	[g, d, dt]
+		//	{
+		//		g->UpdateGame(dt, d);  //Memory access violation
+		//	}
+		//);
+
 		g->UpdateGame(dt, d);
+
+		tasks->queue(
+			[d, dt]
+			{
+				d->UpdateDebug(dt);
+			}
+		);	
+		tasks->waitFinished();
 	}
 	
 	Window::DestroyGameWindow();
@@ -106,7 +121,6 @@ int main() {
 	d->GetMemoryInfo();
 	
 	delete d;
-	
 
 	return 0;
 }

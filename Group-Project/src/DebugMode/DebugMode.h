@@ -17,35 +17,34 @@ struct MemoryInformations {
 
 class DebugMode {
     public:
-        DebugMode() {};
+        DebugMode(int num);
         ~DebugMode() { std::cout << "delete DebugMode" << std::endl; };
 
-        template<class T>
-        inline void GetMemoryAllocationSize(T&& t) {
-            MemorySize = sizeof(t);
-            const char* name = typeid(t).name();
-            std::cout << "Memory Size for " << name << ": " << MemorySize << " Byte." << std::endl;
-            std::cout << "Memory Location for " << name << ": " << &t << std::endl;
-        }
+        //template<class T>
+        //inline void GetMemoryAllocationSize(T&& t) {
+        //    MemorySize = sizeof(t);
+        //    const char* name = typeid(t).name();
+        //    std::cout << "Memory Size for " << name << ": " << MemorySize << " Byte." << std::endl;
+        //    std::cout << "Memory Location for " << name << ": " << &t << std::endl;
+        //}
 
         inline void GetFPS(float dt) {
             std::cout << "Average FPS: " << (1.0f / dt) << std::endl;
         }
 
-        void InitTasks(int num) {
+        inline void InitTasks(int num) {
             tasks.start(num);
-            //GetMemoryAllocationSize(tasks);
         }
 
         Tasks* GetTasks() { 
             return &tasks; 
         }
 
-        void SetMemoryInfo(MemoryInformations info) {
+        void AddMemoryInfo(MemoryInformations info) {
             memoryInformations.push_back(info);
         }
 
-        void GetMemoryInfo() {
+        inline void GetMemoryInfo() {
             for (int i = 0; i < memoryInformations.size(); ++i) {
                 std::cout << memoryInformations.at(i).info << std::endl;
             }
@@ -64,21 +63,23 @@ class DebugMode {
             ManifoldsInfo = t;
         }
 
-        void GetPhysicsInfo() {
+        inline void GetPhysicsInfo() {
             std::cout << "Number of Manifold(s): " << ManifoldsInfo << "\n" << std::endl;
         }
 
         void ToggleDebugMode();
         bool getDebugMode() { return isDebug; }
-        void DebugUpdate();
+
+        void UpdateDebug(float dt);
        
     private:
+        Tasks tasks;
+
         bool isDebug = false;
-
         size_t MemorySize;
-
-        std::vector<MemoryInformations> memoryInformations;
         int ManifoldsInfo;
 
-        Tasks tasks;
+        
+
+        std::vector<MemoryInformations> memoryInformations;
 };

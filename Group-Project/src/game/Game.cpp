@@ -415,6 +415,7 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	renderer->Render();
 	UI->DrawUI();
 	renderer->NextFrame();
+	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
 	exectureTriggers();
 	return PushdownResult::NoChange;
 }

@@ -89,7 +89,7 @@ void Game::Destroy() {
 	AssetsManager::Reset();
 	delete world;
 	renderer.reset();
-	//UI.reset();
+	UI.reset();
 	//delete GameEntities
 	//if(ground) delete ground;
 	//for (auto i : players) {

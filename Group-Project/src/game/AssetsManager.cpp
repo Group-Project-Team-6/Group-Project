@@ -218,6 +218,9 @@ void AssetsManager::UnloadMesh(std::string name, MeshID id) {
 
 void AssetsManager::SetRenderer(RendererPtr renderer) {
 	AssetsManager::renderer = renderer.get();
+	//std::cout << "Rendrer Set! " << AssetsManager::renderer << std::endl;
+	//int  a;
+	//std::cin >> a;
 }
 void AssetsManager::Reset() {
 	for (auto it = texturePoolMap.begin(); it != texturePoolMap.end(); it++) {
@@ -264,6 +267,7 @@ void AssetsManager::Reset() {
 		}
 	}
 	MeshStackMap.clear();
+	renderer = nullptr;
 }
 
 

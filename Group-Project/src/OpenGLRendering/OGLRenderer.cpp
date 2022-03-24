@@ -140,19 +140,22 @@ void OGLRenderer::SwapBuffers()   {
 	::SwapBuffers(deviceContext);
 }
 
-void OGLRenderer::BindShader(ShaderBase*s) {
+void OGLRenderer::BindShader(OGLShader*s) {
 	if (s == boundShader) return;
 	if (!s) {
 		glUseProgram(0);
 		boundShader = nullptr;
+		std::cout << "Bind Null" << std::endl;
 	}
-	else if (OGLShader* oglShader = dynamic_cast<OGLShader*>(s)) {
-		glUseProgram(oglShader->programID);
-		boundShader = oglShader;
+	else if (s) {
+		glUseProgram(s->programID);
+		boundShader = s;
+		std::cout << "Bind shader" << std::endl;
 	}
 	else {
 		std::cout << __FUNCTION__ << " has received invalid shader?!" << std::endl;
 		boundShader = nullptr;
+		std::cout << "Bind NA" << std::endl;
 	}
 }
 

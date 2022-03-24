@@ -395,7 +395,7 @@ void Game::exectureTriggers() {
 /////////////////Other Functions///////////////////////
 
 /////////////////Update Game//////////////////////////
-void Game::UpdateGame(float dt, std::shared_ptr<DebugMode> d) {
+void Game::UpdateGame(float dt, DebugMode* d) {
 
 	dynamicsWorld->stepSimulation(dt, 0);
 	audioManager->AudioUpdate(world, dt);

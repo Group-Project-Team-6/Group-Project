@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
 #include "Tasks.h"
 
@@ -14,6 +15,8 @@ struct MemoryInformations {
     const char* name;
     std::string info;
 };
+
+typedef  std::chrono::time_point<std::chrono::high_resolution_clock>  Timepoint;
 
 class DebugMode {
     public:
@@ -72,6 +75,20 @@ class DebugMode {
 
         void UpdateDebug(float dt);
        
+        void GetStartTime() {
+            start = std::chrono::high_resolution_clock::now();
+        }
+
+        void GetEndTime() {
+            end = std::chrono::high_resolution_clock::now();
+        }
+
+        void GetRunTime() {
+            std::chrono::duration<double> elapsed = (end - start) * 1000;
+            std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
+        }
+
+
     private:
         Tasks tasks;
 
@@ -79,7 +96,7 @@ class DebugMode {
         size_t MemorySize;
         int ManifoldsInfo;
 
-        
+        Timepoint start, end;
 
         std::vector<MemoryInformations> memoryInformations;
 };

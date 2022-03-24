@@ -15,5 +15,6 @@ void DebugMode::UpdateDebug(float dt) {
     GetMemoryInfo();
 	GetPhysicsInfo();
 	GetFPS(dt);
+    GetRunTime();
 	std::cout << std::endl;
 }

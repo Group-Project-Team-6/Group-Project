@@ -25,7 +25,7 @@ public:
 	Game(Tasks* tasks);
 	~Game();
 
-	void UpdateGame(float dt, std::shared_ptr<DebugMode> d);
+	void UpdateGame(float dt, DebugMode* d);
 	void GetPhysicsTestSceneDebugData(std::shared_ptr<DebugMode> d);
 
 

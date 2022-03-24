@@ -6,11 +6,20 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 #include "Tasks.h"
 
+struct MemoryInformations {
+    const char* name;
+    std::string info;
+};
+
 class DebugMode {
     public:
+        DebugMode() {};
+        ~DebugMode() { std::cout << "delete DebugMode" << std::endl; };
+
         template<class T>
         inline void GetMemoryAllocationSize(T&& t) {
             MemorySize = sizeof(t);
@@ -32,14 +41,23 @@ class DebugMode {
             return &tasks; 
         }
 
-        void SetMemoryInfo(std::string info) {
-            MemoryInfo.push_back(info);
+        void SetMemoryInfo(MemoryInformations info) {
+            memoryInformations.push_back(info);
         }
 
         void GetMemoryInfo() {
-            for (int i = 0; i < MemoryInfo.size(); ++i) {
-                std::cout << MemoryInfo.at(i) << std::endl;
+            for (int i = 0; i < memoryInformations.size(); ++i) {
+                std::cout << memoryInformations.at(i).info << std::endl;
             }
+        }
+
+        void RemoveMemoryInfo(const char* name) {
+            std::vector<MemoryInformations>::iterator it;
+            it = std::find_if(memoryInformations.begin(), memoryInformations.end(), [name](MemoryInformations& info) {
+                return info.name == name;
+            });
+            memoryInformations.erase(it);
+            std::cout << "Free Memory From " << name << "\n" << std::endl;
         }
 
         void SetPhysicsInfo(int t) {
@@ -59,7 +77,7 @@ class DebugMode {
 
         size_t MemorySize;
 
-        std::vector<std::string> MemoryInfo;
+        std::vector<MemoryInformations> memoryInformations;
         int ManifoldsInfo;
 
         Tasks tasks;

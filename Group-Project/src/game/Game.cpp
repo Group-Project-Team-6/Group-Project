@@ -399,7 +399,16 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	renderer->Render();
 	UI->DrawUI();
 	renderer->NextFrame();
+	
 	return PushdownResult::NoChange;
+}
+
+void Game::GameAwakeFunc() {
+	UI->PushMenu(gameHUDPtr);
+}
+
+void Game::GameSleepFunc() {
+	UI->RemoveMenu(gameHUDPtr);
 }
 
 PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
@@ -408,7 +417,9 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 	if (pMenu) {
 		if (pMenu->menuClose) {
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
-			PushdownState* s = new PushdownState(up);
+			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -427,11 +438,14 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 		if (pMenu->mainLevel) {
 			if (!hasInit) {
 				Init(tasks);
-				dynamic_cast<GameTechRenderer*>(renderer.get())->init();
+				hasInit = true;
 				pMenu->hasInit = true;
 			}
+			Reset();
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
-			PushdownState* s = new PushdownState(up);
+			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
+			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
+			PushdownState* s = new PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -452,10 +466,12 @@ void Game::MainMenuSleepFunc() {
 PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
 	UI->UpdateUI();
 	SettingMenu* pMenu = dynamic_cast<SettingMenu*>(debugMenuPtr.get());
+	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	if (pMenu) {
 		if (pMenu->back) {
 			return PushdownResult::Pop;
 		}
+		hud->debug = pMenu->toggleDebbug;
 	}
 	UI->DrawUI();
 	renderer->NextFrame();
@@ -474,11 +490,16 @@ void Game::SettingMenuSleepFunc() {
 void Game::InitGame() {
 	gameMenuPtr.reset(new PauseMenu());
 	debugMenuPtr.reset(new SettingMenu());
+	gameHUDPtr.reset(new GameHUD());
 	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
 	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
 	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };
 	PushdownState* s = new PushdownState(up,aw,sl);
 	pushDownMachine = PushdownMachine(s);
+}
+
+void Game::Reset() {
+	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 }
 
 void Game::UpdateGame(float dt) {

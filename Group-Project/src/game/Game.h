@@ -37,6 +37,7 @@ public:
 
 
 protected:
+	void Reset();
 	void InitWorld();
 	void RenderLoading();
 	void Init(Tasks* tasks);
@@ -56,6 +57,8 @@ protected:
 	void InitGame();
 	void UpdateGame(float dt);
 	PushdownResult GameUpdateFunc(float dt, PushdownState** state);
+	void GameAwakeFunc();
+	void GameSleepFunc();
 	// Main Game Menu
 	PushdownResult MainMenuUpdateFunc(float dt, PushdownState** state);
 	void MainMenuAwakeFunc();
@@ -118,5 +121,6 @@ protected:
 	std::unique_ptr<GameUI> UI;
 	Tasks* tasks = nullptr;
 	GameMenuPtr gameMenuPtr = nullptr;
+	GameMenuPtr gameHUDPtr = nullptr;
 	GameMenuPtr debugMenuPtr = nullptr;
 };

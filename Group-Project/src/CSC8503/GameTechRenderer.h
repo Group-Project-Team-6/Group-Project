@@ -48,6 +48,7 @@ namespace NCL {
 
 			OGLMesh*	painterMesh;
 			OGLShader*	painterShader;
+			OGLShader*	initShader;
 			GLuint		PainterFBO;
 
 			OGLShader*  skyboxShader;

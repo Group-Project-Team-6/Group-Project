@@ -60,9 +60,10 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 
 	//painter
 	painterShader = dynamic_cast<OGLShader*>(LoadShader("PaintEffectShader.set"));
+	initShader = dynamic_cast<OGLShader*>(LoadShader("InitEffectShader.set"));
 	painterMesh = new OGLMesh();
 	painterMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
-	painterMesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	painterMesh->SetVertexIndices({ 2,1,0,0,3,2 });
 	painterMesh->SetVertexTextureCoords({ Vector2(0,1), Vector2(0,0),Vector2(1,0), Vector2(1,1) });
 	painterMesh->UploadToGPU();
 
@@ -77,30 +78,30 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 }
 
 void GameTechRenderer::init() {
-	viewportDimension = { currentWidth,currentHeight };
-	initTexture = false;
-	painted = false;
-	glDeleteFramebuffers(1, &shadowFBO);
-	// Depth Attachment
-	glGenTextures(1, &shadowTex);
-	glBindTexture(GL_TEXTURE_2D, shadowTex);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//viewportDimension = { currentWidth,currentHeight };
+	//initTexture = false;
+	//painted = false;
+	//glDeleteFramebuffers(1, &shadowFBO);
+	//// Depth Attachment
+	//glGenTextures(1, &shadowTex);
+	//glBindTexture(GL_TEXTURE_2D, shadowTex);
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		SHADOWSIZE, SHADOWSIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+	//	SHADOWSIZE, SHADOWSIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
-	//FBO
-	glGenFramebuffers(1, &shadowFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
-	glDrawBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//painter
+	////FBO
+	//glGenFramebuffers(1, &shadowFBO);
+	//glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
+	//glDrawBuffer(GL_NONE);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	////painter
 }
 
 GameTechRenderer::~GameTechRenderer()	{
@@ -156,13 +157,14 @@ void GameTechRenderer::LoadSkybox() {
 
 void GameTechRenderer::RenderFrame() {
 	glEnable(GL_CULL_FACE);
-	glClearColor(1, 1, 1, 1);
+	//glClearColor(1, 1, 1, 1);
 	BuildObjectList(false,0);
 	if (!initTexture) {
 		initTextures();
 		initTexture = true;
 	}
 	UpdatePaints();
+
 	SortObjectList(false, 0);
 	RenderShadowMap();
 	glClearColor(0.2, 0.2, 0.2, 1);
@@ -187,27 +189,22 @@ void GameTechRenderer::initTextures() {
 	for (int i = 0; i < (activeObjects).size(); i++) {
 		GameTimer t;
 		if ((activeObjects)[i]->GetName() != "Wall") continue;
-
-		(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
+		//(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
 		//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 		OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
 
+		if (renderTex->GetFBO() == 0) continue;
+
+		glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
 		GLuint tex = renderTex->GetObjectID();
-		if(renderTex->GetFBO()) glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
 		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 
-		BindShader(painterShader);
+		BindShader(initShader);
 
 		BindTextureToShader(renderTex, "hitTex", 0);
 
-		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
-		glUniform3fv(hitUV, 1, Vector3(0, 0, 0).array);
-
-		int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
-		glUniform1i(initID, 1);
-
-		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
-		Matrix4 modelMatrix = (activeObjects)[i]->GetTransform().GetMatrix();
+		int modelLocation = glGetUniformLocation(initShader->GetProgramID(), "modelMatrix");
+		Matrix4 modelMatrix = Matrix4();// (activeObjects)[i]->GetTransform().GetMatrix();
 
 		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
@@ -216,11 +213,11 @@ void GameTechRenderer::initTextures() {
 		//for (int i = 0; i < layerCount; ++i) {
 		DrawBoundMesh();
 		//}
+		glViewport(0, 0, currentWidth, currentHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		t.Tick();
-		std::cout << "InitTextures: " << t.GetTimeDeltaMSec() << std::endl;
+		//std::cout << "InitTextures: " << t.GetTimeDeltaMSec() << std::endl;
 	}
-	glViewport(0, 0, currentWidth, currentHeight);
 	glEnable(GL_CULL_FACE);
 }
 

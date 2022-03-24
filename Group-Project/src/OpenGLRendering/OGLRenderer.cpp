@@ -145,17 +145,14 @@ void OGLRenderer::BindShader(OGLShader*s) {
 	if (!s) {
 		glUseProgram(0);
 		boundShader = nullptr;
-		std::cout << "Bind Null" << std::endl;
 	}
 	else if (s) {
 		glUseProgram(s->programID);
 		boundShader = s;
-		std::cout << "Bind shader" << std::endl;
 	}
 	else {
 		std::cout << __FUNCTION__ << " has received invalid shader?!" << std::endl;
 		boundShader = nullptr;
-		std::cout << "Bind NA" << std::endl;
 	}
 }
 
@@ -234,6 +231,8 @@ void OGLRenderer::BindTextureToShader(const TextureBase*t, const std::string& un
 
 	if (slot < 0) {
 		std::cout << "No slot left" << std::endl;
+		int a;
+		std::cin >> a;
 		return;
 	}
 

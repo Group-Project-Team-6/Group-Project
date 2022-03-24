@@ -5,9 +5,9 @@
 #include <memory>
 #include <stdlib.h>
 #include <vector>
-#include <string>
 #include <algorithm>
 #include <chrono>
+#include <sstream>
 
 #include "Tasks.h"
 
@@ -48,10 +48,15 @@ class DebugMode {
             memoryInformations.push_back(info);
         }
 
-        inline void GetMemoryInfo() {
+/*
+        void GetMemoryInfo() {
             for (int i = 0; i < memoryInformations.size(); ++i) {
                 std::cout << memoryInformations.at(i).info << std::endl;
-            }
+            }   
+        }
+*/
+        std::vector<MemoryInformations> GetMemoryInfo() {
+            return memoryInformations;
         }
 
         void RemoveMemoryInfo(const char* name) {

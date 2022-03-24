@@ -21,6 +21,7 @@ typedef  std::chrono::time_point<std::chrono::high_resolution_clock>  Timepoint;
 class DebugMode {
     public:
         DebugMode(int num);
+        DebugMode() {};
         ~DebugMode() { std::cout << "delete DebugMode" << std::endl; };
 
         //template<class T>
@@ -70,7 +71,7 @@ class DebugMode {
             std::cout << "Number of Manifold(s): " << ManifoldsInfo << "\n" << std::endl;
         }
 
-        void ToggleDebugMode();
+        void SetDebugMode(bool debugMode) { isDebug = debugMode; }
         bool getDebugMode() { return isDebug; }
 
         void UpdateDebug(float dt);

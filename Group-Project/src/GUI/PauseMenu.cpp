@@ -82,7 +82,7 @@ void SettingMenu::Draw()
     /*ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05, 0.05, 0.05, 1));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 1));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4, 0.4, 0.4, 1));*/
-    ImGui::Checkbox("Debbug Mode",&toggleDebbug);
+    ImGui::Checkbox("Debbug Mode",&toggleDebug);
 
     //settingLevel = ImGui::Button("Settings", ImVec2(contentWidth, 50));
     //ImGui::PopStyleColor(3);

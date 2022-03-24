@@ -29,7 +29,7 @@ namespace NCL {
 			virtual void Draw() override;
 
 			std::string debugStr = "";
-			bool toggleDebbug = false;
+			bool toggleDebug = false;
 			bool back = false;
 		};
 	}

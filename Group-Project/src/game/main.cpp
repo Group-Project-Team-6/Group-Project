@@ -60,7 +60,7 @@ int main() {
 
 	Tasks* tasks = d->GetTasks();
 
-	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks));
+	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks, *d));
 	d->AddMemoryInfo(info);
 	
 	srand(time(0));
@@ -87,27 +87,11 @@ int main() {
 			w->SetWindowPosition(0, 0);
 		}
 
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-			d->ToggleDebugMode();
-		}
-		//if (d->getDebugMode()) {
-		//	tasks->queue(
-		//		[d, w, g, dt]
-		//		{
-		//			std::cout << "Current Thread ID: " << std::this_thread::get_id() << "\n" << std::endl; //For tracking current thread
-		//			//std::cout << "\x1B[2J\x1B[H";
-		//			//d->GetMemoryAllocationSize(*w);
-		//			//d->GetMemoryAllocationSize(*d);
-		//			//d->GetMemoryAllocationSize(*g);
-		//			//g->GetPhysicsTestSceneDebugData(d);
-		//			d->GetMemoryInfo();
-		//			d->GetPhysicsInfo();
-		//			d->GetFPS(dt);
-		//			std::cout << std::endl;
-		//		}
-		//	);
-		//	tasks->waitFinished();
-		//}
+		//			std::cout << "\x1B[2J\x1B[H";
+		//			d->GetMemoryAllocationSize(*w);
+		//			d->GetMemoryAllocationSize(*d);
+		//			d->GetMemoryAllocationSize(*g);
+		//			g->GetPhysicsTestSceneDebugData(d);
 
 		//tasks->queue(
 		//	[g, d, dt]

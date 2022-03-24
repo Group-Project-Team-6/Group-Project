@@ -4,10 +4,6 @@ DebugMode::DebugMode(int num) {
     InitTasks(num);
 }
 
-void DebugMode::ToggleDebugMode() {
-    isDebug = !isDebug;
-}
-
 void DebugMode::UpdateDebug(float dt) {
     if (!isDebug) {
         return;

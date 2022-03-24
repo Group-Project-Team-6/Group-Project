@@ -14,7 +14,8 @@
 
 //Namespaces?
 
-Game::Game(Tasks* tasks) : tasks(tasks) {
+Game::Game(Tasks* tasks, DebugMode& d) : tasks(tasks) {
+	debug = &d;
 	int n = 0;
 	for (auto i : players) {
 		players[n] = nullptr;
@@ -463,6 +464,7 @@ PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
 	UI->UpdateUI();
 	SettingMenu* pMenu = dynamic_cast<SettingMenu*>(debugMenuPtr.get());
 	if (pMenu) {
+		debug->SetDebugMode(pMenu->toggleDebug);
 		if (pMenu->back) {
 			return PushdownResult::Pop;
 		}

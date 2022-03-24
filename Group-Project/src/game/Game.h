@@ -27,7 +27,7 @@
 class Game {
 
 public:
-	Game(Tasks* tasks);
+	Game(Tasks* tasks, DebugMode& d);
 	~Game();
 
 	void Update(float dt);
@@ -120,4 +120,6 @@ protected:
 	Tasks* tasks = nullptr;
 	GameMenuPtr gameMenuPtr = nullptr;
 	GameMenuPtr debugMenuPtr = nullptr;
+
+	DebugMode* debug;
 };

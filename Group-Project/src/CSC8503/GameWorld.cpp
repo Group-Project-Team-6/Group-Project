@@ -16,6 +16,7 @@ GameWorld::GameWorld()	{
 }
 
 GameWorld::~GameWorld()	{
+	ClearAndErase();
 }
 
 void GameWorld::Clear() {
@@ -25,7 +26,7 @@ void GameWorld::Clear() {
 
 void GameWorld::ClearAndErase() {
 	for (auto& i : gameObjects) {
-		delete i;
+		if(i) delete i;
 	}
 	Clear();
 }

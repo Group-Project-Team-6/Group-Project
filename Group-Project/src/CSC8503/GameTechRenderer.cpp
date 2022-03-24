@@ -77,7 +77,13 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 }
 
 GameTechRenderer::~GameTechRenderer()	{
+	delete painterShader;
+	delete shadowShader;
+	delete painterMesh;
+	delete skyboxMesh;
+	delete skyboxShader;
 	glDeleteTextures(1, &shadowTex);
+	glDeleteTextures(1, &skyboxTex);
 	glDeleteFramebuffers(1, &shadowFBO);
 }
 
@@ -437,7 +443,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 			}
 		}
 	}
-	//std::cout << count << std::endl;
+	std::cout << count << std::endl;
 	glDepthMask(GL_TRUE);
 }
 

@@ -25,4 +25,6 @@ private:
 	MeshPtr wallMesh = nullptr;
 	TexturePtr wallTex = nullptr;
 	ShaderPtr wallShader = nullptr;
+
+	TexID texID = -1;
 };

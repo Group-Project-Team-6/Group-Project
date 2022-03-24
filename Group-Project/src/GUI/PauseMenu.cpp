@@ -27,15 +27,17 @@ void PauseMenu::Draw()
     ImGui::SetWindowFontScale(1.2);
     float contentWidth = ImGui::GetWindowContentRegionWidth();
 
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05, 0.05, 0.05, 1));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 1));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4, 0.4, 0.4, 1));
     mainLevel = ImGui::Button("Play", ImVec2(contentWidth, 50));
 
     settingLevel = ImGui::Button("Settings", ImVec2(contentWidth, 50));
-    ImGui::PopStyleColor(3);
+
     
     if (!hasInit) {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05, 0.05, 0.05, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 1));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4, 0.4, 0.4, 1));
+    }
+    else {
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 0.5f));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 1));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4, 0.4, 0.4, 1));
@@ -43,8 +45,8 @@ void PauseMenu::Draw()
     menuClose = ImGui::Button("Cancel", ImVec2(contentWidth, 50));
     if (!hasInit) {
         menuClose = false;
-        ImGui::PopStyleColor(3);
     }
+    ImGui::PopStyleColor(3);
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3, 0.05, 0.05, 1));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.6, 0.1, 0.1, 1));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.9, 0.1, 0.1, 1));

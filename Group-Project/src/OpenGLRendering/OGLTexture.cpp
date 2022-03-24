@@ -41,7 +41,7 @@ OGLTexture::OGLTexture(GLuint texToOwn, bool withFBO ) {
 OGLTexture::~OGLTexture()
 {
 	glDeleteTextures(1, &texID);
-	glDeleteFramebuffers(1, &FBO);
+	if(FBO != 0) glDeleteFramebuffers(1, &FBO);
 }
 
 TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, int channels) {

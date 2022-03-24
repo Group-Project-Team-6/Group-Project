@@ -27,12 +27,13 @@ Wall::~Wall() {
 	delete wallMotion;
 	delete wallShape;
 	delete rigidBody;
+	AssetsManager::UnloadTexture("WallTex", texID);
 }
 
 void Wall::InitAssets() {
 
 	wallMesh = AssetsManager::FetchMesh("WallMesh");
-	TexID texID = AssetsManager::LoadTextureFromFile("WallTex","nyan.png",false);
+	texID = AssetsManager::LoadTextureFromFile("WallTex","nyan.png",false);
 	if(texID != -1) wallTex = AssetsManager::FetchTexture("WallTex",texID);
 	wallTex.get()->Init({ "FBO" });
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");

@@ -34,8 +34,6 @@ void operator delete(void* ptr, const char* name, string& Info) {
 	delete ptr;
 }
 
-using namespace NCL;
-
 void operator delete(void* p)
 {
 	if (p) {
@@ -43,6 +41,8 @@ void operator delete(void* p)
 		p = nullptr;
 	}
 }
+
+using namespace NCL;
 
 int main() {
 	Assets::FetchDirConfig("dir.txt");

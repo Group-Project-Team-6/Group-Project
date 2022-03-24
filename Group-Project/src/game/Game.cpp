@@ -12,8 +12,6 @@
 #include <thread>
 #include <mutex>
 
-//Namespaces?
-
 Game::Game(Tasks* tasks) : tasks(tasks) {
 	int n = 0;
 	for (auto i : players) {
@@ -31,9 +29,7 @@ Game::Game(Tasks* tasks) : tasks(tasks) {
 		n++;
 	}
 	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
-	State* initState = new State([&](float dt)->void {
-		InitWorld();
-		});
+	State* initState = new State([&](float dt)->void {InitWorld(); });
 	State* endGameState = new State([&](float dt)->void { });
 	gameStateMachine.AddState(initState);
 	gameStateMachine.AddState(gameState);
@@ -50,6 +46,7 @@ Game::~Game() {
 }
 
 void Game::Init(Tasks* tasks) {
+	hasInit = false;
 	loading = true;
 	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 	tasks->queue([this] {RenderLoading(); });
@@ -84,11 +81,20 @@ void Game::Destroy() {
 		delete playerInput[i];
 	}
 	delete audioManager;
-	sphereMesh.reset();
-	cubeMesh.reset();
-	capsuleMesh.reset();
-	basicTex.reset();
-	basicShader.reset();
+	//sphereMesh.reset();
+	//cubeMesh.reset();
+	//capsuleMesh.reset();
+	//basicTex.reset();
+	//basicShader.reset();
+	delete world;
+	//renderer.reset();
+	AssetsManager::UnloadMesh("WallMesh", 0);
+	AssetsManager::UnloadMesh("CubeMesh", 0);
+	AssetsManager::UnloadMesh("SphereMesh", 0);
+	AssetsManager::UnloadMesh("CapsuleMesh", 0);
+	AssetsManager::UnloadShader("GameTechShaderSet",0);
+	AssetsManager::UnloadTexture("CheckerboardTex", 0);
+	//UI.reset();
 	//delete GameEntities
 	//if(ground) delete ground;
 	//for (auto i : players) {
@@ -119,7 +125,6 @@ void Game::RenderLoading() {
 	while (loading) {
 		loadingRenderer->Render();
 		loadingRenderer->NextFrame();
-		Sleep(1);
 	}
 }
 
@@ -424,9 +429,12 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			return PushdownResult::Push;
 		}
 		if (pMenu->mainLevel) {
-			if(hasInit) Destroy();
-			pMenu->hasInit = true;
+			if (hasInit) {
+				Destroy();
+				InitWorld();
+			}
 			Init(tasks);
+			pMenu->hasInit = true;
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PushdownState* s = new PushdownState(up);
 			*state = s;

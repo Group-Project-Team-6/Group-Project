@@ -104,7 +104,9 @@ MeshGeometry* OGLRenderer::LoadMesh(const std::string& name) {
 }
 
 ShaderBase* OGLRenderer::LoadShader(ShaderMap shaderStages) {
-	return new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+	OGLShader* b =  new OGLShader(shaderStages["vertex"], shaderStages["fragment"], shaderStages["geometry"], shaderStages["domain"], shaderStages["hull"]);
+	if (b->GetProgramID() <= 0) return nullptr;
+	return b;
 }
 
 ShaderBase* OGLRenderer::LoadShader(const std::string& shaderSet) {

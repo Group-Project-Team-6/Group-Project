@@ -26,7 +26,6 @@ Wall::Wall(Transform buildTransform) {
 Wall::~Wall() {
 	delete wallMotion;
 	delete wallShape;
-	delete rigidBody;
 	AssetsManager::UnloadTexture("WallTex", texID);
 }
 

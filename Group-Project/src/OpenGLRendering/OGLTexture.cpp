@@ -40,12 +40,19 @@ OGLTexture::OGLTexture(GLuint texToOwn, bool withFBO ) {
 
 OGLTexture::~OGLTexture()
 {
-	glDeleteTextures(1, &texID);
-	if(FBO != 0) glDeleteFramebuffers(1, &FBO);
+	if(texID > 0)
+		glDeleteTextures(1, &texID);
+
+	if (FBO > 0) {
+		glDeleteFramebuffers(1, &FBO);
+	}
+	std::cout << "Deleted Tex" << std::endl;
 }
+
 
 TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, int channels) {
 	OGLTexture* tex = new OGLTexture();
+	if (tex->texID <= 0) return nullptr;
 	tex->SetHeight(height);
 	tex->SetWidth(width);
 	int dataSize = width * height * channels; //This always assumes data is 1 byte per channel

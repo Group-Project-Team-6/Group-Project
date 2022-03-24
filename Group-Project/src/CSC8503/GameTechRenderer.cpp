@@ -76,6 +76,33 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	LoadSkybox();
 }
 
+void GameTechRenderer::init() {
+	viewportDimension = { currentWidth,currentHeight };
+	initTexture = false;
+	painted = false;
+	glDeleteFramebuffers(1, &shadowFBO);
+	// Depth Attachment
+	glGenTextures(1, &shadowTex);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOWSIZE, SHADOWSIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//FBO
+	glGenFramebuffers(1, &shadowFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowTex, 0);
+	glDrawBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//painter
+}
+
 GameTechRenderer::~GameTechRenderer()	{
 	delete painterShader;
 	delete shadowShader;
@@ -157,7 +184,6 @@ void GameTechRenderer::RenderFrame() {
 
 void GameTechRenderer::initTextures() {
 	glDisable(GL_CULL_FACE);
-	PainterMap map = Painter::GetPaintInfos();
 	for (int i = 0; i < (activeObjects).size(); i++) {
 		GameTimer t;
 		if ((activeObjects)[i]->GetName() != "Wall") continue;

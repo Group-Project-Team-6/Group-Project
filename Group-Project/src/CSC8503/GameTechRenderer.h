@@ -21,6 +21,7 @@ namespace NCL {
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();  
 			void SetTextureInit(bool hasInit) { initTexture = hasInit; };
+			void init();
 
 		protected:
 			void RenderFrame()	override;
@@ -45,8 +46,8 @@ namespace NCL {
 			vector<GameEntity*> activeObjects;
 			vector<GameEntity*> activeTransparentObjects;
 
-			OGLMesh* painterMesh;
-			OGLShader* painterShader;
+			OGLMesh*	painterMesh;
+			OGLShader*	painterShader;
 			GLuint		PainterFBO;
 
 			OGLShader*  skyboxShader;

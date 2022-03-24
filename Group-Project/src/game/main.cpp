@@ -11,6 +11,12 @@
 #include <sstream>
 #include <thread>
 
+static void BreakPoint(std::string msg) {
+	std::cout << msg << std::endl;
+	int a;
+	std::cin >> a;
+}
+
 void* operator new(size_t size, const char* name, std::string& Info) {
 	std::stringstream ss;
     void* ptr;

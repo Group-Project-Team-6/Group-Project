@@ -36,6 +36,8 @@ public:
 
 	static void SetRenderer(RendererPtr renderer);
 	static RendererPtr GetRenderer();
+
+	static void Reset();
 private:
 	AssetsManager() {};
 
@@ -45,5 +47,5 @@ private:
 	static std::map<std::string, std::stack<TexID>> TexStackMap;
 	static std::map<std::string, std::stack<ShaderID>> ShaderStackMap;
 	static std::map<std::string, std::stack<MeshID>> MeshStackMap;
-	static RendererPtr renderer;
+	static RendererBase* renderer;
 };

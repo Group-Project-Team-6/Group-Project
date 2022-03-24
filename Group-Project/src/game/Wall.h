@@ -8,7 +8,7 @@
 class Wall : public GameEntity {
 public:
 	Wall(Transform buildTransform);
-	~Wall();
+	virtual ~Wall();
 
 	void InitAssets(); //Temp
 

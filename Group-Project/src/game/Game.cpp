@@ -29,7 +29,7 @@ Game::Game(Tasks* tasks) : tasks(tasks) {
 		n++;
 	}
 	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
-	State* initState = new State([&](float dt)->void {InitWorld(); });
+	State* initState = new State([&](float dt)->void { InitWorld();});
 	State* endGameState = new State([&](float dt)->void { });
 	gameStateMachine.AddState(initState);
 	gameStateMachine.AddState(gameState);
@@ -42,21 +42,51 @@ Game::Game(Tasks* tasks) : tasks(tasks) {
 }
 
 Game::~Game() {
-	Destroy();
+	//delete Physics
+	delete dynamicsWorld;
+	delete broadphase;
+	delete collisionConfiguration;
+	delete dispatcher;
+	delete solver;
+
+	for (int i = 0; i < 4; i++) {
+		delete playerInput[i];
+	}
+	delete audioManager;
+	delete world;
+	AssetsManager::UnloadMesh("WallMesh", 0);
+	AssetsManager::UnloadMesh("CubeMesh", 0);
+	AssetsManager::UnloadMesh("SphereMesh", 0);
+	AssetsManager::UnloadMesh("CapsuleMesh", 0);
+	AssetsManager::UnloadShader("GameTechShaderSet", 0);
+	AssetsManager::UnloadTexture("CheckerboardTex", 0);
+	//delete GameEntities
+	//if(ground) delete ground;
+	//for (auto i : players) {
+	//	delete i;
+	//}
+
+	//for (auto i : items) {
+	//	delete i;
+	//}
+
+	//for (auto i : walls) {
+	//	delete i;
+	//}
 }
 
 void Game::Init(Tasks* tasks) {
 	hasInit = false;
 	loading = true;
-	dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
+	//dynamic_cast<GameTechRenderer*>(renderer.get())->SetTextureInit(false);
 	tasks->queue([this] {RenderLoading(); });
 	//tasks->queue([this] {InitPhysics(); });
 	//tasks->queue([this] {InitAudio(); });
 	//tasks->queue([this] {InitPlayerInput(); });
+	InitAssets();
 	InitPhysics();
 	InitAudio();
 	InitPlayerInput();
-	InitAssets();
 	InitScene();
 	LevelGeneration();
 	InitCharacter();
@@ -67,33 +97,24 @@ void Game::Init(Tasks* tasks) {
 }
 
 void Game::Destroy() {
-	//delete Physics
 	delete dynamicsWorld;
 	delete broadphase;
 	delete collisionConfiguration;
 	delete dispatcher;
 	delete solver;
-
-	//delete world
-	//delete world;
-
 	for (int i = 0; i < 4; i++) {
-		delete playerInput[i];
+		if(playerInput[i]) delete playerInput[i];
 	}
 	delete audioManager;
-	//sphereMesh.reset();
-	//cubeMesh.reset();
-	//capsuleMesh.reset();
-	//basicTex.reset();
-	//basicShader.reset();
-	delete world;
-	//renderer.reset();
 	AssetsManager::UnloadMesh("WallMesh", 0);
 	AssetsManager::UnloadMesh("CubeMesh", 0);
 	AssetsManager::UnloadMesh("SphereMesh", 0);
 	AssetsManager::UnloadMesh("CapsuleMesh", 0);
 	AssetsManager::UnloadShader("GameTechShaderSet",0);
 	AssetsManager::UnloadTexture("CheckerboardTex", 0);
+	AssetsManager::Reset();
+	delete world;
+	renderer.reset();
 	//UI.reset();
 	//delete GameEntities
 	//if(ground) delete ground;
@@ -113,6 +134,7 @@ void Game::Destroy() {
 void Game::InitWorld() {
 	world = new GameWorld();
 	world->SetLocalGame(true);
+	renderer.reset();
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
@@ -432,6 +454,7 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			if (hasInit) {
 				Destroy();
 				InitWorld();
+				//dynamic_cast<GameTechRenderer*>(renderer.get())->init();
 			}
 			Init(tasks);
 			pMenu->hasInit = true;

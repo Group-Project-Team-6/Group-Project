@@ -35,7 +35,6 @@ Bullet::Bullet(GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : frame
 Bullet::~Bullet() {
 	delete bulletMotion;
 	delete bulletShape;
-	delete ghost;
 }
 
 void Bullet::InitAssets() {

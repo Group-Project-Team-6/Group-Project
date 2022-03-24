@@ -87,9 +87,9 @@ void Game::Destroy() {
 	AssetsManager::UnloadShader("GameTechShaderSet",0);
 	AssetsManager::UnloadTexture("CheckerboardTex", 0);
 	AssetsManager::Reset();
-	delete world;
-	renderer.reset();
-	UI.reset();
+	//delete world;
+	//renderer.reset();
+	//UI.reset();
 	//delete GameEntities
 	//if(ground) delete ground;
 	//for (auto i : players) {
@@ -425,13 +425,11 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			return PushdownResult::Push;
 		}
 		if (pMenu->mainLevel) {
-			if (hasInit) {
-				Destroy();
-				InitWorld();
-				//dynamic_cast<GameTechRenderer*>(renderer.get())->init();
+			if (!hasInit) {
+				Init(tasks);
+				dynamic_cast<GameTechRenderer*>(renderer.get())->init();
+				pMenu->hasInit = true;
 			}
-			Init(tasks);
-			pMenu->hasInit = true;
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PushdownState* s = new PushdownState(up);
 			*state = s;

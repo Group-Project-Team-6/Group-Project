@@ -412,7 +412,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 			if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
 			//Draw to Texture
 			OGLShader* shader = (OGLShader*)(*i).GetRenderObject()->GetShader();
-			std::cout << shader->GetProgramID() << std::endl;
+			//std::cout << shader->GetProgramID() << std::endl;
 			BindShader(shader);
 			BindTextureToShader((OGLTexture*)(*i).GetRenderObject()->GetDefaultTexture(), "mainTex", 0);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -468,7 +468,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 				DrawBoundMesh(i);
 				count++;
 			}
-			std::cout << this << std::endl;
+			//std::cout << this << std::endl;
 		}
 	}
 	glDepthMask(GL_TRUE);

@@ -267,7 +267,6 @@ void AssetsManager::Reset() {
 		}
 	}
 	MeshStackMap.clear();
-	renderer = nullptr;
 }
 
 

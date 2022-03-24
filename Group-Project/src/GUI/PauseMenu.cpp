@@ -243,7 +243,7 @@ void GameHUD::Draw()
         ImGui::SetNextWindowPos(ImVec2(0, mainVp->Size.y * 0.8), ImGuiCond_Always);
         ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.2, mainVp->Size.y * 0.2), ImGuiCond_Always);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
-        ImGui::Begin("Debug Tool", NULL, ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("Debug Tool", NULL, 0);
 
         // Plot some values
         if(fps.size() > 0) ImGui::PlotLines("FPS: ", fps.data(), IM_ARRAYSIZE(fps.data()));
@@ -251,10 +251,25 @@ void GameHUD::Draw()
         // Display contents in a scrolling region
         ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
         ImGui::BeginChild("Scrolling");
-        for (int n = 0; n < 50; n++)
-            ImGui::Text("%04d: Some text", n);
+        for (int n = msg.size() - 1; n >= 0; n--)
+            ImGui::Text(msg[n].c_str());
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);
+    }
+}
+
+void GameHUD::AddMessage(std::string s) {
+    if (msg.size() > msgLimit) {
+        msg.erase(msg.begin());
+        msg.shrink_to_fit();
+        msg.push_back(s);
+    }
+}
+void GameHUD::AddFPS(float s) {
+    if (fps.size() > fpsLimit) {
+        fps.erase(fps.begin());
+        fps.shrink_to_fit();
+        fps.push_back(s);
     }
 }

@@ -60,9 +60,11 @@ public:
 
 	}
 
+	void HandlePlayerShooting(int teamPLayer, int teamBullet);
 
 protected:
 	void InitAssets();
+
 	//Temp
 	MeshPtr playerMesh = nullptr;
 	TexturePtr playerTex = nullptr;
@@ -71,6 +73,7 @@ protected:
 	//general
 	int playerTeam;
 	int health;
+	bool fainted;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;

@@ -519,23 +519,12 @@ void Game::exectureTriggers() {
 						//David Sound Function
 						dynamicsWorld->removeCollisionObject(objA->getGhostObject());
 						world->RemoveGameObject(objA);
-						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
-						//world->RemoveGameObject(world->GetGameObjects()[i]);
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
-						Bullet* tempobjA = (Bullet*)objA;
-						Player* tempobjB = (Player*)objB;
-						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam()*/ 1) {
-							//Same Team
-							//Restore Health
-							//canControl Bool
-						}
-						else{
-							//different Team
-							//reduce health
-							//canControl Bool	
-						}						
+						Bullet* team1 = (Bullet*)objA;
+						Player* team2 = (Player*)objB;
+						team2->HandlePlayerShooting(team2->GetPlayerTeam(), team1->GetPlayerTeam());					
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet

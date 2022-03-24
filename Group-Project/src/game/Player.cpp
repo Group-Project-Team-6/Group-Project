@@ -9,6 +9,7 @@ Player::Player(Vector3 position, int team, string newName, GameWorld& world, btD
 	name = "Player";
 	playerTeam = team;
 	health = 3;
+	fainted = false;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })
@@ -53,5 +54,23 @@ void Player::InitAssets() {
 	if (texID != -1) playerTex = AssetsManager::FetchTexture("CheckerBoardTex", texID);
 	playerTex.get()->Init({ "FBO" });
 	playerShader = AssetsManager::FetchShader("GameTechShaderSet");
+}
+
+void Player::HandlePlayerShooting(int teamPlayer, int teamBullet) {
+	if (teamPlayer == teamBullet) {
+		if (health > 3) { return; }
+		else { health++; }
+		if (fainted) {
+			fainted = false;
+		}
+	}
+	else {
+		if (health < 0) { return; }
+		else { health--; }
+		if (health <= 0)
+		{
+			fainted = true;
+		}
+	}
 }
 

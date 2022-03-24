@@ -6,7 +6,7 @@
 
 class Player : public GameEntity {
 public:
-	Player(Vector3 position, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
+	Player(Vector3 position, int team, string name, GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld );
 	~Player();
 
 	virtual float GetPitch() {
@@ -41,6 +41,10 @@ public:
 		return bullets;
 	}
 
+	int GetPlayerTeam() const {
+		return playerTeam;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
@@ -56,18 +60,22 @@ public:
 
 	}
 
-	void InitAssets();
 
 protected:
-	MeshPtr playerMesh;
-	TexturePtr playerTex;
-	ShaderPtr playerShader;
+	void InitAssets();
+	//Temp
+	MeshPtr playerMesh = nullptr;
+	TexturePtr playerTex = nullptr;
+	ShaderPtr playerShader = nullptr;
 
 	//general
-	//TransformConverter transformConverter;
-	//Transform transform;
-	//btTransform bttransform;
-	BulletPool* bullets;
+	int playerTeam;
+	int health;
+	TransformConverter transformConverter;
+	Transform transform;
+	btTransform bttransform;
+	BulletPool* bullets = nullptr;
+
 
 	//player Physics
 	int playerMass;
@@ -76,8 +84,8 @@ protected:
 	float playerRestitution;
 	btVector3 playerInertia;
 
-	btDefaultMotionState* playerMotion;
-	btCollisionShape* playerShape;
-	btGeneric6DofConstraint* playerConstraint;
-	btRigidBody* playerRigidBody;
+	btDefaultMotionState* playerMotion = nullptr;
+	btCollisionShape* playerShape = nullptr;
+	btGeneric6DofConstraint* playerConstraint = nullptr;
+	btRigidBody* playerRigidBody = nullptr;
 };

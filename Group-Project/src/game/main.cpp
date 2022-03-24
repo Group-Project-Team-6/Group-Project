@@ -3,6 +3,7 @@
 //#include "../Physics/VkTechRenderer.h"
 #include "../common/Assets.h"
 #include "../DebugMode/DebugMode.h"
+#include "../DebugMode/Tasks.h"
 
 #include <iostream>
 #include <memory>
@@ -35,6 +36,14 @@ void* operator new(size_t size, const char* name, MemoryInformations& Info) {
 //	free(ptr);
 //}
 
+void operator delete(void* p)
+{
+	if (p) {
+		free(p);
+		p = nullptr;
+	}
+}
+
 using namespace NCL;
 
 int main() {
@@ -51,14 +60,16 @@ int main() {
 
 	Tasks* tasks = d->GetTasks();
 
-	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks));
+	std::shared_ptr<Game> g(new(typeid(Game).name(), info) Game(tasks, *d));
 	d->AddMemoryInfo(info);
 	
 	srand(time(0));
-	w->ShowOSPointer(false);
+	w->ShowOSPointer(true);
 	w->LockMouseToWindow(true);
+
 	w->GetTimer()->GetTimeDeltaSeconds();
-	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+	bool toggleDebug = false;
+	while (w->UpdateWindow() && !g->End()) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
 		d->GetStartTime();
 		if (dt > 0.1f) {
@@ -76,27 +87,11 @@ int main() {
 			w->SetWindowPosition(0, 0);
 		}
 
-		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-			d->ToggleDebugMode();
-		}
-		//if (d->getDebugMode()) {
-		//	tasks->queue(
-		//		[d, w, g, dt]
-		//		{
-		//			std::cout << "Current Thread ID: " << std::this_thread::get_id() << "\n" << std::endl; //For tracking current thread
-		//			//std::cout << "\x1B[2J\x1B[H";
-		//			//d->GetMemoryAllocationSize(*w);
-		//			//d->GetMemoryAllocationSize(*d);
-		//			//d->GetMemoryAllocationSize(*g);
-		//			//g->GetPhysicsTestSceneDebugData(d);
-		//			d->GetMemoryInfo();
-		//			d->GetPhysicsInfo();
-		//			d->GetFPS(dt);
-		//			std::cout << std::endl;
-		//		}
-		//	);
-		//	tasks->waitFinished();
-		//}
+		//			std::cout << "\x1B[2J\x1B[H";
+		//			d->GetMemoryAllocationSize(*w);
+		//			d->GetMemoryAllocationSize(*d);
+		//			d->GetMemoryAllocationSize(*g);
+		//			g->GetPhysicsTestSceneDebugData(d);
 
 		//tasks->queue(
 		//	[g, d, dt]
@@ -105,7 +100,7 @@ int main() {
 		//	}
 		//);
 
-		g->UpdateGame(dt, d);
+		g->Update(dt);
 		d->GetEndTime();
 		tasks->queue(
 			[d, dt]

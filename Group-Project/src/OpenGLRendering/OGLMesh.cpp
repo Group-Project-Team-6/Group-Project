@@ -36,6 +36,9 @@ OGLMesh::OGLMesh(const std::string&filename) : MeshGeometry(filename){
 }
 
 OGLMesh::~OGLMesh()	{
+	/*std::cout << "Delete Mesh" << std::endl;
+	int a;
+	std::cin >> a;*/
 	glDeleteVertexArrays(1, &vao);			//Delete our VAO
 	glDeleteBuffers(VertexAttribute::MAX_ATTRIBUTES, attributeBuffers);	//Delete our VBOs
 	glDeleteBuffers(1, &indexBuffer);	//Delete our indices

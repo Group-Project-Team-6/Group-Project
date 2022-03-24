@@ -1,7 +1,9 @@
 #include "Items.h"
 
+
 Item::Item(Vector3 position, int score) {
-	InitAssets();
+	InitAssets(); //Temp, Replace with loadAsset Class
+
 	name = "Item";
 	transform
 		.SetPosition(position)
@@ -25,7 +27,6 @@ Item::Item(Vector3 position, int score) {
 Item::~Item() {
 	delete itemMotion;
 	delete itemShape;
-	delete ghost;
 }
 
 void Item::InitAssets() {

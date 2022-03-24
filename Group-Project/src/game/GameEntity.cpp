@@ -12,9 +12,9 @@ GameEntity::GameEntity(string objectName) {
 }
 
 GameEntity::~GameEntity() {
-	delete renderObject;
-	delete rigidBody;
-	delete ghost;
+	if(renderObject) delete renderObject;
+	if(rigidBody) delete rigidBody;
+	if(ghost) delete ghost;
 }
 
 void GameEntity::UpdateRenderPositions()

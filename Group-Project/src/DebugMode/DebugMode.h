@@ -5,9 +5,9 @@
 #include <memory>
 #include <stdlib.h>
 #include <vector>
-#include <string>
 #include <algorithm>
 #include <chrono>
+#include <sstream>
 
 #include "Tasks.h"
 
@@ -21,6 +21,7 @@ typedef  std::chrono::time_point<std::chrono::high_resolution_clock>  Timepoint;
 class DebugMode {
     public:
         DebugMode(int num);
+        DebugMode() {};
         ~DebugMode() { std::cout << "delete DebugMode" << std::endl; };
 
         //template<class T>
@@ -47,10 +48,15 @@ class DebugMode {
             memoryInformations.push_back(info);
         }
 
-        inline void GetMemoryInfo() {
+/*
+        void GetMemoryInfo() {
             for (int i = 0; i < memoryInformations.size(); ++i) {
                 std::cout << memoryInformations.at(i).info << std::endl;
-            }
+            }   
+        }
+*/
+        std::vector<MemoryInformations> GetMemoryInfo() {
+            return memoryInformations;
         }
 
         void RemoveMemoryInfo(const char* name) {
@@ -70,7 +76,7 @@ class DebugMode {
             std::cout << "Number of Manifold(s): " << ManifoldsInfo << "\n" << std::endl;
         }
 
-        void ToggleDebugMode();
+        void SetDebugMode(bool debugMode) { isDebug = debugMode; }
         bool getDebugMode() { return isDebug; }
 
         void UpdateDebug(float dt);
@@ -87,7 +93,6 @@ class DebugMode {
             std::chrono::duration<double> elapsed = (end - start) * 1000;
             std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
         }
-
 
     private:
         Tasks tasks;

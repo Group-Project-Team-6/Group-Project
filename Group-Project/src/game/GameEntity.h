@@ -20,7 +20,7 @@ using std::string;
 class GameEntity {
 public:
 	GameEntity(string name = "");
-	~GameEntity();
+	virtual ~GameEntity();
 
 	//Graphics
 	RenderObject* GetRenderObject() const {
@@ -95,10 +95,10 @@ public:
 	virtual void UpdateRenderPositions();
 
 protected:
-	RenderObject* renderObject;
-	btRigidBody* rigidBody;
-	btGhostObject* ghost;
-	
+	RenderObject* renderObject = nullptr;
+	btRigidBody* rigidBody = nullptr;
+	btGhostObject* ghost = nullptr;
+
 	Transform transform;
 	btTransform bttransform;
 	TransformConverter transformConverter;

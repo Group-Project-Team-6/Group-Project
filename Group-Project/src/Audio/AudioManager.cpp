@@ -2,7 +2,7 @@
 #include <iostream>
 
 void AudioManager::InitSystem() {
-    Common_Init(&extradriverdata);
+    //Common_Init(&extradriverdata);
 
     result = FMOD::System_Create(&system);
     ERRCHECK(result);
@@ -143,11 +143,47 @@ void AudioManager::CacheRelease() {
     result = WaveSound->release();
     ERRCHECK(result);
 
-    Common_Close();
+    //Common_Close();
 }
 
 void AudioManager::PlayJumpSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
     result = system->playSound(JumpSound, 0, false, &channel);
+    ERRCHECK(result);
+    result = channel->setVolume(volume);
+    ERRCHECK(result);
+    result = channel->set3DAttributes(&_pos, &_vel);
+    ERRCHECK(result);
+}
+
+void AudioManager::PlayHurtSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
+    result = system->playSound(HurtSound, 0, false, &channel);
+    ERRCHECK(result);
+    result = channel->setVolume(volume);
+    ERRCHECK(result);
+    result = channel->set3DAttributes(&_pos, &_vel);
+    ERRCHECK(result);
+}
+
+void AudioManager::PlayPickupSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
+    result = system->playSound(PickUpSound, 0, false, &channel);
+    ERRCHECK(result);
+    result = channel->setVolume(volume);
+    ERRCHECK(result);
+    result = channel->set3DAttributes(&_pos, &_vel);
+    ERRCHECK(result);
+}
+
+void AudioManager::PlaySplashSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
+    result = system->playSound(SplashSound, 0, false, &channel);
+    ERRCHECK(result);
+    result = channel->setVolume(volume);
+    ERRCHECK(result);
+    result = channel->set3DAttributes(&_pos, &_vel);
+    ERRCHECK(result);
+}
+
+void AudioManager::PlayFaintSound(FMOD_VECTOR _pos, FMOD_VECTOR _vel) {
+    result = system->playSound(FaintSound, 0, false, &channel);
     ERRCHECK(result);
     result = channel->setVolume(volume);
     ERRCHECK(result);

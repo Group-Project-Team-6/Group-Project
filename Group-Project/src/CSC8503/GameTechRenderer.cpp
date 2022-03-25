@@ -63,7 +63,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	initShader = dynamic_cast<OGLShader*>(LoadShader("InitEffectShader.set"));
 	painterMesh = new OGLMesh();
 	painterMesh->SetVertexPositions({ Vector3(-1, 1,-1), Vector3(-1,-1,-1) , Vector3(1,-1,-1) , Vector3(1,1,-1) });
-	painterMesh->SetVertexIndices({ 0,1,2,2,3,0 });
+	painterMesh->SetVertexIndices({ 2,1,0,0,3,2 });
 	painterMesh->SetVertexTextureCoords({ Vector2(0,1), Vector2(0,0),Vector2(1,0), Vector2(1,1) });
 	painterMesh->UploadToGPU();
 
@@ -164,6 +164,7 @@ void GameTechRenderer::RenderFrame() {
 		initTexture = true;
 	}
 	UpdatePaints();
+
 	SortObjectList(false, 0);
 	RenderShadowMap();
 	glClearColor(0.2, 0.2, 0.2, 1);

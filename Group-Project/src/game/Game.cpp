@@ -313,10 +313,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
 						vecWalls.push_back(new(Ty<Wall>()) Wall(stairsTransform));
-						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
-						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
-						numWalls++;
 						break;
 					case '>':
 						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
@@ -570,7 +567,6 @@ void Game::UpdateGame(float dt) {
 //	d->GetMemoryAllocationSize(*audioManager);
 //	d->GetMemoryAllocationSize(*renderer);
 //}
-
 void Game::exectureTriggers() {
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	for (int i = 0; i < world->GetGameObjects().size(); i++) {

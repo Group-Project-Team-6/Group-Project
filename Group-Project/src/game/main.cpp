@@ -10,43 +10,6 @@
 #include <sstream>
 #include <thread>
 
-//void* operator new(size_t size, const char* name,int i) {
-//	std::stringstream ss;
-//    void* ptr;
-//    ptr = malloc(size);
-//
-//    if (!ptr) // if no memory is allocated, then generate an exception
-//    {
-//        std::bad_alloc ba;
-//        std::cout<<"Memory allocation error for " << name << "." << std::endl;
-//        throw ba;
-//    }
-//    else {
-//		ss << "Memory Size for " << name << ": " << size << " Byte.\nMemory Location for " << name << ": " << &size << "\n";
-//		MemoryInformations Info;
-//		Info.name = name;
-//		Info.info = ss.str();
-//		Info.size = size;
-//		DebugMode::AddMemoryInfo(Info);
-//        return ptr;
-//    }
-//}
-
-
-//void operator delete(void* ptr, const char* name, MemoryInformations& Info) {
-//	//Info.name = name;
-//	std::cout << "Now deleting " << name << std::endl;
-//	free(ptr);
-//}
-//
-//void operator delete(void* p)
-//{
-//	if (p) {
-//		free(p);
-//		p = nullptr;
-//	}
-//}
-
 using namespace NCL;
 
 int main() {
@@ -56,7 +19,6 @@ int main() {
 		return -1;
 	}
 
-	//std::shared_ptr<DebugMode> d(new(typeid(DebugMode).name(), info) DebugMode());
 	DebugMode* d = new(Ty<DebugMode>()) DebugMode(4);
 
 	Tasks* tasks = d->GetTasks();
@@ -101,14 +63,29 @@ int main() {
 		//);
 
 		g->Update(dt);
-		//d->GetEndTime();
+		d->GetEndTime();
 		//tasks->queue(
 		//	[d, dt]
 		//	{
 		//		d->UpdateDebug(dt);
 		//	}
-		//);	
-		//tasks->waitFinished();
+		//);
+
+		std::cout << d->GetFunctionRunTime("UpdateDebug()",
+			[d, dt]
+			{
+				d->UpdateDebug(dt);
+			}
+		);
+
+		//d->GetFunctionRunTime(
+		//	[d, dt]
+		//	{
+		//		d->UpdateDebug(dt);
+		//	}
+		//);
+
+		tasks->waitFinished();
 	}
 	
 	Window::DestroyGameWindow();

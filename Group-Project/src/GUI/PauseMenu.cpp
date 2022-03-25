@@ -239,7 +239,6 @@ void GameHUD::Draw()
         ImGui::PopStyleColor(3);
     }
 
-    //Team 4 score
     if (numTeam > 3) {
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05, 0.05, 0.05, 0.5));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.05, 0.05, 0.05, 0.5));

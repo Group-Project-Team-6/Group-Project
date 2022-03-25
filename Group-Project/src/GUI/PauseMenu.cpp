@@ -7,6 +7,11 @@ using namespace CSC8503;
 
 void PauseMenu::Draw()
 {
+    mainLevel = false;
+    settingLevel = false;
+    menuClose = false;
+    quitGame = false;
+
     const ImGuiViewport* mainVp = ImGui::GetMainViewport();
 
     //Draw background

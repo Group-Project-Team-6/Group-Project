@@ -19,7 +19,7 @@ void Camera::UpdateCamera(Vector3& playersPosition, float playerYaw, float playe
 	pitch = playerPitch;
 	yaw = playerYaw;
 
-	pitch = std::min(pitch, 45.0f);
+	pitch = std::min(pitch, 90.0f);
 	pitch = std::max(pitch, -90.0f);
 
 	if (yaw <0) {

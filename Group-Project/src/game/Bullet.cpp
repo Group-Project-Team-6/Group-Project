@@ -1,6 +1,8 @@
 #include "Bullet.h"
-#include <math.h>
+#include "../common/Maths.h"
 #include "Painter.h"
+
+#include <math.h>
 
 Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
@@ -71,7 +73,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 	bulletRigidBody->getWorldTransform().setOrigin((bulletRigidBody->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
 	btQuaternion quat;
-	quat.setEuler(test, 0, 0);
+	quat.setEuler(test, Maths::DegreesToRadians(camera.GetPitch()), 0);
 	bulletRigidBody->getWorldTransform().setRotation(quat);
 
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);

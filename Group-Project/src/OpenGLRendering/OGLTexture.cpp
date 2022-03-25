@@ -57,7 +57,13 @@ TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, 
 	tex->SetHeight(height);
 	tex->SetWidth(width);
 	int dataSize = width * height * channels; //This always assumes data is 1 byte per channel
-
+	MemoryInformations Info;
+	std::stringstream ss;
+	ss << "Memory Size for OGLTexture : " << dataSize << " Byte.\nMemory Location for OGLTexture : " << tex << "\n";
+	Info.name = "OGLTexture";
+	Info.info = ss.str();
+	Info.size = dataSize;
+	DebugMode::AddMemoryInfo(Info);
 	int sourceType = GL_RGB;
 
 	switch (channels) {

@@ -269,7 +269,8 @@ void GameTechRenderer::BuildObjectList(bool isCameraBased, int cameraNum) {
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
 				if (isCameraBased) {
-					if (o->GetName() == "Wall" && (o->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()) {
+					if ((o->GetName() == "Wall" && (o->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()) 
+						|| (o->GetName() == "Ground" && gameWorld.GetMainCamera(cameraNum)->GetPosition().y < (o->GetRenderObject()->GetTransform()->GetPosition().y + (o->GetRenderObject()->GetTransform()->GetScale().y * 0.5f)))) {
 						activeTransparentObjects.emplace_back(o);
 					}
 					else {

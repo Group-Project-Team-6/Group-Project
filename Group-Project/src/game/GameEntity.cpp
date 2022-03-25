@@ -2,7 +2,7 @@
 
 
 GameEntity::GameEntity(string objectName) {
-	name = "";
+	name = objectName;
 	renderObject = nullptr;
 	rigidBody = nullptr;
 	ghost = nullptr;

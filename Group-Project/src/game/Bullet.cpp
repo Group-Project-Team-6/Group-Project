@@ -2,13 +2,7 @@
 #include "Bullet.h"
 #include "../common/Maths.h"
 #include "Painter.h"
-
-<<<<<<< HEAD
-#undef new
-#define new(_TYPE)  new (__FILE__, __LINE__) _TYPE
-=======
 #include <math.h>
->>>>>>> 287aded39a9563a0ad96d7ac263419a83936c875
 
 Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 

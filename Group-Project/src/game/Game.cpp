@@ -107,7 +107,7 @@ void Game::Destroy() {
 
 void Game::InitWorld() {
 	world = new GameWorld();
-	world->SetLocalGame(false);
+	world->SetLocalGame(true);
 	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());

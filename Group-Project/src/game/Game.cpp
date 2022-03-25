@@ -618,6 +618,7 @@ void Game::exectureTriggers() {
 						std::cout << "Wall Painted" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
 						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
+						//audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
 						//David Sound Function
 						//Chris's Painting
 					}
@@ -643,18 +644,12 @@ void Game::exectureTriggers() {
 
 						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
 							p->OnHeal();
-							//Same Team
-							//Restore Health
-							//canControl Bool
 						}
 						else {
 							p->OnDamaged();
-							//different Team
-							//reduce health
-							//canControl Bool	
-							
+							audioManager->PlayHurtSound({ p->GetTransform().GetPosition().x, p->GetTransform().GetPosition().y, p->GetTransform().GetPosition().z }, { 0, 0, 0 });
+							//audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
 						}	
-						b->RemoveFromPool();
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet
@@ -662,40 +657,27 @@ void Game::exectureTriggers() {
 					if (objA->GetName() == "Player" && objB->GetName() == "Bullet") {
 						std::cout << "Player Shot" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
-						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
-						b->RemoveFromPool();
-						audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
-						//Chris's Painting
-					}
-				}	
-
-				for (int i = 0; i < dynamicsWorld->getDispatcher()->getNumManifolds(); i++) {
-					btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-					GameEntity* objA = (GameEntity*)contactManifold->getBody0()->getUserPointer();
-					GameEntity* objB = (GameEntity*)contactManifold->getBody1()->getUserPointer();
-
-					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
-						std::cout << "Player Shot" << std::endl;
-						Bullet* b = dynamic_cast<Bullet*>(objA);
-						Player* p = dynamic_cast<Player*>(objB);
+						Player* p = dynamic_cast<Player*>(objA);
 
 						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
 							p->OnHeal();
-							//Same Team
-							//Restore Health
-							//canControl Bool
 						}
 						else {
 							p->OnDamaged();
 							audioManager->PlayHurtSound({ p->GetTransform().GetPosition().x, p->GetTransform().GetPosition().y, p->GetTransform().GetPosition().z }, { 0, 0, 0 });
-							//different Team
-							//reduce health
-							//canControl Bool	
+							//audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
 						}
+						//Chris's Painting
+					}
+					if (objA->GetName() == "Bullet") {
+						Bullet* b = dynamic_cast<Bullet*>(objA);
+						b->SetFrame(0);
 						b->RemoveFromPool();
-						//David Sound Function
-						//(Bullet*) world->GetGameObjects()[i]->setFr
-						//Remove Bullet
+					}
+					if (objB->GetName() == "Bullet") {
+						Bullet* b = dynamic_cast<Bullet*>(objB);
+						b->SetFrame(0);
+						b->RemoveFromPool();
 					}
 				}
 		}

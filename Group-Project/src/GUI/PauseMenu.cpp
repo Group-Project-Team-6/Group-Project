@@ -23,9 +23,11 @@ void PauseMenu::Draw()
         ImGui::End();
         return;
     }
+    //ImGui::SetWindowFontScale(6);
+    ImGui::SetCursorPos(ImVec2(mainVp->Size.x * 0.5, mainVp->Size.y * 0.3));
     if (winning != -1) {
         std::string s = "Team " + std::to_string(winning) + " Wins!";
-        ImGui::TextColored(ImVec4(0.1, 0.1, 0.6, 1), (s).c_str());
+        ImGui::TextColored(ImVec4(0.1, 0.1, 1, 1), (s).c_str());
     }
     //Draw menu
     ImGui::SetNextWindowPos(ImVec2(mainVp->GetCenter().x - 150, mainVp->GetCenter().y - 100), ImGuiCond_Always);

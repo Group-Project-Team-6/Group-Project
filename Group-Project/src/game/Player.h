@@ -51,12 +51,12 @@ public:
 
 	void OnHeal() {
 		health += 1;
-		if (health > 100) health == 100;
+		if (health > 100) health = 100;
 	}
 
 	void OnDamaged() {
-		health -= 1;
-		if (health < 0) health == 0;
+		health -= 2;
+		if (health < 0) health = 0;
 	}
 
 	virtual void UpdateRenderPositions() override {

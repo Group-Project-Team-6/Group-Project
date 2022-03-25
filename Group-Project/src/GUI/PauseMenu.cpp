@@ -27,10 +27,16 @@ void PauseMenu::Draw()
 
     ImGui::SetWindowFontScale(1.2);
     float contentWidth = ImGui::GetWindowContentRegionWidth();
+    if (winning != -1) {
+        std::string s = "Team " + std::to_string(winning) + " Wins!";
+        ImGui::TextColored(ImVec4(0.1, 0.1, 0.6, 1), (s).c_str());
+    }
 
-    std::string t = "Play";
-    if (hasInit) t = "Continue";
-    mainLevel = ImGui::Button(t.c_str(), ImVec2(contentWidth, 50));
+    if (winning == -1) {
+        std::string t = "Play";
+        if (hasInit) t = "Continue";
+        mainLevel = ImGui::Button(t.c_str(), ImVec2(contentWidth, 50));
+    }
 
     settingLevel = ImGui::Button("Settings", ImVec2(contentWidth, 50));
 

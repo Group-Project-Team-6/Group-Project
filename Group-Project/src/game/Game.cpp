@@ -37,15 +37,12 @@ Game::Game(Tasks* tasks, DebugMode& d) : tasks(tasks) {
 	}
 	State* gameState = new(Ty<State>()) State([&](float dt)->void {UpdateGame(dt); });
 	State* initState = new(Ty<State>()) State([&](float dt)->void { InitWorld();});
-	State* endGameState = new(Ty<State>()) State([&](float dt)->void { });
 	gameStateMachine.AddState(initState);
 	gameStateMachine.AddState(gameState);
-	gameStateMachine.AddState(endGameState);
 	gameStateMachine.AddTransition(new(Ty<StateTransition>()) StateTransition(initState, gameState, [&]()->bool {
-		InitGame();  
-		return true; 
+		InitGame();
+		return true;
 		}));
-	gameStateMachine.AddTransition(new(Ty<StateTransition>()) StateTransition(gameState, endGameState, [&]()->bool {return winningTeam >= 0; }));
 }
 
 Game::~Game() {
@@ -191,6 +188,7 @@ void Game::InitScene() {
 	ground->SetRigidBody(new btRigidBody(groundCI));
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
+	ground->GetRigidBody()->setUserPointer(ground);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
@@ -226,7 +224,7 @@ void Game::InitCharacter() {
 			world->GetMainCamera(i)->SetDistance(8.0f);
 
 		}
-		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		dynamicsWorld->addRigidBody(players[i]->GetRigidBody(), 16, 0 | 2 | 8);
 		world->AddGameObject(players[i]);
 	}
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
@@ -444,8 +442,18 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	exectureTriggers();
 	renderer->Update(dt);
 	renderer->Render();
+
 	UI->DrawUI();
 	renderer->NextFrame();
+	if (Team1Score >= 3 ) winningTeam = 1;
+	else if(Team2Score >= 3) winningTeam = 2;
+	if (winningTeam > 0) {
+		PauseMenu* pMenu = dynamic_cast<PauseMenu*>(gameMenuPtr.get());
+		if (pMenu) {
+			pMenu->winning = winningTeam;
+		}
+		return PushdownResult::Pop;
+	}
 	return PushdownResult::NoChange;
 }
 
@@ -551,6 +559,9 @@ void Game::Reset() {
 void Game::UpdateGame(float dt) {
 	pushDownMachine.Update(dt);
 }
+
+
+
 /////////////////Build Level//////////////////////////
 
 /////////////////Other Functions//////////////////////
@@ -584,36 +595,91 @@ void Game::exectureTriggers() {
 						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
 						//world->RemoveGameObject(world->GetGameObjects()[i]);
 					}
+					//if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+					//	std::cout << "Player Shot" << std::endl;
+					//	Bullet* b = dynamic_cast<Bullet*>(objA);
+					//	Player* p = dynamic_cast<Player*>(objB);
+					//	if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
+					//		p->OnHeal();
+					//		//Same Team
+					//		//Restore Health
+					//		//canControl Bool
+					//	}
+					//	else{
+					//		p->OnDamaged();
+					//		//different Team
+					//		//reduce health
+					//		//canControl Bool	
+					//	}	
+					//	//David Sound Function
+					//	//(Bullet*) world->GetGameObjects()[i]->setFr
+					//	//Remove Bullet
+					//}
+					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
+						std::cout << "Wall Painted" << std::endl;
+						Bullet* b = dynamic_cast<Bullet*>(objB);
+						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
+						//David Sound Function
+						//Chris's Painting
+					}
+					if (objA->GetName() == "Bullet") {
+						Bullet* b = dynamic_cast<Bullet*>(objA);
+						b->SetFrame(0);
+						b->RemoveFromPool();
+					}
+					if (objB->GetName() == "Bullet") {
+						Bullet* b = dynamic_cast<Bullet*>(objB);
+						b->SetFrame(0);
+						b->RemoveFromPool();
+					}
+				}	
+				for (int i = 0; i < dynamicsWorld->getDispatcher()->getNumManifolds(); i++) {
+					btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+					GameEntity* objA = (GameEntity*)contactManifold->getBody0()->getUserPointer();
+					GameEntity* objB = (GameEntity*)contactManifold->getBody1()->getUserPointer();
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objA);
 						Player* p = dynamic_cast<Player*>(objB);
+
 						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
 							p->OnHeal();
 							//Same Team
 							//Restore Health
 							//canControl Bool
 						}
-						else{
+						else {
 							p->OnDamaged();
 							//different Team
 							//reduce health
 							//canControl Bool	
-						}	
-						b->RemoveFromPool();
+						}
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet
 					}
-					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
-						std::cout << "Wall Painted" << std::endl;
+					if (objA->GetName() == "Player" && objB->GetName() == "Bullet") {
+						std::cout << "Player Shot" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
-						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
-						b->RemoveFromPool();
+						Player* p = dynamic_cast<Player*>(objA);
+
+						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
+							p->OnHeal();
+							//Same Team
+							//Restore Health
+							//canControl Bool
+						}
+						else {
+							p->OnDamaged();
+							//different Team
+							//reduce health
+							//canControl Bool	
+						}
 						//David Sound Function
-						//Chris's Painting
+						//(Bullet*) world->GetGameObjects()[i]->setFr
+						//Remove Bullet
 					}
-				}		
+				}
 		}
 	}
 }

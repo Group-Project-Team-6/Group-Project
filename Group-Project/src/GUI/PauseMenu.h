@@ -23,6 +23,8 @@ namespace NCL {
 			bool menuClose = false;
 			bool quitGame = false;
 			bool settingLevel = false;
+			int winning = -1;
+
 		};
 
 		class SettingMenu : public GameMenu

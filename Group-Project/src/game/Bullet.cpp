@@ -36,7 +36,7 @@ Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWor
 	//isStatic = false;
 
 	world.AddGameObject(this);
-	dynamicsWorld.addRigidBody(bulletRigidBody,8,2);
+	dynamicsWorld.addRigidBody(bulletRigidBody,8,2 | 16);
 	//dynamicsWorld.addCollisionObject(ghost);
 
 	this->setActive(false);

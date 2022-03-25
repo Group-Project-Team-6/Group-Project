@@ -24,7 +24,7 @@ bool PushdownMachine::Update(float dt)
 		case PushdownResult::Pop:
 			{
 				activeState->OnSleep();
-				if(activeState != initialState) delete activeState;
+				//if(activeState != initialState) delete activeState;
 				stateStack.pop();
 				if (stateStack.empty())
 				{

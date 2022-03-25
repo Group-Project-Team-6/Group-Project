@@ -1,10 +1,14 @@
 #include "../DebugMode/DebugMode.h"
 #include "Bullet.h"
-#include <math.h>
+#include "../common/Maths.h"
 #include "Painter.h"
 
+<<<<<<< HEAD
 #undef new
 #define new(_TYPE)  new (__FILE__, __LINE__) _TYPE
+=======
+#include <math.h>
+>>>>>>> 287aded39a9563a0ad96d7ac263419a83936c875
 
 Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
@@ -75,7 +79,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 	bulletRigidBody->getWorldTransform().setOrigin((bulletRigidBody->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
 	btQuaternion quat;
-	quat.setEuler(test, 0, 0);
+	quat.setEuler(test, Maths::DegreesToRadians(camera.GetPitch()), 0);
 	bulletRigidBody->getWorldTransform().setRotation(quat);
 
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);

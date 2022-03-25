@@ -97,7 +97,7 @@ class DebugMode {
         }
 
         template<class F, typename ...T>
-        std::string GetFunctionRunTime(const char* name, F&& f, T... t) {
+        std::string GetFunctionRunTime(const char* name, F&& f) {
             std::stringstream ss;
             std::string s;
             GetStartTime();

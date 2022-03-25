@@ -93,19 +93,16 @@ class DebugMode {
         std::chrono::duration<double> GetRunTime() {
             std::chrono::duration<double> elapsed = (end - start) * 1000;
             return elapsed;
-            //std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
         }
 
-        template<class F, typename ...T>
+        template<class F>
         std::string GetFunctionRunTime(const char* name, F&& f) {
             std::stringstream ss;
             std::string s;
             GetStartTime();
-            //Call Functions
             tasks.queue(f);
             tasks.waitFinished();
             GetEndTime();
-            //const char* name = typeid(f).name();
             ss << "Run Time for function " << name << ": " << GetRunTime().count() << "ms\n" << std::endl;
             s = ss.str();
             return s;

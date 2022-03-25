@@ -191,6 +191,7 @@ void Game::InitScene() {
 	ground->SetRigidBody(new btRigidBody(groundCI));
 	ground->GetRigidBody()->setFriction(0.5);
 	ground->GetRigidBody()->setRestitution(0.5);
+	ground->GetRigidBody()->setUserPointer(ground);
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
@@ -226,7 +227,7 @@ void Game::InitCharacter() {
 			world->GetMainCamera(i)->SetDistance(8.0f);
 
 		}
-		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
+		dynamicsWorld->addRigidBody(players[i]->GetRigidBody(), 16, 0 | 2 | 8);
 		world->AddGameObject(players[i]);
 	}
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
@@ -612,7 +613,36 @@ void Game::exectureTriggers() {
 						//David Sound Function
 						//Chris's Painting
 					}
-				}		
+				}	
+
+				for (int i = 0; i < dynamicsWorld->getDispatcher()->getNumManifolds(); i++) {
+					btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+					GameEntity* objA = (GameEntity*)contactManifold->getBody0()->getUserPointer();
+					GameEntity* objB = (GameEntity*)contactManifold->getBody1()->getUserPointer();
+
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+						Bullet* b = dynamic_cast<Bullet*>(objA);
+						Player* p = dynamic_cast<Player*>(objB);
+
+						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
+							p->OnHeal();
+							//Same Team
+							//Restore Health
+							//canControl Bool
+						}
+						else {
+							p->OnDamaged();
+							//different Team
+							//reduce health
+							//canControl Bool	
+						}
+						b->RemoveFromPool();
+						//David Sound Function
+						//(Bullet*) world->GetGameObjects()[i]->setFr
+						//Remove Bullet
+					}
+				}
 		}
 	}
 }

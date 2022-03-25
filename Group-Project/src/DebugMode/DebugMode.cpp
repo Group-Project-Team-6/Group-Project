@@ -1,5 +1,15 @@
 #include "DebugMode.h"
 
+bool DebugMode::isDebug = false;
+float DebugMode::memUsed = 0;
+int DebugMode::ManifoldsInfo = 0;
+std::vector<MemoryInformations> DebugMode::memoryInformations;
+std::queue<MemoryInformations> DebugMode::memQueue;
+Tasks DebugMode::tasks;
+Timepoint DebugMode::start;
+Timepoint DebugMode::end;
+
+
 DebugMode::DebugMode(int num) {
     InitTasks(num);
 }

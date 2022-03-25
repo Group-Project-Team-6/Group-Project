@@ -7,6 +7,7 @@
 #include "../CSC8503/StateMachine.h"
 #include "../CSC8503/StateTransition.h"
 #include "../CSC8503//GameWorld.h"
+#include "../DebugMode/DebugMode.h"
 
 #include <math.h>
 #include <thread>
@@ -34,17 +35,17 @@ Game::Game(Tasks* tasks, DebugMode& d) : tasks(tasks) {
 	for (int i = 0; i < 4; i++) {
 		playerInput[i] = nullptr;
 	}
-	State* gameState = new State([&](float dt)->void {UpdateGame(dt); });
-	State* initState = new State([&](float dt)->void { InitWorld();});
-	State* endGameState = new State([&](float dt)->void { });
+	State* gameState = new(Ty<State>()) State([&](float dt)->void {UpdateGame(dt); });
+	State* initState = new(Ty<State>()) State([&](float dt)->void { InitWorld();});
+	State* endGameState = new(Ty<State>()) State([&](float dt)->void { });
 	gameStateMachine.AddState(initState);
 	gameStateMachine.AddState(gameState);
 	gameStateMachine.AddState(endGameState);
-	gameStateMachine.AddTransition(new StateTransition(initState, gameState, [&]()->bool {
+	gameStateMachine.AddTransition(new(Ty<StateTransition>()) StateTransition(initState, gameState, [&]()->bool {
 		InitGame();  
 		return true; 
 		}));
-	gameStateMachine.AddTransition(new StateTransition(gameState, endGameState, [&]()->bool {return winningTeam >= 0; }));
+	gameStateMachine.AddTransition(new(Ty<StateTransition>()) StateTransition(gameState, endGameState, [&]()->bool {return winningTeam >= 0; }));
 }
 
 Game::~Game() {
@@ -109,9 +110,9 @@ void Game::Destroy() {
 }
 
 void Game::InitWorld() {
-	world = new GameWorld();
+	world = new(Ty<GameWorld>()) GameWorld();
 	world->SetLocalGame(true);
-	renderer.reset(new GameTechRenderer(*world));// new GameTechRenderer(*world);
+	renderer.reset(new(Ty<GameTechRenderer>()) GameTechRenderer(*world));// new GameTechRenderer(*world);
 	AssetsManager::SetRenderer(renderer);
 	world->SetRenderer(renderer.get());
 	InitGUI();
@@ -119,7 +120,7 @@ void Game::InitWorld() {
 
 void Game::RenderLoading() {
 	RendererPtr loadingRenderer;
-	loadingRenderer.reset(new GameLoadingRenderer());
+	loadingRenderer.reset(new(Ty<GameLoadingRenderer>()) GameLoadingRenderer());
 	while (loading) {
 		loadingRenderer->Render();
 		loadingRenderer->NextFrame();
@@ -164,7 +165,7 @@ void Game::InitPhysics() {
 }
 
 void Game::InitAudio() {
-	audioManager = new AudioManager();
+	audioManager = new(Ty<AudioManager>()) AudioManager();
 	audioManager->InitSystem();
 }
 
@@ -174,13 +175,13 @@ void Game::InitScene() {
 
 	//ground
 	//Should be a static bodies
-	ground = new GameEntity("Ground");
+	ground = new(Ty<GameEntity>()) GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
 		.SetScale(Vector3(70, 1, 70))
 		.SetOrientation(Quaternion(0, 0, 0, 1));
 
-	ground->SetRenderObject(new RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
+	ground->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
@@ -213,7 +214,7 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new(Ty<Player>()) Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
 		if ((world->IsLocalGame() || i == 0) && i < 4) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
@@ -229,8 +230,8 @@ void Game::InitCharacter() {
 }
 
 void Game::InitPlayerInput() {
-	playerInput[0] = new PlayerInput();
-	playerInput[1] = new PlayerInput2();
+	playerInput[0] = new(Ty<PlayerInput>()) PlayerInput();
+	playerInput[1] = new(Ty<PlayerInput2>()) PlayerInput2();
 	playerInput[2] = nullptr;
 	playerInput[3] = nullptr;
 }
@@ -242,7 +243,7 @@ void Game::LevelGeneration() {
 
 	float scale = 5;
 
-	LevelGen* levelGenerator = new LevelGen();
+	LevelGen* levelGenerator = new(Ty<LevelGen>()) LevelGen();
 	levelGenerator->Generate(length, width);
 	vector<string> maze = levelGenerator->GetLevelStrings();
 
@@ -283,7 +284,7 @@ void Game::LevelGeneration() {
 						if (level > 0) {
 							floorsTransform.SetPosition(position + Vector3(0, -unitLength * .45f, 0));
 							floorsTransform.SetScale({ scale, 0.1f, scale });
-							floors.push_back(new Wall(floorsTransform));
+							floors.push_back(new(Ty<Wall>()) Wall(floorsTransform));
 							dynamicsWorld->addCollisionObject(floors[numFloors]->getGhostObject());
 							//dynamicsWorld->addRigidBody(floors[numFloors]->GetRigidBody());
 							world->AddGameObject(floors[numFloors]);
@@ -293,7 +294,7 @@ void Game::LevelGeneration() {
 					case '#':
 						wallsTransform.SetPosition(position);
 						wallsTransform.SetScale({ scale, scale, scale });
-						vecWalls.push_back(new Wall(wallsTransform));
+						vecWalls.push_back(new(Ty<Wall>()) Wall(wallsTransform));
 						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
 						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
@@ -306,7 +307,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
 						stairsTransform.SetOrientation({ 0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
-						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls.push_back(new(Ty<Wall>()) Wall(stairsTransform));
 						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
 						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
@@ -316,7 +317,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetScale({ scale, scale + (scale / 2.5f) ,0.2 });
 						stairsTransform.SetOrientation({ -0.42,0,0,1 });
 						stairsTransform.SetPosition(position);
-						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls.push_back(new(Ty<Wall>()) Wall(stairsTransform));
 						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
 						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
@@ -327,7 +328,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
 						stairsTransform.SetOrientation({ 0.39,1,1,0.39 });
 						stairsTransform.SetPosition(position);
-						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls.push_back(new(Ty<Wall>()) Wall(stairsTransform));
 						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
 						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
@@ -337,7 +338,7 @@ void Game::LevelGeneration() {
 						stairsTransform.SetScale({ scale + (scale / 2.5f), scale ,0.2 });
 						stairsTransform.SetOrientation({ -0.39,1,1,-0.39 });
 						stairsTransform.SetPosition(position);
-						vecWalls.push_back(new Wall(stairsTransform));
+						vecWalls.push_back(new(Ty<Wall>()) Wall(stairsTransform));
 						dynamicsWorld->addCollisionObject(vecWalls[numWalls]->getGhostObject());
 						//dynamicsWorld->addRigidBody(vecWalls[numWalls]->GetRigidBody());
 						world->AddGameObject(vecWalls[numWalls]);
@@ -373,7 +374,7 @@ void Game::LevelGeneration() {
 
 				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
 				collectablesTransform.SetScale({ 0.1, 0.1, 0.1 });
-				vecCollectables.push_back(new Item(collectablesTransform.GetPosition(),1));
+				vecCollectables.push_back(new(Ty<Item>()) Item(collectablesTransform.GetPosition(),1));
 				dynamicsWorld->addCollisionObject(vecCollectables[numCollectablesPlaced]->getGhostObject());
 				world->AddGameObject(vecCollectables[numCollectablesPlaced]);
 				numCollectablesPlaced++;
@@ -392,9 +393,14 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	if (hud) {
 		hud->AddFPS(1.0f / dt);
-		for (int i = 0; i < debug->GetMemoryInfo().size(); i++) {
-			std::string msg = (std::string)(debug->GetMemoryInfo()[i].name) + ": " + (std::string)(debug->GetMemoryInfo()[i].info);
+		hud->AddMem(debug->GetMemUsed());
+		hud->physicsInfo = debug->GetPhysicsInfo();
+		for (int i = 0; i < 1000; i++) {
+			if (debug->memQueue.empty()) break;
+			MemoryInformations info = debug->memQueue.front();
+			std::string msg = (std::string)(info.name) + ": " + (std::string)(info.info);
 			hud->AddMessage(msg);
+			debug->memQueue.pop();
 		}
 	}
 	UI->UpdateUI();
@@ -442,7 +448,7 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
 			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
-			PushdownState* s = new PushdownState(up, aw, sl);
+			PushdownState* s = new(Ty<Item>()) PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -454,7 +460,7 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return SettingMenuUpdateFunc(dt, st); };
 			PSAwakeFunction aw = [&]()->void {SettingMenuAwakeFunc(); };
 			PSSleepFunction sl = [&]()->void {SettingMenuSleepFunc(); };
-			PushdownState* s = new PushdownState(up, aw, sl);
+			PushdownState* s = new(Ty<PushdownState>())  PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -468,7 +474,7 @@ PushdownResult Game::MainMenuUpdateFunc(float dt, PushdownState** state) {
 			PSUpdateFunction up = [&](float dt, PushdownState** st)->PushdownResult {return GameUpdateFunc(dt, st); };
 			PSAwakeFunction aw = [&]()->void {GameAwakeFunc(); };
 			PSSleepFunction sl = [&]()->void {GameSleepFunc(); };
-			PushdownState* s = new PushdownState(up, aw, sl);
+			PushdownState* s = new(Ty<PushdownState>())  PushdownState(up, aw, sl);
 			*state = s;
 			return PushdownResult::Push;
 		}
@@ -511,13 +517,13 @@ void Game::SettingMenuSleepFunc() {
 }
 
 void Game::InitGame() {
-	gameMenuPtr.reset(new PauseMenu());
-	debugMenuPtr.reset(new SettingMenu());
-	gameHUDPtr.reset(new GameHUD());
+	gameMenuPtr.reset(new(Ty<PauseMenu>())  PauseMenu());
+	debugMenuPtr.reset(new(Ty<SettingMenu>()) SettingMenu());
+	gameHUDPtr.reset(new(Ty<GameHUD>()) GameHUD());
 	PSUpdateFunction up = [&](float dt, PushdownState** state)->PushdownResult {return MainMenuUpdateFunc(dt, state); };
 	PSAwakeFunction aw = [&]()->void {MainMenuAwakeFunc(); };
 	PSSleepFunction sl = [&]()->void {MainMenuSleepFunc(); };
-	PushdownState* s = new PushdownState(up,aw,sl);
+	PushdownState* s = new(Ty<PushdownMachine>()) PushdownState(up,aw,sl);
 	pushDownMachine = PushdownMachine(s);
 }
 

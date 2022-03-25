@@ -251,17 +251,28 @@ void GameHUD::Draw()
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
         ImGui::Begin("Debug Tool", NULL, 0);
 
-        // Plot some values
-        ImGui::PlotLines("FPS: ", fps, IM_ARRAYSIZE(fps));
-
-        // Display contents in a scrolling region
+        // FPS
+        ImGui::PlotLines("FPS ", fps, IM_ARRAYSIZE(fps));
         if(fpslastPos != fpsPos) avgFps += fps[fpslastPos] - fps[fpsPos];
         ImGui::TextColored(ImVec4(1, 1, 0, 1), std::to_string(avgFps/fpsLimit).c_str());
         fpslastPos = fpsPos;
 
+        //MemoryUsage
+        ImGui::PlotLines("Memory ", memoryUsed, IM_ARRAYSIZE(memoryUsed));
+        if (memLastPos != memPos) avgMem += fps[memLastPos] - fps[memPos];
+        std::string memStr = "";
+        if (memoryUsed[memLastPos] < 1000.0f) memStr = std::to_string(memoryUsed[memLastPos]) + " Byte";
+        else if (memoryUsed[memLastPos] < 1000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/1000.0f) + " KB";
+        else if (memoryUsed[memLastPos] < 1000000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/1000000.0f) + " MB";
+        else if (memoryUsed[memLastPos] < 1000000000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/ 1000000000.0f) + " GB";
+        ImGui::TextColored(ImVec4(1, 1, 0, 1), (memStr).c_str());
+        memLastPos = memPos;
+
+        ImGui::Text(physicsInfo.c_str());
+
         ImGui::BeginChild("Scrolling");
         for (int n = 0 ; n < msgLimit; n++)
-            ImGui::Text(msg[(n + msgPos)% msgLimit].c_str());
+            ImGui::Text(("[" + std::to_string(n + msgPos) + "]: " + msg[(n + msgPos) % msgLimit]).c_str());
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);
@@ -275,4 +286,13 @@ void GameHUD::AddMessage(std::string s) {
 void GameHUD::AddFPS(float s) {
     fps[fpsPos] = s;
     fpsPos = (fpsPos + 1) % fpsLimit;
+    //fps[fpsPos] = 0;
+   // fps[(fpsPos + 1) % fpsLimit] = avgFps * 2;
+}
+
+void GameHUD::AddMem(float m) {
+    memoryUsed[memPos] = m;
+    memPos = (memPos + 1) % fpsLimit;
+    //memoryUsed[memPos] = 0;
+    //memoryUsed[(memPos + 1) % fpsLimit] = avgMem*2;
 }

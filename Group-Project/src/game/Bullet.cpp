@@ -25,19 +25,11 @@ Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWor
 	bulletRigidBody = new btRigidBody(bulletCI);
 	bulletRigidBody->setFriction(bulletFriction);
 	bulletRigidBody->setRestitution(bulletRestitution);
+	
 	bulletRigidBody->setUserPointer(this);
 
-	//ghost = new btGhostObject();
-	//ghost->setWorldTransform(bttransform);
-	//ghost->setCollisionShape(bulletShape);
-	//ghost->setUserPointer(this);
-	//ghost->setCollisionFlags(ghost->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE | btCollisionObject::CF_STATIC_OBJECT);
-	//isTrigger = true;
-	//isStatic = false;
-
 	world.AddGameObject(this);
-	dynamicsWorld.addRigidBody(bulletRigidBody,8,2 | 16);
-	//dynamicsWorld.addCollisionObject(ghost);
+	dynamicsWorld.addRigidBody(bulletRigidBody, 8, 2 | 16);
 
 	this->setActive(false);
 	bulletRigidBody->setActivationState(false);
@@ -60,6 +52,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 	this->setActive(1);
 	bulletRigidBody->setActivationState(1);
+
 	framesLeft = lifeTime;
 	this->paintable = paintable;
 	

@@ -170,13 +170,11 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
-	//Should be a static bodies
 	ground = new(Ty<GameEntity>()) GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
 		.SetScale(Vector3(70, 1, 70))
 		.SetOrientation(Quaternion(0, 0, 0, 1));
-
 	ground->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 	int groundMass = 0;
@@ -191,7 +189,6 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
-	/*for (int i = 0 ; i < 100 ; i++)  world->AddGameObject(new Wall(Transform()));*/
 }
 
 /*
@@ -211,9 +208,15 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 	int numPLayer = 2;
 	int numTeams = 2;
+
+	spawnPos[0] = { 25, 5, 25 };
+	spawnPos[1] = { 25, 5, -25 };
+	spawnPos[2] = { -25, 5, 25 };
+	spawnPos[3] = { -25, 5, -25 };
+
 	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new(Ty<Player>()) Player({25, 5, -25}, i % numTeams + 1, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new(Ty<Player>()) Player(spawnPos[i], i % numTeams + 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
 		if ((world->IsLocalGame() || i == 0) && i < numPLayer) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
@@ -281,7 +284,7 @@ void Game::LevelGeneration() {
 				for (int w = 0; w < width; w++)
 				{
 					char ch = maze[level][l * width + w];
-					Vector3 position({ ((l + 0.5f) * unitLength) - 25 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 25 });
+					Vector3 position({ ((l + 0.5f) * unitLength - 20)  , (level * unitLength) + 3, ((w + 0.5f) * unitLength - 20)  });
 					switch (ch)
 					{
 					case 'P':
@@ -373,7 +376,7 @@ void Game::LevelGeneration() {
 				int posLength = randomNum / length;
 				int posWidth = randomNum - (posLength * width);
 
-				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
+				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength - 20) , (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength - 20) });
 				collectablesTransform.SetScale({ 0.1, 0.1, 0.1 });
 				vecCollectables.push_back(new(Ty<Item>()) Item(collectablesTransform.GetPosition(),1));
 				dynamicsWorld->addCollisionObject(vecCollectables[numCollectablesPlaced]->getGhostObject());
@@ -382,11 +385,8 @@ void Game::LevelGeneration() {
 
 			}
 			else { x--; }
-
 		}
-
 	}
-
 }
 
 PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
@@ -588,7 +588,7 @@ void Game::exectureTriggers() {
 						else{ 
 							Team2Score++;
 						}
-						//David Sound Function
+						audioManager->PlayPickupSound({ objB->GetTransform().GetPosition().x, objB->GetTransform().GetPosition().y , objB->GetTransform().GetPosition().z }, { 0, 0,0 });
 						dynamicsWorld->removeCollisionObject(objA->getGhostObject());
 						world->RemoveGameObject(objA);
 						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
@@ -652,7 +652,9 @@ void Game::exectureTriggers() {
 							//different Team
 							//reduce health
 							//canControl Bool	
-						}
+							
+						}	
+						b->RemoveFromPool();
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet
@@ -660,7 +662,22 @@ void Game::exectureTriggers() {
 					if (objA->GetName() == "Player" && objB->GetName() == "Bullet") {
 						std::cout << "Player Shot" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
-						Player* p = dynamic_cast<Player*>(objA);
+						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
+						b->RemoveFromPool();
+						audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
+						//Chris's Painting
+					}
+				}	
+
+				for (int i = 0; i < dynamicsWorld->getDispatcher()->getNumManifolds(); i++) {
+					btPersistentManifold* contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+					GameEntity* objA = (GameEntity*)contactManifold->getBody0()->getUserPointer();
+					GameEntity* objB = (GameEntity*)contactManifold->getBody1()->getUserPointer();
+
+					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
+						std::cout << "Player Shot" << std::endl;
+						Bullet* b = dynamic_cast<Bullet*>(objA);
+						Player* p = dynamic_cast<Player*>(objB);
 
 						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
 							p->OnHeal();
@@ -670,10 +687,12 @@ void Game::exectureTriggers() {
 						}
 						else {
 							p->OnDamaged();
+							audioManager->PlayHurtSound({ p->GetTransform().GetPosition().x, p->GetTransform().GetPosition().y, p->GetTransform().GetPosition().z }, { 0, 0, 0 });
 							//different Team
 							//reduce health
 							//canControl Bool	
 						}
+						b->RemoveFromPool();
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet

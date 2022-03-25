@@ -174,13 +174,11 @@ void Game::InitScene() {
 	dynamicsWorld->clearForces();
 
 	//ground
-	//Should be a static bodies
 	ground = new(Ty<GameEntity>()) GameEntity("Ground");
 	ground->GetTransform()
 		.SetPosition(Vector3(0, 0, 0))
 		.SetScale(Vector3(70, 1, 70))
 		.SetOrientation(Quaternion(0, 0, 0, 1));
-
 	ground->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&ground->GetTransform(), cubeMesh.get(), basicTex.get(), basicShader.get()));
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 	int groundMass = 0;
@@ -195,7 +193,6 @@ void Game::InitScene() {
 	world->AddGameObject(ground);
 	dynamicsWorld->addRigidBody(ground->GetRigidBody());
 
-	/*for (int i = 0 ; i < 100 ; i++)  world->AddGameObject(new Wall(Transform()));*/
 }
 
 /*
@@ -395,11 +392,8 @@ void Game::LevelGeneration() {
 
 			}
 			else { x--; }
-
 		}
-
 	}
-
 }
 
 PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
@@ -584,7 +578,7 @@ void Game::exectureTriggers() {
 						else{ 
 							Team2Score++;
 						}
-						//David Sound Function
+						audioManager->PlayPickupSound({ objB->GetTransform().GetPosition().x, objB->GetTransform().GetPosition().y , objB->GetTransform().GetPosition().z }, { 0, 0,0 });
 						dynamicsWorld->removeCollisionObject(objA->getGhostObject());
 						world->RemoveGameObject(objA);
 						//dynamicsWorld->removeCollisionObject(world->GetGameObjects()[i]->getGhostObject());
@@ -605,6 +599,7 @@ void Game::exectureTriggers() {
 							//different Team
 							//reduce health
 							//canControl Bool	
+							
 						}	
 						b->RemoveFromPool();
 						//David Sound Function
@@ -616,7 +611,7 @@ void Game::exectureTriggers() {
 						Bullet* b = dynamic_cast<Bullet*>(objB);
 						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
 						b->RemoveFromPool();
-						//David Sound Function
+						audioManager->PlaySplashSound({ b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x, b->GetTransform().GetPosition().x }, { 0, 0, 0 });
 						//Chris's Painting
 					}
 				}	
@@ -639,6 +634,7 @@ void Game::exectureTriggers() {
 						}
 						else {
 							p->OnDamaged();
+							audioManager->PlayHurtSound({ p->GetTransform().GetPosition().x, p->GetTransform().GetPosition().y, p->GetTransform().GetPosition().z }, { 0, 0, 0 });
 							//different Team
 							//reduce health
 							//canControl Bool	

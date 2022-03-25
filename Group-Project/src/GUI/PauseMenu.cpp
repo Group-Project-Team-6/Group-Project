@@ -253,20 +253,16 @@ void GameHUD::Draw()
 
         // FPS
         ImGui::PlotLines("FPS ", fps, IM_ARRAYSIZE(fps));
-        if(fpslastPos != fpsPos) avgFps += fps[fpslastPos] - fps[fpsPos];
         ImGui::TextColored(ImVec4(1, 1, 0, 1), std::to_string(avgFps/fpsLimit).c_str());
-        fpslastPos = fpsPos;
 
         //MemoryUsage
         ImGui::PlotLines("Memory ", memoryUsed, IM_ARRAYSIZE(memoryUsed));
-        if (memLastPos != memPos) avgMem += memoryUsed[memLastPos] - memoryUsed[memPos];
         std::string memStr = "";
         if (memoryUsed[memLastPos] < 1000.0f) memStr = std::to_string(memoryUsed[memLastPos]) + " Byte";
         else if (memoryUsed[memLastPos] < 1000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/1000.0f) + " KB";
         else if (memoryUsed[memLastPos] < 1000000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/1000000.0f) + " MB";
         else if (memoryUsed[memLastPos] < 1000000000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/ 1000000000.0f) + " GB";
         ImGui::TextColored(ImVec4(1, 1, 0, 1), (memStr).c_str());
-        memLastPos = memPos;
 
         ImGui::Text(physicsInfo.c_str());
 
@@ -285,14 +281,18 @@ void GameHUD::AddMessage(std::string s) {
 }
 void GameHUD::AddFPS(float s) {
     fps[fpsPos] = s;
+    memLastPos = memPos;
     fpsPos = (fpsPos + 1) % fpsLimit;
+    avgMem += memoryUsed[memLastPos] - memoryUsed[memPos];
     //fps[fpsPos] = 0;
    // fps[(fpsPos + 1) % fpsLimit] = avgFps * 2;
 }
 
 void GameHUD::AddMem(float m) {
     memoryUsed[memPos] = m;
+    fpslastPos = memPos;
     memPos = (memPos + 1) % fpsLimit;
+    avgFps += fps[fpslastPos] - fps[fpsPos];
     //memoryUsed[memPos] = 0;
     //memoryUsed[(memPos + 1) % fpsLimit] = avgMem*2;
 }

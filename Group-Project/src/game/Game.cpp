@@ -441,12 +441,11 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 		}
 	}
 	world->UpdatePositions(); //Maybe Change
-
+	exectureTriggers();
 	renderer->Update(dt);
 	renderer->Render();
 	UI->DrawUI();
 	renderer->NextFrame();
-	exectureTriggers();
 	return PushdownResult::NoChange;
 }
 
@@ -600,7 +599,7 @@ void Game::exectureTriggers() {
 							//reduce health
 							//canControl Bool	
 						}	
-						b->SetFrame(0);
+						b->RemoveFromPool();
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet
@@ -609,7 +608,7 @@ void Game::exectureTriggers() {
 						std::cout << "Wall Painted" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
 						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
-						b->SetFrame(0);
+						b->RemoveFromPool();
 						//David Sound Function
 						//Chris's Painting
 					}

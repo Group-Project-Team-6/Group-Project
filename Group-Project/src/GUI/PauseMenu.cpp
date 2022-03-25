@@ -245,11 +245,12 @@ void GameHUD::Draw()
     ImGui::PopStyleColor(1);
 
     if (debug) {
+        // General debug 
         ImGui::SetNextWindowFocus();
-        ImGui::SetNextWindowPos(ImVec2(0, mainVp->Size.y * 0.8), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.2), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(0, mainVp->Size.y * 0.7), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.3), ImGuiCond_Always);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
-        ImGui::Begin("Debug Tool", NULL, 0);
+        ImGui::Begin("General Debug Tool", NULL, 0);
 
         // FPS
         ImGui::PlotLines("FPS ", fps, IM_ARRAYSIZE(fps));
@@ -264,11 +265,31 @@ void GameHUD::Draw()
         else if (memoryUsed[memLastPos] < 1000000000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/ 1000000000.0f) + " GB";
         ImGui::TextColored(ImVec4(1, 1, 0, 1), (memStr).c_str());
 
+        ImGui::BeginChild("Scrolling");
+        for (int n = 0; n < msgLimit; n++) {
+            int l = msgPos - n;
+            if (l < 0) l += msgLimit;
+                ImGui::Text(("[" + std::to_string(n) + "]: " + msg[l]).c_str());
+        }
+        ImGui::EndChild();
+        ImGui::End();
+        ImGui::PopStyleColor(1);
+
+        // Physics Debug
+        ImGui::SetNextWindowFocus();
+        ImGui::SetNextWindowPos(ImVec2(mainVp->Size.x * 0.6, mainVp->Size.y * 0.7), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.3), ImGuiCond_Always);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
+        ImGui::Begin("Physics Debug Tool", NULL, 0);
+
         ImGui::Text(physicsInfo.c_str());
 
         ImGui::BeginChild("Scrolling");
-        for (int n = 0 ; n < msgLimit; n++)
-            ImGui::Text(("[" + std::to_string((n + msgPos) % msgLimit) + "]: " + msg[(n + msgPos) % msgLimit]).c_str());
+        for (int n = 0; n < physicsLimit; n++) {
+            int l = physicsPos - n;
+            if (l < 0) l += physicsLimit;
+            ImGui::Text(("[" + std::to_string(n) + "]: " + physicsMsg[l]).c_str());
+        }
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);
@@ -278,21 +299,25 @@ void GameHUD::Draw()
 void GameHUD::AddMessage(std::string s) {
     msg[msgPos] = s.c_str();
     msgPos = (msgPos + 1) % msgLimit;
+    msgLength++;
+    if (msgLength > msgLimit) msgLength = msgLimit;
 }
 void GameHUD::AddFPS(float s) {
     fps[fpsPos] = s;
-    memLastPos = memPos;
+    fpslastPos = fpsPos;
     fpsPos = (fpsPos + 1) % fpsLimit;
-    avgMem += memoryUsed[memLastPos] - memoryUsed[memPos];
-    //fps[fpsPos] = 0;
-   // fps[(fpsPos + 1) % fpsLimit] = avgFps * 2;
+    avgFps += fps[fpslastPos] - fps[fpsPos];
 }
 
 void GameHUD::AddMem(float m) {
     memoryUsed[memPos] = m;
-    fpslastPos = memPos;
-    memPos = (memPos + 1) % fpsLimit;
-    avgFps += fps[fpslastPos] - fps[fpsPos];
-    //memoryUsed[memPos] = 0;
-    //memoryUsed[(memPos + 1) % fpsLimit] = avgMem*2;
+    memLastPos = memPos;
+    memPos = (memPos + 1) % memoryLimit;
+}
+
+void GameHUD::AddPhysicsInfo(std::string s) {
+    physicsMsg[physicsPos] = s.c_str();
+    physicsPos = (physicsPos + 1) % physicsLimit;
+    physicsLength++;
+    if (physicsLength > physicsLimit) physicsLength = physicsLimit;
 }

@@ -561,6 +561,7 @@ void Game::UpdateGame(float dt) {
 //}
 
 void Game::exectureTriggers() {
+	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	for (int i = 0; i < world->GetGameObjects().size(); i++) {
 		if (world->GetGameObjects()[i]->getTrigger() && world->GetGameObjects()[i]->getGhostObject()->getNumOverlappingObjects()) {
 			GameEntity* objA = world->GetGameObjects()[i];
@@ -568,7 +569,7 @@ void Game::exectureTriggers() {
 					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(0)->getUserPointer();
 						//Execute triggers
 					std::string msg = objA->GetName() + " collided with " + objB->GetName();
-					DebugMode::msgQueue.push(msg);
+					if (hud) { hud->AddPhysicsInfo(msg); }
 					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
 						Player* team = (Player*)objB;
 						if (team->GetPlayerTeam() == 1) {

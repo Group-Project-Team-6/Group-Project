@@ -102,12 +102,27 @@ int main() {
 
 		g->Update(dt);
 		d->GetEndTime();
-		tasks->queue(
+		//tasks->queue(
+		//	[d, dt]
+		//	{
+		//		d->UpdateDebug(dt);
+		//	}
+		//);
+
+		std::cout << d->GetFunctionRunTime("UpdateDebug()",
 			[d, dt]
 			{
 				d->UpdateDebug(dt);
 			}
-		);	
+		);
+
+		//d->GetFunctionRunTime(
+		//	[d, dt]
+		//	{
+		//		d->UpdateDebug(dt);
+		//	}
+		//);
+
 		tasks->waitFinished();
 	}
 	

@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <chrono>
 #include <sstream>
+#include <cstdio>
 
 #include "Tasks.h"
 
@@ -89,9 +90,25 @@ class DebugMode {
             end = std::chrono::high_resolution_clock::now();
         }
 
-        void GetRunTime() {
+        std::chrono::duration<double> GetRunTime() {
             std::chrono::duration<double> elapsed = (end - start) * 1000;
-            std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
+            return elapsed;
+            //std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
+        }
+
+        template<class F, typename ...T>
+        std::string GetFunctionRunTime(const char* name, F&& f, T... t) {
+            std::stringstream ss;
+            std::string s;
+            GetStartTime();
+            //Call Functions
+            tasks.queue(f);
+            tasks.waitFinished();
+            GetEndTime();
+            //const char* name = typeid(f).name();
+            ss << "Run Time for function " << name << ": " << GetRunTime().count() << "ms\n" << std::endl;
+            s = ss.str();
+            return s;
         }
 
     private:

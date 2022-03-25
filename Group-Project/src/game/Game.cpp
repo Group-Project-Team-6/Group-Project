@@ -185,7 +185,7 @@ void Game::InitScene() {
 	transformConverter.BTNCLConvert(ground->GetTransform(), ground->GetbtTransform());
 	int groundMass = 0;
 	btDefaultMotionState* groundMotion = new btDefaultMotionState(ground->GetbtTransform());
-	btCollisionShape* groundShape = new btBoxShape({ 50, 0.5, 50 });
+	btCollisionShape* groundShape = new btBoxShape({ 35, 0.5, 35 });
 	//btCollisionShape* groundShape = new btStaticPlaneShape({ 0, 1, 0 }, 40); //Breaks Renderer static objects btTransforms work differently
 	btRigidBody::btRigidBodyConstructionInfo groundCI(groundMass, groundMotion, groundShape, {0, 0, 0});
 	ground->SetRigidBody(new btRigidBody(groundCI));
@@ -216,7 +216,7 @@ void Game::InitCharacter() {
 	for (int i = 0; i < 4; i++) {
 		players[i] = new(Ty<Player>()) Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		if ((world->IsLocalGame() || i == 0) && i < 4) {
+		if ((world->IsLocalGame() || i == 0) && i < 2) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
@@ -392,10 +392,12 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	if (hud) {
+		hud->team1 = Team1Score;
+		hud->team2 = Team2Score;
 		hud->AddFPS(1.0f / dt);
 		hud->AddMem(debug->GetMemUsed());
 		hud->physicsInfo = debug->GetPhysicsInfo();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < msgLimit; i++) {
 			if (debug->memQueue.empty()) break;
 			MemoryInformations info = debug->memQueue.front();
 			std::string msg = (std::string)(info.name) + ": " + (std::string)(info.info);
@@ -568,7 +570,7 @@ void Game::exectureTriggers() {
 						std::cout << "Player Shot" << std::endl;
 						Bullet* tempobjA = (Bullet*)objA;
 						Player* tempobjB = (Player*)objB;
-						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam()*/ 1) {
+						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam() */1) {
 							//Same Team
 							//Restore Health
 							//canControl Bool
@@ -584,7 +586,9 @@ void Game::exectureTriggers() {
 					}
 					if (objA->GetName() == "Wall" && objB->GetName() == "Bullet") {
 						std::cout << "Wall Painted" << std::endl;
-						if(dynamic_cast<Bullet*>(objB)->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
+						Bullet* b = dynamic_cast<Bullet*>(objB);
+						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
+						//b->SetFrame(-1);
 						//David Sound Function
 						//Chris's Painting
 					}

@@ -1,5 +1,6 @@
 #pragma once
 #include "Bullet.h"
+#include "../DebugMode/DebugMode.h"
 
 class  btDiscreteDynamicsWorld;
 

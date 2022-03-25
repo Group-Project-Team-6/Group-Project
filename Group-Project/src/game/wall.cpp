@@ -1,12 +1,13 @@
 #include "Wall.h"
 #include "AssetsManager.h"
+#include "../DebugMode/DebugMode.h"
 
 Wall::Wall(Transform buildTransform) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 	name = "Wall";
 	transform = buildTransform;		
 
-	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
+	this->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	Vector3 scale = transform.GetScale();

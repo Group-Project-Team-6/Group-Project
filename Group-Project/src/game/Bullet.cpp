@@ -13,7 +13,7 @@ Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWor
 	transform.SetPosition({ 0, 25, 0 });
 	transform.SetOrientation({ 1, 1, 1, 1 });
 	transform.SetScale({ .2, .2, .2 });
-	this->SetRenderObject(new RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
+	this->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 	bulletMotion = new btDefaultMotionState(bttransform);
 	bulletMass = 2;

@@ -20,7 +20,7 @@ void main(void)
 		float AngleY = abs(atan(d.x/d.z));
 		float AngleX = abs(atan(d.z/d.y));
 		float s = 0;
-		float radius = 0.3;
+		float radius = 1.0;
 		int r = 5;
 		for(int i = 1; i <= r ; i++){
 			s+=(sin(i*AngleZ)+sin(i*AngleY)+sin(i*AngleX))*0.333;

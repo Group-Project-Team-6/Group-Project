@@ -9,6 +9,7 @@ https://research.ncl.ac.uk/game/
 #include "OGLTexture.h"
 #include "OGLRenderer.h"
 
+#include "../DebugMode/DebugMode.h"
 #include "../Common/TextureLoader.h"
 
 using namespace NCL;
@@ -51,7 +52,7 @@ OGLTexture::~OGLTexture()
 
 
 TextureBase* OGLTexture::RGBATextureFromData(char* data, int width, int height, int channels) {
-	OGLTexture* tex = new OGLTexture();
+	OGLTexture* tex = new(Ty< OGLTexture>()) OGLTexture();
 	if (tex->texID <= 0) return nullptr;
 	tex->SetHeight(height);
 	tex->SetWidth(width);

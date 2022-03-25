@@ -3,8 +3,8 @@
 #include <string>
 #include "../DebugMode/DebugMode.h"
 
-const int msgLimit = 1000;
-const int fpsLimit = 1000;
+const int msgLimit = 100;
+const int fpsLimit = 100;
 
 namespace NCL {
 	namespace CSC8503 {

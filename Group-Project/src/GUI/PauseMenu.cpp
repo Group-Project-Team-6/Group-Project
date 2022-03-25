@@ -272,7 +272,7 @@ void GameHUD::Draw()
 
         ImGui::BeginChild("Scrolling");
         for (int n = 0 ; n < msgLimit; n++)
-            ImGui::Text(("[" + std::to_string(n + msgPos) + "]: " + msg[(n + msgPos) % msgLimit]).c_str());
+            ImGui::Text(("[" + std::to_string((n + msgPos) % msgLimit) + "]: " + msg[(n + msgPos) % msgLimit]).c_str());
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);

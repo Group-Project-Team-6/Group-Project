@@ -3,6 +3,11 @@
 #include <string>
 #include "../DebugMode/DebugMode.h"
 
+const int msgLimit = 1000;
+const int memoryLimit = 100;
+const int physicsLimit = 1000;
+const int fpsLimit = 100;
+
 namespace NCL {
 	namespace CSC8503 {
 		class PauseMenu : public GameMenu
@@ -36,26 +41,48 @@ namespace NCL {
 		class GameHUD : public GameMenu
 		{
 		public:
-			GameHUD() {};
+			GameHUD() { 
+				for (int i = 0; i < fpsLimit; i++) {
+					fps[i] = 0;
+				}
+				for (int i = 0; i < memoryLimit; i++) {
+					memoryUsed[i] = 0;
+				}
+			};
 			virtual ~GameHUD() {};
 			
 			virtual void Draw() override;
 
 			void AddMessage(std::string s);
 			void AddFPS(float s);
-
-			int fpsLimit = 1000;
-			int msgLimit = 1000;
+			void AddMem(float m);
+			void AddPhysicsInfo(std::string s);
 
 			int numPlayer = 4;
 			int numTeam = 2;
 			int team1 = 0;
 			int team2 = 0;
+			int team3 = 0;
+			int team4 = 0;
 			float hp[4] = { 0.0f,0.0f,0.0f,0.0f };
 			float time = 0.0f;
-			std::vector<std::string> msg;
-			std::vector<float> fps;
 			bool debug = false;
+			std::string physicsInfo;
+		private:
+			int fpsPos = 0;
+			int fpslastPos = 0;
+			int memPos = 0;
+			int memLastPos = 0;
+			int msgPos = 0;
+			int msgLength = 0;
+			int physicsPos = 0;
+			int physicsLength = 0;
+			float avgFps = 0;
+			float avgMem = 0;
+			std::string msg[msgLimit];
+			std::string physicsMsg[physicsLimit];
+			float fps[fpsLimit];
+			float memoryUsed[memoryLimit];
 		};
 	}
 }

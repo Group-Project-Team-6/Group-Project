@@ -15,7 +15,10 @@
 struct MemoryInformations {
     const char* name;
     std::string info;
+    size_t size;
 };
+
+
 
 typedef  std::chrono::time_point<std::chrono::high_resolution_clock>  Timepoint;
 
@@ -33,22 +36,27 @@ class DebugMode {
         //    std::cout << "Memory Location for " << name << ": " << &t << std::endl;
         //}
 
-        inline void GetFPS(float dt) {
+        static inline void GetFPS(float dt) {
             std::cout << "Average FPS: " << (1.0f / dt) << std::endl;
         }
 
-        inline void InitTasks(int num) {
+        static inline void InitTasks(int num) {
             tasks.start(num);
         }
 
-        Tasks* GetTasks() { 
+        static Tasks* GetTasks() { 
             return &tasks; 
         }
 
-        void AddMemoryInfo(MemoryInformations info) {
-            memoryInformations.push_back(info);
+        static void AddMemoryInfo(MemoryInformations info) {
+            //memoryInformations.push_back(info);
+            memQueue.push(info);
+            memUsed += (float)info.size;
         }
 
+        static float GetMemUsed() {
+            return memUsed;
+        }
 /*
         void GetMemoryInfo() {
             for (int i = 0; i < memoryInformations.size(); ++i) {
@@ -56,37 +64,42 @@ class DebugMode {
             }   
         }
 */
-        std::vector<MemoryInformations> GetMemoryInfo() {
+        static std::vector<MemoryInformations> GetMemoryInfo() {
             return memoryInformations;
         }
 
-        void RemoveMemoryInfo(const char* name) {
-            std::vector<MemoryInformations>::iterator it;
-            it = std::find_if(memoryInformations.begin(), memoryInformations.end(), [name](MemoryInformations& info) {
-                return info.name == name;
-            });
-            memoryInformations.erase(it);
-            std::cout << "Free Memory From " << name << "\n" << std::endl;
+        static void RemoveMemoryInfo(const char* name) {
+            if (memoryInformations.size() < 1) return;
+            for (auto i = memoryInformations.begin(); i != memoryInformations.end(); i++) {
+                if (i->name == name) {
+                    if (i != memoryInformations.end()) {
+                        memUsed -= (float)i->size;
+                        memoryInformations.erase(i);
+                        std::cout << "Free Memory From " << name << "\n" << std::endl;
+                    }
+                    break;
+                }
+            }
         }
 
-        void SetPhysicsInfo(int t) {
+        static void SetPhysicsInfo(int t) {
             ManifoldsInfo = t;
         }
 
-        inline void GetPhysicsInfo() {
-            std::cout << "Number of Manifold(s): " << ManifoldsInfo << "\n" << std::endl;
+        static inline std::string GetPhysicsInfo() {
+            return ("Number of Manifold(s): " + std::to_string(ManifoldsInfo) + "\n");
         }
 
-        void SetDebugMode(bool debugMode) { isDebug = debugMode; }
-        bool getDebugMode() { return isDebug; }
+        static void SetDebugMode(bool debugMode) { isDebug = debugMode; }
+        static bool getDebugMode() { return isDebug; }
 
-        void UpdateDebug(float dt);
+        static void UpdateDebug(float dt);
        
-        void GetStartTime() {
+        static void GetStartTime() {
             start = std::chrono::high_resolution_clock::now();
         }
 
-        void GetEndTime() {
+        static void GetEndTime() {
             end = std::chrono::high_resolution_clock::now();
         }
 
@@ -107,15 +120,53 @@ class DebugMode {
             s = ss.str();
             return s;
         }
+        
+        static std::queue<MemoryInformations> memQueue;
+        static std::queue<std::string> msgQueue;
 
     private:
-        Tasks tasks;
+        static Tasks tasks;
 
-        bool isDebug = false;
-        size_t MemorySize;
-        int ManifoldsInfo;
+        static bool isDebug;
+        static int ManifoldsInfo;
+        static float memUsed;
+        static Timepoint start, end;
 
-        Timepoint start, end;
-
-        std::vector<MemoryInformations> memoryInformations;
+        static std::vector<MemoryInformations> memoryInformations;
 };
+
+template<typename T>
+const std::type_info& Ty() {
+    return typeid(T);
+}
+
+inline void* operator new(size_t size, const std::type_info& t) {
+    std::stringstream ss;
+    void* ptr;
+    ptr = malloc(size);
+
+    if (!ptr) // if no memory is allocated, then generate an exception
+    {
+        std::bad_alloc ba;
+        std::cout << "Memory allocation error for " << t.name() << "." << std::endl;
+        throw ba;
+    }
+    else {
+        ss << "Memory Size for " << t.name() << ": " << size << " Byte.\nMemory Location for " << t.name() << ": " << &size << "\n";
+        MemoryInformations Info;
+        Info.name = t.name();
+        Info.info = ss.str();
+        Info.size = size;
+        DebugMode::AddMemoryInfo(Info);
+        return ptr;
+    }
+}
+
+inline void operator delete(void* p)
+{
+    if (p) {
+        //DebugMode::RemoveMemoryInfo(typeid(p).name());
+        free(p);
+        p = nullptr;
+    }
+}

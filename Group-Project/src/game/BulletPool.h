@@ -1,5 +1,6 @@
 #pragma once
 #include "Bullet.h"
+#include "../DebugMode/DebugMode.h"
 
 class  btDiscreteDynamicsWorld;
 
@@ -16,7 +17,7 @@ public:
 	void Animate(btRigidBody& player, float dt);
 
 private:
-
+	int bulletNum = 0;
 	static const int poolSize = 100;
 	Bullet* bullets[poolSize];
 };

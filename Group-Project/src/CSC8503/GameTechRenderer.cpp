@@ -189,7 +189,7 @@ void GameTechRenderer::initTextures() {
 	for (int i = 0; i < (activeObjects).size(); i++) {
 		GameTimer t;
 		if ((activeObjects)[i]->GetName() != "Wall") continue;
-		//(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
+		(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 0.0f));
 		//OGLTexture* objTex = dynamic_cast<OGLTexture*>(activeObjects[i]->GetRenderObject()->GetDefaultTexture());
 		OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
 
@@ -225,42 +225,38 @@ void GameTechRenderer::UpdatePaints() {
 	glDisable(GL_CULL_FACE);
 	PainterMap map = Painter::GetPaintInfos();
 	for (auto& it = map.begin(); it != map.end(); it++) {
-		for (int i = 0; i < (activeObjects).size(); i++) {
-			if ((activeObjects)[i]->GetName() == "Bullet") continue;
-			if ((it->second - (activeObjects)[i]->GetTransform().GetPosition()).Length() > ((activeObjects)[i]->GetTransform().GetScale().Length() * 0.5f)) continue;
-			(activeObjects)[i]->GetRenderObject()->SetColour(Vector4(Vector3((activeObjects)[i]->GetRenderObject()->GetColour()), 1.0f));
+		if ((it->second - it->first->GetRenderObject()->GetTransform()->GetPosition()).Length() > (1 + it->first->GetRenderObject()->GetTransform()->GetScale().Length() * 0.5f)) continue;
+		it->first->GetRenderObject()->SetColour(Vector4(Vector3(it->first->GetRenderObject()->GetColour()), 1.0f));
 
-			OGLTexture* renderTex = dynamic_cast<OGLTexture*>((activeObjects)[i]->GetRenderObject()->GetDefaultTexture());
-			if (renderTex->GetFBO() == 0) continue;
+		OGLTexture* renderTex = dynamic_cast<OGLTexture*>(it->first->GetRenderObject()->GetDefaultTexture());
+		if (renderTex->GetFBO() == 0) continue;
 
-			glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
-			GLuint tex = renderTex->GetObjectID();
-			glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
+		glBindFramebuffer(GL_FRAMEBUFFER, renderTex->GetFBO());
+		GLuint tex = renderTex->GetObjectID();
+		glViewport(0, 0, renderTex->GetWidth(), renderTex->GetHeight());
 
-			BindShader(painterShader);
+		BindShader(painterShader);
 
-			BindTextureToShader(renderTex, "hitTex", 0);
+		BindTextureToShader(renderTex, "hitTex", 0);
 
-			int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
-			glUniform3fv(hitUV, 1, it->second.array);
+		int hitUV = glGetUniformLocation(painterShader->GetProgramID(), "hitPos");
+		glUniform3fv(hitUV, 1, it->second.array);
 
-			int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
-			glUniform1i(initID, 0);
+		int initID = glGetUniformLocation(painterShader->GetProgramID(), "isInit");
+		glUniform1i(initID, 0);
 
-			int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
-			Matrix4 modelMatrix = (activeObjects)[i]->GetTransform().GetMatrix();
+		int modelLocation = glGetUniformLocation(painterShader->GetProgramID(), "modelMatrix");
+		Matrix4 modelMatrix = it->first->GetRenderObject()->GetTransform()->GetMatrix();
 
-			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
+		glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
-			BindMesh((activeObjects)[i]->GetRenderObject()->GetMesh());
-			//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
-			//for (int i = 0; i < layerCount; ++i) {
-			DrawBoundMesh();
-			//}
-			glViewport(0, 0, currentWidth, currentHeight);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		}
+		BindMesh(it->first->GetRenderObject()->GetMesh());
+		//int layerCount = it->first->GetRenderObject()->GetMesh()->GetSubMeshCount();
+		//for (int i = 0; i < layerCount; ++i) {
+		DrawBoundMesh();
+		//}
+		glViewport(0, 0, currentWidth, currentHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	Painter::ClearPaint();
 	glEnable(GL_CULL_FACE);
@@ -274,7 +270,8 @@ void GameTechRenderer::BuildObjectList(bool isCameraBased, int cameraNum) {
 		[&](GameEntity* o) {
 			if (o->IsActive()) {
 				if (isCameraBased) {
-					if (o->GetName() == "Wall" && (o->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetTransform().GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()*1.1f) {
+					if ((o->GetName() == "Wall" && (o->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length() < (gameWorld.GetPlayer(cameraNum)->GetRenderObject()->GetTransform()->GetPosition() - gameWorld.GetMainCamera(cameraNum)->GetPosition()).Length()) 
+						|| (o->GetName() == "Ground" && gameWorld.GetMainCamera(cameraNum)->GetPosition().y < (o->GetRenderObject()->GetTransform()->GetPosition().y + (o->GetRenderObject()->GetTransform()->GetScale().y * 0.5f)))) {
 						activeTransparentObjects.emplace_back(o);
 					}
 					else {
@@ -316,7 +313,7 @@ void GameTechRenderer::RenderShadowMap() {
 	for (int j = 0; j < 2; j++) {
 		for (const auto& i : activeObjects) {
 			if (i->GetRenderObject()->GetColour().w == 0.0f) continue;
-			Matrix4 modelMatrix = (*i).GetTransform().GetMatrix();
+			Matrix4 modelMatrix = (*i).GetRenderObject()->GetTransform()->GetMatrix();
 			Matrix4 mvpMatrix = mvMatrix * modelMatrix;
 			glUniformMatrix4fv(mvpLocation, 1, false, (float*)&mvpMatrix);
 			OGLTexture* renderTex = dynamic_cast<OGLTexture*>(i->GetRenderObject()->GetDefaultTexture());
@@ -446,7 +443,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 				activeShader = shader;
 			}
 
-			Matrix4 modelMatrix = (*i).GetTransform().GetMatrix();
+			Matrix4 modelMatrix = (*i).GetRenderObject()->GetTransform()->GetMatrix();
 			glUniformMatrix4fv(modelLocation, 1, false, (float*)&modelMatrix);
 
 			Matrix4 fullShadowMat = shadowMatrix * modelMatrix;
@@ -468,6 +465,7 @@ void GameTechRenderer::RenderCamera(int cameraNum) {
 			//std::cout << this << std::endl;
 		}
 	}
+	std::cout << count << std::endl;
 	glDepthMask(GL_TRUE);
 }
 

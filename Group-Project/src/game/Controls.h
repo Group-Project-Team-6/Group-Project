@@ -78,7 +78,7 @@ public:
 class LookUpCommand : ControlsCommand {
 public:
 	virtual void execute(Player& player, Camera& camera, AudioManager& audioManager) override {
-		if (player.GetPitch() < 0)
+		if (player.GetPitch() < 90)
 			player.SetPitch(player.GetPitch() + 90.0f * Window::GetTimer()->GetTimeDeltaSeconds());
 	}
 };

@@ -44,7 +44,7 @@ public:
 	}
 
 	virtual void SetFrame(float f) { framesLeft = f; }
-
+	bool paintable;
 protected:
 	float framesLeft;
 	float speed;
@@ -66,6 +66,4 @@ protected:
 	btDefaultMotionState* bulletMotion = nullptr;
 	btCollisionShape* bulletShape = nullptr;
 	btRigidBody* bulletRigidBody = nullptr;
-
-	bool paintable;
 };

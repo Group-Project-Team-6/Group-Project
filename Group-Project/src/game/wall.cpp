@@ -1,12 +1,13 @@
 #include "Wall.h"
 #include "AssetsManager.h"
+#include "../DebugMode/DebugMode.h"
 
 Wall::Wall(Transform buildTransform) {
 	InitAssets(); //Temp, Replace with loadAsset Class
 	name = "Wall";
 	transform = buildTransform;		
 
-	this->SetRenderObject(new RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
+	this->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&transform, wallMesh.get(), wallTex.get(), wallShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 
 	Vector3 scale = transform.GetScale();
@@ -29,8 +30,9 @@ Wall::~Wall() {
 void Wall::InitAssets() {
 
 	wallMesh = AssetsManager::FetchMesh("WallMesh");
-	texID = AssetsManager::LoadTextureFromFile("WallTex","nyan.png",false);
-	if(texID != -1) wallTex = AssetsManager::FetchTexture("WallTex",texID);
+	texID = AssetsManager::LoadTextureFromFile("WallTex","corridor_walls_and_floor_c_2.png",false);
+	if(texID != -1)
+		wallTex = AssetsManager::FetchTexture("WallTex",texID);
 	wallTex.get()->Init({ "FBO" });
 	wallShader = AssetsManager::FetchShader("GameTechShaderSet");
 }

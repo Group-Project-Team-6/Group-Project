@@ -1,6 +1,8 @@
+#include "../DebugMode/DebugMode.h"
 #include "Bullet.h"
-#include <math.h>
+#include "../common/Maths.h"
 #include "Painter.h"
+#include <math.h>
 
 Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWorld) : framesLeft(0) {
 
@@ -11,7 +13,7 @@ Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWor
 	transform.SetPosition({ 0, 25, 0 });
 	transform.SetOrientation({ 1, 1, 1, 1 });
 	transform.SetScale({ .2, .2, .2 });
-	this->SetRenderObject(new RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
+	this->SetRenderObject(new(Ty<RenderObject>()) RenderObject(&transform, bulletMesh.get(), bulletTex.get(), bulletShader.get()));
 	transformConverter.BTNCLConvert(transform, bttransform);
 	bulletMotion = new btDefaultMotionState(bttransform);
 	bulletMass = 2;
@@ -34,7 +36,7 @@ Bullet::Bullet(int team,  GameWorld& world, btDiscreteDynamicsWorld& dynamicsWor
 	//isStatic = false;
 
 	world.AddGameObject(this);
-	dynamicsWorld.addRigidBody(bulletRigidBody);
+	dynamicsWorld.addRigidBody(bulletRigidBody,8,2);
 	//dynamicsWorld.addCollisionObject(ghost);
 
 	this->setActive(false);
@@ -71,7 +73,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 	bulletRigidBody->getWorldTransform().setOrigin((bulletRigidBody->getWorldTransform().getOrigin()) + player.getWorldTransform().getOrigin());
 	btQuaternion quat;
-	quat.setEuler(test, 0, 0);
+	quat.setEuler(test, Maths::DegreesToRadians(camera.GetPitch()), 0);
 	bulletRigidBody->getWorldTransform().setRotation(quat);
 
 	bulletRigidBody->applyCentralImpulse(bulletRigidBody->getWorldTransform().getBasis().getColumn(2) * -100);
@@ -79,7 +81,7 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 void Bullet::Animate(btRigidBody& player, float dt) {
 	if (!inUse()) return;
-	if(paintable) Painter::Paint(this, this->GetTransform().GetPosition());
+	//if(paintable) Painter::Paint(this, this->renderObject->GetTransform()->GetPosition());
 	framesLeft -=dt;
 	if (framesLeft <= 0.0f) {
 		RemoveFromPool();

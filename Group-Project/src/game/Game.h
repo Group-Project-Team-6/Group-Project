@@ -25,7 +25,6 @@
 //Encapsulate in namespace?
 
 class Game {
-
 public:
 	Game(Tasks* tasks, DebugMode& d);
 	~Game();
@@ -79,8 +78,8 @@ protected:
 	StateMachine gameStateMachine;
 	PushdownMachine pushDownMachine = PushdownMachine(nullptr);
 	int winningTeam = -1;
-	int Team1Score;
-	int Team2Score;
+	int Team1Score = 0;
+	int Team2Score = 0;
 
 	//Audio
 	AudioManager* audioManager = nullptr;

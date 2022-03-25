@@ -71,7 +71,7 @@ int main() {
 		//	}
 		//);
 
-		std::cout << d->GetFunctionRunTime("UpdateDebug()",
+		d->GetFunctionRunTime("UpdateDebug()",
 			[d, dt]
 			{
 				d->UpdateDebug(dt);

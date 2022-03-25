@@ -120,6 +120,8 @@ class DebugMode {
             s = ss.str();
             return s;
         }
+
+        static std::queue<std::string> runtimeQueue;
         
         static std::queue<MemoryInformations> memQueue;
         static std::queue<std::string> msgQueue;

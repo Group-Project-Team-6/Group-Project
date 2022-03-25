@@ -23,7 +23,10 @@ void PauseMenu::Draw()
         ImGui::End();
         return;
     }
-    
+    if (winning != -1) {
+        std::string s = "Team " + std::to_string(winning) + " Wins!";
+        ImGui::TextColored(ImVec4(0.1, 0.1, 0.6, 1), (s).c_str());
+    }
     //Draw menu
     ImGui::SetNextWindowPos(ImVec2(mainVp->GetCenter().x - 150, mainVp->GetCenter().y - 100), ImGuiCond_Always);
     //ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Always);
@@ -32,10 +35,6 @@ void PauseMenu::Draw()
 
     ImGui::SetWindowFontScale(1.2);
     float contentWidth = ImGui::GetWindowContentRegionWidth();
-    if (winning != -1) {
-        std::string s = "Team " + std::to_string(winning) + " Wins!";
-        ImGui::TextColored(ImVec4(0.1, 0.1, 0.6, 1), (s).c_str());
-    }
 
     if (winning == -1) {
         std::string t = "Play";
@@ -287,8 +286,8 @@ void GameHUD::Draw()
 
         // Physics Debug
         ImGui::SetNextWindowFocus();
-        ImGui::SetNextWindowPos(ImVec2(mainVp->Size.x * 0.6, mainVp->Size.y * 0.7), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.3), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(mainVp->Size.x * 0.6, mainVp->Size.y * 0.85), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.15), ImGuiCond_Always);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
         ImGui::Begin("Physics Debug Tool", NULL, 0);
 
@@ -303,7 +302,31 @@ void GameHUD::Draw()
         ImGui::EndChild();
         ImGui::End();
         ImGui::PopStyleColor(1);
+
+        // Runtime Debug
+        ImGui::SetNextWindowFocus();
+        ImGui::SetNextWindowPos(ImVec2(mainVp->Size.x * 0.6, mainVp->Size.y * 0.7), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(mainVp->Size.x * 0.4, mainVp->Size.y * 0.15), ImGuiCond_Always);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3, 0.05, 0.05, 0.3));
+        ImGui::Begin("Runtime Debug Tool", NULL, 0);
+
+        ImGui::BeginChild("Scrolling");
+        for (int n = 0; n < runTimeLimit; n++) {
+            int l = runTimePos - n;
+            if (l < 0) l += runTimeLimit;
+            ImGui::Text(("[" + std::to_string(n) + "]: " + runTime[l]).c_str());
+        }
+        ImGui::EndChild();
+        ImGui::End();
+        ImGui::PopStyleColor(1);
     }
+}
+
+void GameHUD::AddRunTime(std::string s) {
+    runTime[runTimePos] = s.c_str();
+    runTimePos = (runTimePos + 1) % runTimeLimit;
+    //msgLength++;
+    //if (msgLength > runTimeLimit) msgLength = runTimeLimit;
 }
 
 void GameHUD::AddMessage(std::string s) {

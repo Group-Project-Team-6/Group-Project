@@ -58,11 +58,10 @@ void Game::Init(Tasks* tasks) {
 	//tasks->queue([this] {InitAudio(); });
 	//tasks->queue([this] {InitPlayerInput(); });
 	InitAssets();
-	InitPhysics();
-	InitAudio();
-	InitPlayerInput();
+	DebugMode::runtimeQueue.push(debug->GetFunctionRunTime("InitPhysics()", [this] {InitPhysics(); }));
+	DebugMode::runtimeQueue.push(debug->GetFunctionRunTime("InitAudio()", [this] {InitAudio(); }));
+	DebugMode::runtimeQueue.push(debug->GetFunctionRunTime("InitPlayerInput()", [this] {InitPlayerInput(); }));
 	InitScene();
-	//InitItems();
 	LevelGeneration();
 	InitCharacter();
 
@@ -413,6 +412,10 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 			if (!DebugMode::msgQueue.empty()) {
 				hud->AddMessage(DebugMode::msgQueue.front());
 				DebugMode::msgQueue.pop();
+			}
+			if (!DebugMode::runtimeQueue.empty()) {
+				hud->AddRunTime(DebugMode::runtimeQueue.front());
+				DebugMode::runtimeQueue.pop();
 			}
 		}
 	}

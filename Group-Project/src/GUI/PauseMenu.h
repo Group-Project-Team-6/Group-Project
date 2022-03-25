@@ -3,6 +3,7 @@
 #include <string>
 #include "../DebugMode/DebugMode.h"
 
+const int runTimeLimit = 1000;
 const int msgLimit = 1000;
 const int memoryLimit = 100;
 const int physicsLimit = 1000;
@@ -55,6 +56,7 @@ namespace NCL {
 			
 			virtual void Draw() override;
 
+			void AddRunTime(std::string s);
 			void AddMessage(std::string s);
 			void AddFPS(float s);
 			void AddMem(float m);
@@ -75,12 +77,14 @@ namespace NCL {
 			int fpslastPos = 0;
 			int memPos = 0;
 			int memLastPos = 0;
+			int runTimePos = 0;
 			int msgPos = 0;
 			int msgLength = 0;
 			int physicsPos = 0;
 			int physicsLength = 0;
 			float avgFps = 0;
 			float avgMem = 0;
+			std::string runTime[runTimeLimit];
 			std::string msg[msgLimit];
 			std::string physicsMsg[physicsLimit];
 			float fps[fpsLimit];

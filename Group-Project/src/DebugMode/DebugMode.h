@@ -48,7 +48,7 @@ class DebugMode {
         }
 
         static void AddMemoryInfo(MemoryInformations info) {
-            memoryInformations.push_back(info);
+            //memoryInformations.push_back(info);
             memQueue.push(info);
             memUsed += (float)info.size;
         }
@@ -68,14 +68,16 @@ class DebugMode {
         }
 
         static void RemoveMemoryInfo(const char* name) {
-            std::vector<MemoryInformations>::iterator it;
-            it = std::find_if(memoryInformations.begin(), memoryInformations.end(), [name](MemoryInformations& info) {
-                return info.name == name;
-            });
-            if (it != memoryInformations.end()) {
-                memUsed -= (float)it->size;
-                memoryInformations.erase(it);
-                std::cout << "Free Memory From " << name << "\n" << std::endl;
+            if (memoryInformations.size() < 1) return;
+            for (auto i = memoryInformations.begin(); i != memoryInformations.end(); i++) {
+                if (i->name == name) {
+                    if (i != memoryInformations.end()) {
+                        memUsed -= (float)i->size;
+                        memoryInformations.erase(i);
+                        std::cout << "Free Memory From " << name << "\n" << std::endl;
+                    }
+                    break;
+                }
             }
         }
 
@@ -105,6 +107,7 @@ class DebugMode {
             std::cout << "Run Time for Main Loop: " << elapsed.count() << "ms\n" << std::endl;
         }
         static std::queue<MemoryInformations> memQueue;
+        static std::queue<std::string> msgQueue;
 
     private:
         static Tasks tasks;
@@ -147,7 +150,7 @@ inline void* operator new(size_t size, const std::type_info& t) {
 inline void operator delete(void* p)
 {
     if (p) {
-        DebugMode::RemoveMemoryInfo(typeid(p).name());
+        //DebugMode::RemoveMemoryInfo(typeid(p).name());
         free(p);
         p = nullptr;
     }

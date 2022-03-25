@@ -45,6 +45,20 @@ public:
 		return playerTeam;
 	}
 
+	int GetHealth() {
+		return health;
+	}
+
+	void OnHeal() {
+		health += 1;
+		if (health > 100) health == 100;
+	}
+
+	void OnDamaged() {
+		health -= 1;
+		if (health < 0) health == 0;
+	}
+
 	virtual void UpdateRenderPositions() override {
 
 		bttransform = playerRigidBody->getWorldTransform();
@@ -70,7 +84,7 @@ protected:
 
 	//general
 	int playerTeam;
-	int health;
+	int health = 100;
 	TransformConverter transformConverter;
 	Transform transform;
 	btTransform bttransform;

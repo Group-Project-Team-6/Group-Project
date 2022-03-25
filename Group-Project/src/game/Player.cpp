@@ -8,7 +8,7 @@ Player::Player(Vector3 position, int team, string newName, GameWorld& world, btD
 	//name = "player" + newName;
 	name = "Player";
 	playerTeam = team;
-	health = 3;
+	health = 100;
 	transform
 		.SetPosition(position)
 		.SetScale({ 1, 1, 1 })

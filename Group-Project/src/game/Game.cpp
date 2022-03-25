@@ -212,11 +212,13 @@ void Game::InitItems() {
 */
 
 void Game::InitCharacter() {
+	int numPLayer = 2;
+	int numTeams = 2;
 	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new(Ty<Player>()) Player({25, 5, -25}, 1, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new(Ty<Player>()) Player({25, 5, -25}, i % numTeams + 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
-		if ((world->IsLocalGame() || i == 0) && i < 2) {
+		if ((world->IsLocalGame() || i == 0) && i < numPLayer) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
 			world->AddMainCamera();
 			world->GetMainCamera(i)->SetNearPlane(0.1f); //Graphics - Check planes Positions, can they be default
@@ -226,6 +228,11 @@ void Game::InitCharacter() {
 		}
 		dynamicsWorld->addRigidBody(players[i]->GetRigidBody());
 		world->AddGameObject(players[i]);
+	}
+	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
+	if (hud) {
+		hud->numPlayer = numPLayer;
+		hud->numTeam = numTeams;
 	}
 }
 
@@ -392,17 +399,26 @@ PushdownResult Game::GameUpdateFunc(float dt, PushdownState** state) {
 	debug->SetPhysicsInfo(dynamicsWorld->getDispatcher()->getNumManifolds());
 	GameHUD* hud = dynamic_cast<GameHUD*>(gameHUDPtr.get());
 	if (hud) {
+		for (int i = 0; i < 4; i++) {
+			hud->hp[i] = (float)(dynamic_cast<Player*>(world->GetPlayer(i))->GetHealth()) / 100.0f;
+		}
 		hud->team1 = Team1Score;
 		hud->team2 = Team2Score;
 		hud->AddFPS(1.0f / dt);
 		hud->AddMem(debug->GetMemUsed());
 		hud->physicsInfo = debug->GetPhysicsInfo();
 		for (int i = 0; i < msgLimit; i++) {
-			if (debug->memQueue.empty()) break;
-			MemoryInformations info = debug->memQueue.front();
-			std::string msg = (std::string)(info.name) + ": " + (std::string)(info.info);
-			hud->AddMessage(msg);
-			debug->memQueue.pop();
+			if (debug->memQueue.empty() && DebugMode::msgQueue.empty()) break;
+			if (!debug->memQueue.empty()) {
+				MemoryInformations info = debug->memQueue.front();
+				std::string msg = (std::string)(info.name) + ": " + (std::string)(info.info);
+				hud->AddMessage(msg);
+				debug->memQueue.pop();
+			}
+			if (!DebugMode::msgQueue.empty()) {
+				hud->AddMessage(DebugMode::msgQueue.front());
+				DebugMode::msgQueue.pop();
+			}
 		}
 	}
 	UI->UpdateUI();
@@ -503,7 +519,7 @@ PushdownResult Game::SettingMenuUpdateFunc(float dt, PushdownState** state) {
 		if (pMenu->back) {
 			return PushdownResult::Pop;
 		}
-		hud->debug = pMenu->toggleDebug;
+		if(hud) hud->debug = pMenu->toggleDebug;
 	}
 	UI->DrawUI();
 	renderer->NextFrame();
@@ -552,6 +568,8 @@ void Game::exectureTriggers() {
 				{
 					GameEntity* objB = (GameEntity*)world->GetGameObjects()[i]->getGhostObject()->getOverlappingObject(0)->getUserPointer();
 						//Execute triggers
+					std::string msg = objA->GetName() + " collided with " + objB->GetName();
+					DebugMode::msgQueue.push(msg);
 					if (objA->GetName() == "Item" && objB->GetName() == "Player") {
 						Player* team = (Player*)objB;
 						if (team->GetPlayerTeam() == 1) {
@@ -568,18 +586,21 @@ void Game::exectureTriggers() {
 					}
 					if (objA->GetName() == "Bullet" && objB->GetName() == "Player") {
 						std::cout << "Player Shot" << std::endl;
-						Bullet* tempobjA = (Bullet*)objA;
-						Player* tempobjB = (Player*)objB;
-						if (/*objB->GetPlayerTeam() == objA->GetPlayerTeam() */1) {
+						Bullet* b = dynamic_cast<Bullet*>(objA);
+						Player* p = dynamic_cast<Player*>(objB);
+						if (b->GetPlayerTeam() == p->GetPlayerTeam()) {
+							p->OnHeal();
 							//Same Team
 							//Restore Health
 							//canControl Bool
 						}
 						else{
+							p->OnDamaged();
 							//different Team
 							//reduce health
 							//canControl Bool	
-						}						
+						}	
+						b->SetFrame(0);
 						//David Sound Function
 						//(Bullet*) world->GetGameObjects()[i]->setFr
 						//Remove Bullet
@@ -588,7 +609,7 @@ void Game::exectureTriggers() {
 						std::cout << "Wall Painted" << std::endl;
 						Bullet* b = dynamic_cast<Bullet*>(objB);
 						if(b->paintable) Painter::Paint(objA, objB->GetRenderObject()->GetTransform()->GetPosition());
-						//b->SetFrame(-1);
+						b->SetFrame(0);
 						//David Sound Function
 						//Chris's Painting
 					}

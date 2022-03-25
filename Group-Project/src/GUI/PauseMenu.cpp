@@ -259,7 +259,7 @@ void GameHUD::Draw()
 
         //MemoryUsage
         ImGui::PlotLines("Memory ", memoryUsed, IM_ARRAYSIZE(memoryUsed));
-        if (memLastPos != memPos) avgMem += fps[memLastPos] - fps[memPos];
+        if (memLastPos != memPos) avgMem += memoryUsed[memLastPos] - memoryUsed[memPos];
         std::string memStr = "";
         if (memoryUsed[memLastPos] < 1000.0f) memStr = std::to_string(memoryUsed[memLastPos]) + " Byte";
         else if (memoryUsed[memLastPos] < 1000000.0f) memStr = std::to_string(memoryUsed[memLastPos]/1000.0f) + " KB";

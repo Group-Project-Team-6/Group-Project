@@ -98,6 +98,7 @@ protected:
 
 	//GameEntities
 	Player* players[4];
+	Vector3 spawnPos[4];
 	Item* items[36];
 	Wall* walls[100]; //Exact number data driven;
 	GameEntity* ground = nullptr;

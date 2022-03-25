@@ -215,9 +215,15 @@ void Game::InitItems() {
 void Game::InitCharacter() {
 	int numPLayer = 2;
 	int numTeams = 2;
+
+	spawnPos[0] = { 25, 5, 25 };
+	spawnPos[1] = { 25, 5, -25 };
+	spawnPos[2] = { -25, 5, 25 };
+	spawnPos[3] = { -25, 5, -25 };
+
 	world->SetLocalPlayerCount(0);
 	for (int i = 0; i < 4; i++) {
-		players[i] = new(Ty<Player>()) Player({25, 5, -25}, i % numTeams + 1, "", *world, *dynamicsWorld); //Positions set from map data	 
+		players[i] = new(Ty<Player>()) Player(spawnPos[i], i % numTeams + 1, "", *world, *dynamicsWorld); //Positions set from map data	 
 		world->AddPlayer(players[i]);
 		if ((world->IsLocalGame() || i == 0) && i < numPLayer) {
 			world->SetLocalPlayerCount(world->GetLocalPlayerCount() + 1);
@@ -285,7 +291,7 @@ void Game::LevelGeneration() {
 				for (int w = 0; w < width; w++)
 				{
 					char ch = maze[level][l * width + w];
-					Vector3 position({ ((l + 0.5f) * unitLength) - 25 , (level * unitLength) + 3, ((w + 0.5f) * unitLength) - 25 });
+					Vector3 position({ ((l + 0.5f) * unitLength - 20)  , (level * unitLength) + 3, ((w + 0.5f) * unitLength - 20)  });
 					switch (ch)
 					{
 					case 'P':
@@ -380,7 +386,7 @@ void Game::LevelGeneration() {
 				int posLength = randomNum / length;
 				int posWidth = randomNum - (posLength * width);
 
-				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength) - 40, (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength) - 40 });
+				collectablesTransform.SetPosition({ ((posLength + 0.5f) * unitLength - 20) , (i * unitLength) + 3, ((posWidth + 0.5f) * unitLength - 20) });
 				collectablesTransform.SetScale({ 0.1, 0.1, 0.1 });
 				vecCollectables.push_back(new(Ty<Item>()) Item(collectablesTransform.GetPosition(),1));
 				dynamicsWorld->addCollisionObject(vecCollectables[numCollectablesPlaced]->getGhostObject());

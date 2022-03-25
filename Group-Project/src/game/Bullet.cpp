@@ -52,7 +52,6 @@ void Bullet::Init(btRigidBody& player, btVector3 force, int lifeTime, Camera& ca
 
 	this->setActive(1);
 	bulletRigidBody->setActivationState(1);
-	//bulletRigidBody->setCollisionFlags(bulletRigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 
 	framesLeft = lifeTime;
 	this->paintable = paintable;

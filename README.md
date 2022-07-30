@@ -1,4 +1,40 @@
 # Group-Project
 
-Group Project for Newcastle University
+Group Project for CSC8508 2021/22 Newcastle University
 
+Contribution List:
+
+Chris Hui:
+ - Splash effect graphics
+ - Obstacles semi transparent effect
+ - GUI & scene state machine integration
+ - Assets Manager
+ - Assimp integration
+ - Split screen graphics
+
+David Wong:
+ - Cmake setup
+ - Audio integration
+ - Reactive audio system
+ - Debug Mode
+
+Richard Ashby:
+ - Game logic design
+ - Bullet Physics
+ - Collision detection
+ - Player movement
+ - Game Engine Architecture
+ - Drafting and finalize group reports
+
+Gokul Vinod Menon:
+ - GUI tools creation
+ - Player movement limiter
+ - Scene state machine tool creation
+
+James Hawkins:
+ - Auto level generation system
+ - PS4 Integration
+
+Srichand Dontha:
+ - Multiplayer design
+ - ENet Integration
